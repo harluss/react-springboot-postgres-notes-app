@@ -1,4 +1,8 @@
 spring:
+  data:
+    rest:
+      base-path: /api/v1/
+
   datasource:
     url: jdbc:postgresql://localhost:5432/notes_db
     username: postgres
