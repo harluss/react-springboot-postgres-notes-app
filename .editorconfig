@@ -9,4 +9,3 @@ end_of_line = lf
 insert_final_newline = true
 ij_java_blank_lines_after_class_header = 1
 ij_java_blank_lines_around_field = 1
-ij_any_blank_lines_before_method_body = 1
