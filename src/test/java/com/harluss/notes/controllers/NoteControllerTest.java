@@ -1,6 +1,8 @@
 package com.harluss.notes.controllers;
 
-import com.harluss.notes.dtos.NoteResponse;
+import com.harluss.notes.dtos.NoteResponseDto;
+import com.harluss.notes.entities.NoteEntity;
+import com.harluss.notes.mappers.MapStructMapper;
 import com.harluss.notes.services.NoteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,18 +25,25 @@ class NoteControllerTest {
   @Mock
   private NoteService mockNoteService;
 
+  @Mock
+  private MapStructMapper mockMapper;
+
   @InjectMocks
   private NoteController noteController;
 
   @DisplayName("should return notes with status 200")
   @Test
   void getNotes() {
-    List<NoteResponse> notes = Arrays.asList(NoteResponse.builder().build());
-    when(mockNoteService.getNotes()).thenReturn(notes);
+    List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
+    List<NoteResponseDto> noteDtos = Arrays.asList(NoteResponseDto.builder().build());
+    when(mockNoteService.getNotes()).thenReturn(noteEntities);
+    when(mockMapper.noteEntityListToResponseDtoList(noteEntities)).thenReturn(noteDtos);
 
-    ResponseEntity<List<NoteResponse>> response = noteController.getNotes();
+    ResponseEntity<List<NoteResponseDto>> response = noteController.getNotes();
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody()).hasSize(1);
+    assertThat(response.getBody())
+        .hasSize(1)
+        .hasAtLeastOneElementOfType(NoteResponseDto.class);
   }
 }

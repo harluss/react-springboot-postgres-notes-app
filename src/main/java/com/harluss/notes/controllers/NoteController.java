@@ -1,8 +1,8 @@
 package com.harluss.notes.controllers;
 
-import com.harluss.notes.dtos.NoteResponse;
+import com.harluss.notes.dtos.NoteResponseDto;
+import com.harluss.notes.mappers.MapStructMapper;
 import com.harluss.notes.services.NoteService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +15,18 @@ import java.util.List;
 public class NoteController {
 
   private final NoteService noteService;
+  private final MapStructMapper mapper;
 
-  public NoteController(NoteService noteService) {
+  public NoteController(final NoteService noteService, final MapStructMapper mapStructMapper) {
     this.noteService = noteService;
+    this.mapper = mapStructMapper;
   }
 
   @GetMapping
-  public ResponseEntity<List<NoteResponse>> getNotes() {
-    return ResponseEntity.ok(noteService.getNotes());
+  public ResponseEntity<List<NoteResponseDto>> getNotes() {
+
+    return ResponseEntity.ok(
+        mapper.noteEntityListToResponseDtoList(noteService.getNotes())
+    );
   }
 }
