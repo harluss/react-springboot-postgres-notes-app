@@ -1,10 +1,10 @@
 package com.harluss.notes.services;
 
-import com.harluss.notes.dtos.NoteResponse;
+import com.harluss.notes.entities.NoteEntity;
 
 import java.util.List;
 
 public interface NoteService {
 
-  List<NoteResponse> getNotes();
+  List<NoteEntity> getNotes();
 }

@@ -1,7 +1,5 @@
 package com.harluss.notes.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.harluss.notes.dtos.NoteResponse;
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.repositories.NoteRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -24,9 +22,6 @@ class NoteServiceImplTest {
   @Mock
   private NoteRepository mockNoteRepository;
 
-  @Mock
-  private ObjectMapper mockObjectMapper;
-
   @InjectMocks
   private NoteServiceImpl noteService;
 
@@ -34,14 +29,14 @@ class NoteServiceImplTest {
   @Test
   void getNotes() {
     List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
-    NoteResponse noteResponse = NoteResponse.builder().build();
     when(mockNoteRepository.findAll()).thenReturn(noteEntities);
-    when(mockObjectMapper.convertValue(noteEntities.get(0), NoteResponse.class)).thenReturn(noteResponse);
 
-    List<NoteResponse> notes = noteService.getNotes();
+    List<NoteEntity> notes = noteService.getNotes();
 
     verify(mockNoteRepository, times(1)).findAll();
-    assertThat(notes).isNotEmpty();
+    assertThat(notes)
+        .isNotEmpty()
+        .hasAtLeastOneElementOfType(NoteEntity.class);
   }
 
   @DisplayName("should return empty list when no notes found")
@@ -49,7 +44,7 @@ class NoteServiceImplTest {
   void getNotesEmpty() {
     when(mockNoteRepository.findAll()).thenReturn(Collections.emptyList());
 
-    List<NoteResponse> notes = noteService.getNotes();
+    List<NoteEntity> notes = noteService.getNotes();
 
     verify(mockNoteRepository, times(1)).findAll();
     assertThat(notes).isEmpty();
