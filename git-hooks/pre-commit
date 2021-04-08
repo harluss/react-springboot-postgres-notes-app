@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Running git pre-push hook"
+
+./gradlew clean build
+
+if [ $? -ne 0 ]; then
+  echo "Gradle build failed"
+  exit 1
+fi

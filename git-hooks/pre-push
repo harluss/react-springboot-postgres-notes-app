@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ -s pom.xml ]; then
+    echo "Running mvn clean install"
+    mvn clean install
+    if [ $? -ne 0 ]; then
+        echo "Maven build failed"
+        exit 1
+    fi
+fi
