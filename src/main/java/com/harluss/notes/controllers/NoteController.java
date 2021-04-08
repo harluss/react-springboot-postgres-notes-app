@@ -22,6 +22,6 @@ public class NoteController {
 
   @GetMapping
   public ResponseEntity<List<NoteResponse>> getNotes() {
-    return new ResponseEntity<>(noteService.getNotes(), HttpStatus.OK);
+    return ResponseEntity.ok(noteService.getNotes());
   }
 }
