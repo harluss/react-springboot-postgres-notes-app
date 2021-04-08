@@ -1,9 +1,10 @@
 #!/bin/sh
-if [ -s pom.xml ]; then
-    echo "Running mvn clean install"
-    mvn clean install
-    if [ $? -ne 0 ]; then
-        echo "Maven build failed"
-        exit 1
-    fi
+
+echo "Running git pre-push hook"
+
+./gradlew clean build
+
+if [ $? -ne 0 ]; then
+  echo "Gradle build failed"
+  exit 1
 fi
