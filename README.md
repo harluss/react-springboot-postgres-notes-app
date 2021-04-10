@@ -22,11 +22,13 @@ The main purpose of this project is learn and practice.
 - [ ] CD workflow (deployment to Docker Hub, AWS **and/or** Heroku)
 - [ ] CRUD operations
 - [ ] Spring Security with JWT
-- [ ] Serve React project
+- [x] Serve React project
+- [ ] Liquibase migrations
+- [ ] AOP logging (maybe)
 - [ ] ...
 
-##### Frontend
-- [ ] React project with TypeScript
+#### Frontend
+- [x] React project with TypeScript
 - [ ] Material UI
 - [ ] Unit tests
 - [ ] Redux **or** Recoil for state management
