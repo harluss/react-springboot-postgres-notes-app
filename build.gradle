@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+  id "com.github.node-gradle.node" version "3.0.1"
 }
 
 group = 'com.harluss'
@@ -18,14 +19,45 @@ repositories {
 	mavenCentral()
 }
 
+node {
+  version = '15.8.0'
+  download = true
+  // The directory where Node.js is unpacked (when download is true)
+  workDir = file("${project.projectDir}/.gradle/nodejs")
+  // The directory where yarn is installed (when a Yarn task is used)
+  yarnWorkDir = file("${project.projectDir}/.gradle/yarn")
+  // This is where the package.json file and node_modules directory are located
+  // By default it is at the root of the current project
+  nodeProjectDir = file("${project.projectDir}/src/client")
+}
+
+task cleanBuildFrontend(type: YarnTask, dependsOn: 'yarn') {
+  args = ['run', 'clean-build']
+}
+
+task copyFrontEndResources(type: Copy, dependsOn: 'cleanBuildFrontend') {
+  from "$project.projectDir/src/client/build/"
+  into "$project.buildDir/resources/main/static"
+}
+
+task testFrontend(type: YarnTask, dependsOn: assemble) {
+  environment = ['CI': 'true']
+  args = ['run', 'test']
+}
+
+processResources.dependsOn(copyFrontEndResources)
+check.dependsOn(testFrontend)
+test.dependsOn(testFrontend)
+
 dependencies {
+  def lombokVersion = '1.18.20'
   def mapstructVersion = '1.4.2.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+	compileOnly "org.projectlombok:lombok:$lombokVersion"
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
   implementation "org.mapstruct:mapstruct:$mapstructVersion"
   annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"

@@ -22,10 +22,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test-ci": "CI=true react-scripts test",
+    "clean": "rimraf build",
+    "clean-build": "rimraf build && react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx,json}' --fix",
-    "prettier:check": "prettier 'src/**/*.{js,ts,tsx,json}' --check",
-    "prettier:fix": "prettier 'src/**/*.{js,ts,tsx,json}' --write"
+    "prettier-check": "prettier 'src/**/*.{js,ts,tsx,json}' --check",
+    "prettier-fix": "prettier 'src/**/*.{js,ts,tsx,json}' --write"
   },
   "husky": {
     "hooks": {
