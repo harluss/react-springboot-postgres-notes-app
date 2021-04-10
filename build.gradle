@@ -37,10 +37,10 @@ task cleanBuildFrontend(type: YarnTask, dependsOn: 'yarn') {
 
 task copyFrontEndResources(type: Copy, dependsOn: 'cleanBuildFrontend') {
   from "$project.projectDir/src/client/build/"
-  into "$project.buildDir/resources/main/static"
+  into "$project.projectDir/src/main/resources/static"
 }
 
-task testFrontend(type: YarnTask, dependsOn: assemble) {
+task testFrontend(type: YarnTask) {
   environment = ['CI': 'true']
   args = ['run', 'test']
 }

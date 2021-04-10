@@ -25,7 +25,7 @@ const App = (): ReactElement => {
 
   return (
     <div>
-      <p>notes:</p>
+      <p>some notes:</p>
       {notes.map((note) => (
         <p key={note.id}>{note.title}</p>
       ))}
