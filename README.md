@@ -23,9 +23,11 @@ The main purpose of this project is learn and practice.
 - [ ] CRUD operations
 - [ ] Spring Security with JWT
 - [ ] Serve React project
+- [ ] Liquibase migrations
+- [ ] AOP logging (maybe)
 - [ ] ...
 
-##### Frontend
+#### Frontend
 - [ ] React project with TypeScript
 - [ ] Material UI
 - [ ] Unit tests
