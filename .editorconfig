@@ -1,11 +1,13 @@
 root = true
 
 [*]
-ij_continuation_indent_size = 4
 indent_size = 2
 tab_width = 2
 trim_trailing_whitespace = true
 end_of_line = lf
 insert_final_newline = true
+
+[*.java]
+ij_continuation_indent_size = 4
 ij_java_blank_lines_after_class_header = 1
 ij_java_blank_lines_around_field = 1

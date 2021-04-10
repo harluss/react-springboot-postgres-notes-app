@@ -1,21 +1,36 @@
-import React from 'react';
-import './App.css';
+import React, { ReactElement, useEffect, useState } from 'react';
+import axios from 'axios';
 
-function App() {
-  const something = '';
+interface Note {
+  id: number;
+  title: string;
+  details: string;
+}
+
+const App = (): ReactElement => {
+  const [notes, setNotes] = useState<Array<Note>>([]);
+
+  const fetchNotes = async () => {
+    try {
+      const { data } = await axios.get('/api/v1/notes');
+      setNotes(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
+    <div>
+      <p>notes:</p>
+      {notes.map((note) => (
+        <p key={note.id}>{note.title}</p>
+      ))}
     </div>
   );
-}
+};
 
 export default App;
