@@ -12,7 +12,7 @@ const App = (): ReactElement => {
 
   const fetchNotes = async () => {
     try {
-      const { data } = await axios.get('/api/v1/notes');
+      const { data } = await axios.get('/api/notes');
       setNotes(data);
     } catch (error) {
       console.error(error);

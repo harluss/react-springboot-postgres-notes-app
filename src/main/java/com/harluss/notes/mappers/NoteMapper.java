@@ -7,7 +7,9 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface MapStructMapper {
+public interface NoteMapper {
 
-  List<NoteResponseDto> noteEntityListToResponseDtoList(List<NoteEntity> noteEntities);
+  NoteResponseDto entityToResponseDto(NoteEntity noteEntity);
+
+  List<NoteResponseDto> entityListToResponseDtoList(List<NoteEntity> noteEntities);
 }
