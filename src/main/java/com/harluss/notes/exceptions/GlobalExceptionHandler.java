@@ -13,6 +13,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Log4j2
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+  @ExceptionHandler(ItemNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseEntity<ErrorResponse> handleItemNotFoundException(ItemNotFoundException exception, WebRequest request) {
+    log.error("ITEM NOT FOUND: ", exception);
+
+    return buildErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<ErrorResponse> handleUncaughtException(Exception exception, WebRequest request) {

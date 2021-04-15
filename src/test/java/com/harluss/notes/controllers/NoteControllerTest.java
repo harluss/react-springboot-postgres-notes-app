@@ -31,7 +31,7 @@ class NoteControllerTest {
   @InjectMocks
   private NoteController noteController;
 
-  @DisplayName("should return notes with status 200")
+  @DisplayName("should return a list of notes")
   @Test
   void getNotes() {
     List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
@@ -45,5 +45,22 @@ class NoteControllerTest {
     assertThat(response.getBody())
         .hasSize(1)
         .hasAtLeastOneElementOfType(NoteResponseDto.class);
+  }
+
+  @DisplayName("should return a note with matching id")
+  @Test
+  void getNoteById() {
+    final Long id = 2L;
+    NoteEntity noteEntity = NoteEntity.builder().id(id).build();
+    NoteResponseDto noteDto = NoteResponseDto.builder().id(id).build();
+    when(mockNoteService.getNoteById(id)).thenReturn(noteEntity);
+    when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteDto);
+
+    ResponseEntity<NoteResponseDto> response = noteController.getNoteById(id);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody())
+        .hasFieldOrPropertyWithValue("id", id)
+        .isInstanceOf(NoteResponseDto.class);
   }
 }
