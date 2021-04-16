@@ -27,4 +27,19 @@ class GlobalExceptionHandlerTest {
       assertThat(errorResponse.getBody().getMessage()).isEqualTo("Unknown error occurred");
     }
   }
+
+  @DisplayName("should handle NotFound exception")
+  @Test
+  void handleNotFoundException() {
+    String errorMessage = "Item not found";
+    NotFoundException exception = new NotFoundException(errorMessage);
+
+    ResponseEntity<ErrorResponse> errorResponse = globalExceptionHandler.handleNotFoundException(exception, null);
+
+    assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    if (errorResponse.getBody() != null) {
+      assertThat(errorResponse.getBody().getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+      assertThat(errorResponse.getBody().getMessage()).isEqualTo(errorMessage);
+    }
+  }
 }

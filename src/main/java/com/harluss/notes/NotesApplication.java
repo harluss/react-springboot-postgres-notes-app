@@ -2,6 +2,8 @@ package com.harluss.notes;
 
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.repositories.NoteRepository;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 
+@OpenAPIDefinition(info = @Info(title = "Some Notes", description = "Some Notes API", version = "0.0.1"))
 @SpringBootApplication
 public class NotesApplication {
 

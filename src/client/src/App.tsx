@@ -12,7 +12,7 @@ const App = (): ReactElement => {
 
   const fetchNotes = async () => {
     try {
-      const { data } = await axios.get('/api/v1/notes');
+      const { data } = await axios.get('/api/notes');
       setNotes(data);
     } catch (error) {
       console.error(error);
@@ -25,7 +25,7 @@ const App = (): ReactElement => {
 
   return (
     <div>
-      <p>notes:</p>
+      <p>some notes:</p>
       {notes.map((note) => (
         <p key={note.id}>{note.title}</p>
       ))}

@@ -1,32 +1,84 @@
 package com.harluss.notes.controllers;
 
+import com.harluss.notes.dtos.NoteCreateRequestDto;
 import com.harluss.notes.dtos.NoteResponseDto;
-import com.harluss.notes.mappers.MapStructMapper;
+import com.harluss.notes.dtos.NoteUpdateRequestDto;
+import com.harluss.notes.entities.NoteEntity;
+import com.harluss.notes.mappers.NoteMapper;
 import com.harluss.notes.services.NoteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+@Tag(name = "Notes", description = "Note related endpoints")
 @RestController
-@RequestMapping("${spring.data.rest.base-path}/notes")
+@RequestMapping("/api/notes")
 public class NoteController {
 
   private final NoteService noteService;
-  private final MapStructMapper mapper;
+  private final NoteMapper mapper;
 
-  public NoteController(final NoteService noteService, final MapStructMapper mapStructMapper) {
+  public NoteController(final NoteService noteService, final NoteMapper noteMapper) {
     this.noteService = noteService;
-    this.mapper = mapStructMapper;
+    this.mapper = noteMapper;
   }
 
+  @Operation(summary = "Get all notes")
+  @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NoteResponseDto.class))))
   @GetMapping
   public ResponseEntity<List<NoteResponseDto>> getNotes() {
+    List<NoteResponseDto> noteResponses = mapper.entityListToResponseDtoList(noteService.getAll());
 
-    return ResponseEntity.ok(
-        mapper.noteEntityListToResponseDtoList(noteService.getNotes())
-    );
+    return ResponseEntity.status(HttpStatus.OK).body(noteResponses);
+  }
+
+  @Operation(summary = "Get note with given Id")
+  @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoteResponseDto.class)) })
+  @GetMapping(value = "/{id}")
+  public ResponseEntity<NoteResponseDto> getNoteById(@PathVariable long id) {
+    NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.getById(id));
+
+    return ResponseEntity.status(HttpStatus.OK).body(noteResponse);
+  }
+
+  @Operation(summary = "Save new note")
+  @ApiResponse(responseCode = "201", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoteResponseDto.class)) })
+  @PostMapping
+  public ResponseEntity<NoteResponseDto> saveNote(@Valid @RequestBody NoteCreateRequestDto noteRequest) {
+    NoteEntity noteEntity = mapper.createRequestDtoToEntity(noteRequest);
+    NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.save(noteEntity));
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(noteResponse);
+  }
+
+  @Operation(summary = "Update note with given Id")
+  @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoteResponseDto.class)) })
+  @PutMapping(value = "/{id}")
+  public ResponseEntity<NoteResponseDto> updateNote(
+      @Valid @RequestBody NoteUpdateRequestDto noteRequest,
+      @NotBlank @PathVariable long id
+  ) {
+    NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.update(noteRequest, id));
+
+    return ResponseEntity.status(HttpStatus.OK).body(noteResponse);
+  }
+
+  @Operation(summary = "Delete note with given Id")
+  @ApiResponse(responseCode = "204")
+  @DeleteMapping(value = "/{id}")
+  public ResponseEntity<Void> deleteNote(@NotBlank @PathVariable long id) {
+    noteService.delete(id);
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

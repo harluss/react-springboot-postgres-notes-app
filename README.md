@@ -4,7 +4,7 @@
 
 This a React/SpringBoot/Postgres app.
 
-The main purpose of this project is learn and practice.
+The main purpose of this project is to learn and practice.
 
 ### Features (in no particular order)
 
@@ -20,11 +20,12 @@ The main purpose of this project is learn and practice.
 - [x] CI workflow (test and build)
 - [ ] JIB for containerization
 - [ ] CD workflow (deployment to Docker Hub, AWS **and/or** Heroku)
-- [ ] CRUD operations
+- [x] CRUD operations
 - [ ] Spring Security with JWT
 - [x] Serve React project
 - [ ] Liquibase migrations
 - [ ] AOP logging (maybe)
+- [x] Data validation
 - [ ] ...
 
 #### Frontend
@@ -38,17 +39,25 @@ The main purpose of this project is learn and practice.
 - [ ] ...
 
 #### Docs
-- [ ] Swagger for backend
+- [x] Swagger for backend
 - [ ] StoryBook for frontend (maybe)
 - [ ] ERD (updated as the project evolves)
 - [ ] UI prototype (updated as the project evolves)
 
 ### Setup
-Setup git-hooks:
-```
-./gradlew build
-```
 Spin Postgres container up:
 ```
 docker compose up
+```
+Bundle frontend and backend together - first time the build is run will set pre-push git hook:
+```
+./gradlew clean build
+```
+Access frontend at:
+```
+localhost:8080
+```
+Access Swagger UI at:
+```
+localhost:8080/swagger-ui.html
 ```
