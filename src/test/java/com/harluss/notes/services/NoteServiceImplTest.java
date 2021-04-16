@@ -57,7 +57,7 @@ class NoteServiceImplTest {
     assertThat(notes).isEmpty();
   }
 
-  @DisplayName("should return a note with matching id")
+  @DisplayName("should return a note with given id")
   @Test
   void getById() {
     final long id = 2L;
@@ -98,7 +98,7 @@ class NoteServiceImplTest {
     assertThat(savedNote).isEqualTo(savedNoteEntity);
   }
 
-  @DisplayName("should update and return an existing note")
+  @DisplayName("should update and return an existing note with given id")
   @Test
   void update() {
     final long id = 2L;
@@ -125,6 +125,34 @@ class NoteServiceImplTest {
     when(mockNoteRepository.findById(id)).thenThrow(exception);
 
     Throwable throwable = catchThrowable(() -> noteService.update(any(), id));
+
+    assertThat(throwable)
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage(errorMessage);
+  }
+
+  @DisplayName("should delete a note with given id")
+  @Test
+  void delete() {
+    final long id = 2L;
+    NoteEntity noteEntity = NoteEntity.builder().id(id).build();
+    when(mockNoteRepository.findById(id)).thenReturn(Optional.ofNullable(noteEntity));
+
+    noteService.delete(id);
+
+    verify(mockNoteRepository, times(1)).findById(id);
+    verify(mockNoteRepository, times(1)).deleteById(id);
+  }
+
+  @DisplayName("should throw NotFound exception when no note with given id found")
+  @Test
+  void delete_throwsNotFoundException() {
+    final long id = 2L;
+    final String errorMessage = String.format("Note with Id %d not found", id);
+    NotFoundException exception = new NotFoundException(errorMessage);
+    when(mockNoteRepository.findById(id)).thenThrow(exception);
+
+    Throwable throwable = catchThrowable(() -> noteService.delete(id));
 
     assertThat(throwable)
         .isInstanceOf(NotFoundException.class)

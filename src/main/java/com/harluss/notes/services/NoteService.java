@@ -11,4 +11,5 @@ public interface NoteService {
   NoteEntity getById(long id);
   NoteEntity save(NoteEntity noteEntity);
   NoteEntity update(NoteUpdateRequestDto noteUpdateRequestDto, long id);
+  void delete(long id);
 }

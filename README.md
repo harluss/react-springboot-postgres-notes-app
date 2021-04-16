@@ -20,7 +20,7 @@ The main purpose of this project is to learn and practice.
 - [x] CI workflow (test and build)
 - [ ] JIB for containerization
 - [ ] CD workflow (deployment to Docker Hub, AWS **and/or** Heroku)
-- [ ] CRUD operations
+- [x] CRUD operations
 - [ ] Spring Security with JWT
 - [x] Serve React project
 - [ ] Liquibase migrations
