@@ -28,13 +28,13 @@ class GlobalExceptionHandlerTest {
     }
   }
 
-  @DisplayName("should handle itemNotFound exception")
+  @DisplayName("should handle NotFound exception")
   @Test
-  void handleItemNotFoundException() {
+  void handleNotFoundException() {
     String errorMessage = "Item not found";
-    ItemNotFoundException exception = new ItemNotFoundException(errorMessage);
+    NotFoundException exception = new NotFoundException(errorMessage);
 
-    ResponseEntity<ErrorResponse> errorResponse = globalExceptionHandler.handleItemNotFoundException(exception, null);
+    ResponseEntity<ErrorResponse> errorResponse = globalExceptionHandler.handleNotFoundException(exception, null);
 
     assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     if (errorResponse.getBody() != null) {

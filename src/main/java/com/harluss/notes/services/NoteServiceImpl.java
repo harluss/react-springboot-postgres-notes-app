@@ -1,7 +1,7 @@
 package com.harluss.notes.services;
 
 import com.harluss.notes.entities.NoteEntity;
-import com.harluss.notes.exceptions.ItemNotFoundException;
+import com.harluss.notes.exceptions.NotFoundException;
 import com.harluss.notes.repositories.NoteRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +17,19 @@ public class NoteServiceImpl implements NoteService {
   }
 
   @Override
-  public List<NoteEntity> getNotes() {
+  public List<NoteEntity> getAll() {
     return noteRepository.findAll();
   }
 
   @Override
-  public NoteEntity getNoteById(Long id) {
+  public NoteEntity getById(Long id) {
     return noteRepository
         .findById(id)
-        .orElseThrow(() -> new ItemNotFoundException(String.format("Note with Id %d not found", id)));
+        .orElseThrow(() -> new NotFoundException(String.format("Note with Id %d not found", id)));
+  }
+
+  @Override
+  public NoteEntity save(NoteEntity noteEntity) {
+    return noteRepository.save(noteEntity);
   }
 }

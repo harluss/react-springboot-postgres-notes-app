@@ -1,5 +1,6 @@
 package com.harluss.notes.mappers;
 
+import com.harluss.notes.dtos.NoteRequestDto;
 import com.harluss.notes.dtos.NoteResponseDto;
 import com.harluss.notes.entities.NoteEntity;
 import org.mapstruct.Mapper;
@@ -12,4 +13,6 @@ public interface NoteMapper {
   NoteResponseDto entityToResponseDto(NoteEntity noteEntity);
 
   List<NoteResponseDto> entityListToResponseDtoList(List<NoteEntity> noteEntities);
+
+  NoteEntity requestDtoToEntity(NoteRequestDto noteRequest);
 }

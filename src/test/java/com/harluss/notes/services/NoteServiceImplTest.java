@@ -1,7 +1,7 @@
 package com.harluss.notes.services;
 
 import com.harluss.notes.entities.NoteEntity;
-import com.harluss.notes.exceptions.ItemNotFoundException;
+import com.harluss.notes.exceptions.NotFoundException;
 import com.harluss.notes.repositories.NoteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class NoteServiceImplTest {
     List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
     when(mockNoteRepository.findAll()).thenReturn(noteEntities);
 
-    List<NoteEntity> notes = noteService.getNotes();
+    List<NoteEntity> notes = noteService.getAll();
 
     verify(mockNoteRepository, times(1)).findAll();
     assertThat(notes)
@@ -47,7 +47,7 @@ class NoteServiceImplTest {
   void getNotesEmpty() {
     when(mockNoteRepository.findAll()).thenReturn(Collections.emptyList());
 
-    List<NoteEntity> notes = noteService.getNotes();
+    List<NoteEntity> notes = noteService.getAll();
 
     verify(mockNoteRepository, times(1)).findAll();
     assertThat(notes).isEmpty();
@@ -60,7 +60,7 @@ class NoteServiceImplTest {
     NoteEntity noteEntity = NoteEntity.builder().id(id).build();
     when(mockNoteRepository.findById(id)).thenReturn(Optional.of(noteEntity));
 
-    NoteEntity note = noteService.getNoteById(id);
+    NoteEntity note = noteService.getById(id);
 
     verify(mockNoteRepository, times(1)).findById(id);
     assertThat(note.getId()).isEqualTo(id);
@@ -71,13 +71,25 @@ class NoteServiceImplTest {
   void getNoteById_throwsNotFoundException() {
     final Long id = 99L;
     final String errorMessage = String.format("Note with Id %d not found", id);
-    ItemNotFoundException exception = new ItemNotFoundException(errorMessage);
+    NotFoundException exception = new NotFoundException(errorMessage);
     when(mockNoteRepository.findById(id)).thenThrow(exception);
 
-    Throwable throwable = catchThrowable(() -> noteService.getNoteById(id));
+    Throwable throwable = catchThrowable(() -> noteService.getById(id));
 
     assertThat(throwable)
-        .isInstanceOf(ItemNotFoundException.class)
+        .isInstanceOf(NotFoundException.class)
         .hasMessage(errorMessage);
+  }
+
+  @DisplayName("should save and return new note")
+  @Test
+  void saveNote() {
+    NoteEntity noteEntity = NoteEntity.builder().build();
+    NoteEntity savedNoteEntity = NoteEntity.builder().id(2L).build();
+    when(mockNoteRepository.save(noteEntity)).thenReturn(savedNoteEntity);
+
+    NoteEntity savedNote = noteService.save(noteEntity);
+
+    assertThat(savedNote).isEqualTo(savedNoteEntity);
   }
 }

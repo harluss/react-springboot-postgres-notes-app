@@ -1,5 +1,6 @@
 package com.harluss.notes.controllers;
 
+import com.harluss.notes.dtos.NoteRequestDto;
 import com.harluss.notes.dtos.NoteResponseDto;
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.mappers.NoteMapper;
@@ -36,7 +37,7 @@ class NoteControllerTest {
   void getNotes() {
     List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
     List<NoteResponseDto> noteDtos = Arrays.asList(NoteResponseDto.builder().build());
-    when(mockNoteService.getNotes()).thenReturn(noteEntities);
+    when(mockNoteService.getAll()).thenReturn(noteEntities);
     when(mockMapper.entityListToResponseDtoList(noteEntities)).thenReturn(noteDtos);
 
     ResponseEntity<List<NoteResponseDto>> response = noteController.getNotes();
@@ -53,7 +54,7 @@ class NoteControllerTest {
     final Long id = 2L;
     NoteEntity noteEntity = NoteEntity.builder().id(id).build();
     NoteResponseDto noteDto = NoteResponseDto.builder().id(id).build();
-    when(mockNoteService.getNoteById(id)).thenReturn(noteEntity);
+    when(mockNoteService.getById(id)).thenReturn(noteEntity);
     when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteDto);
 
     ResponseEntity<NoteResponseDto> response = noteController.getNoteById(id);
@@ -62,5 +63,21 @@ class NoteControllerTest {
     assertThat(response.getBody())
         .hasFieldOrPropertyWithValue("id", id)
         .isInstanceOf(NoteResponseDto.class);
+  }
+
+  @DisplayName("should return saved note")
+  @Test
+  void saveNote() {
+    NoteRequestDto noteRequest = NoteRequestDto.builder().build();
+    NoteEntity noteEntity = NoteEntity.builder().build();
+    NoteResponseDto noteResponse = NoteResponseDto.builder().build();
+    when(mockMapper.requestDtoToEntity(noteRequest)).thenReturn(noteEntity);
+    when(mockNoteService.save(noteEntity)).thenReturn(noteEntity);
+    when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteResponse);
+
+    ResponseEntity<NoteResponseDto> response = noteController.saveNote(noteRequest);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(response.getBody()).isInstanceOf(NoteResponseDto.class);
   }
 }
