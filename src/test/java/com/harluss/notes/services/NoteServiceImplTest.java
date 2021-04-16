@@ -2,6 +2,7 @@ package com.harluss.notes.services;
 
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.exceptions.NotFoundException;
+import com.harluss.notes.mappers.NoteMapper;
 import com.harluss.notes.repositories.NoteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,15 @@ class NoteServiceImplTest {
   @Mock
   private NoteRepository mockNoteRepository;
 
+  @Mock
+  private NoteMapper mockMapper;
+
   @InjectMocks
   private NoteServiceImpl noteService;
 
   @DisplayName("should return list of notes")
   @Test
-  void getNotes() {
+  void getAll() {
     List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
     when(mockNoteRepository.findAll()).thenReturn(noteEntities);
 
@@ -44,7 +48,7 @@ class NoteServiceImplTest {
 
   @DisplayName("should return empty list when no notes found")
   @Test
-  void getNotesEmpty() {
+  void getAll_empty() {
     when(mockNoteRepository.findAll()).thenReturn(Collections.emptyList());
 
     List<NoteEntity> notes = noteService.getAll();
@@ -55,8 +59,8 @@ class NoteServiceImplTest {
 
   @DisplayName("should return a note with matching id")
   @Test
-  void getNoteById() {
-    final Long id = 2L;
+  void getById() {
+    final long id = 2L;
     NoteEntity noteEntity = NoteEntity.builder().id(id).build();
     when(mockNoteRepository.findById(id)).thenReturn(Optional.of(noteEntity));
 
@@ -66,10 +70,10 @@ class NoteServiceImplTest {
     assertThat(note.getId()).isEqualTo(id);
   }
 
-  @DisplayName("should throw itemNotFound exception when no note with matching id found")
+  @DisplayName("should throw NotFound exception when no note with given id found")
   @Test
-  void getNoteById_throwsNotFoundException() {
-    final Long id = 99L;
+  void getById_throwsNotFoundException() {
+    final long id = 99L;
     final String errorMessage = String.format("Note with Id %d not found", id);
     NotFoundException exception = new NotFoundException(errorMessage);
     when(mockNoteRepository.findById(id)).thenThrow(exception);
@@ -83,13 +87,47 @@ class NoteServiceImplTest {
 
   @DisplayName("should save and return new note")
   @Test
-  void saveNote() {
+  void save() {
     NoteEntity noteEntity = NoteEntity.builder().build();
     NoteEntity savedNoteEntity = NoteEntity.builder().id(2L).build();
     when(mockNoteRepository.save(noteEntity)).thenReturn(savedNoteEntity);
 
     NoteEntity savedNote = noteService.save(noteEntity);
 
+    verify(mockNoteRepository, times(1)).save(noteEntity);
     assertThat(savedNote).isEqualTo(savedNoteEntity);
+  }
+
+  @DisplayName("should update and return an existing note")
+  @Test
+  void update() {
+    final long id = 2L;
+    final String title = "some title";
+    NoteEntity noteEntity = NoteEntity.builder().id(id).build();
+    NoteEntity updatedNoteEntity = NoteEntity.builder().title(title).build();
+    when(mockNoteRepository.findById(id)).thenReturn(Optional.of(noteEntity));
+    doNothing().when(mockMapper).entityUpdate(any(),any());
+    when(mockNoteRepository.save(noteEntity)).thenReturn(updatedNoteEntity);
+
+    NoteEntity updatedNote = noteService.update(any(), id);
+
+    verify(mockNoteRepository, times(1)).findById(id);
+    verify(mockNoteRepository, times(1)).save(noteEntity);
+    assertThat(updatedNote.getTitle()).isEqualTo(title);
+  }
+
+  @DisplayName("should thrown NotFound exception when no note with given id found")
+  @Test
+  void update_throwsNotFoundException() {
+    final long id = 99L;
+    final String errorMessage = String.format("Note with Id %d not found", id);
+    NotFoundException exception = new NotFoundException(errorMessage);
+    when(mockNoteRepository.findById(id)).thenThrow(exception);
+
+    Throwable throwable = catchThrowable(() -> noteService.update(any(), id));
+
+    assertThat(throwable)
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage(errorMessage);
   }
 }

@@ -1,6 +1,6 @@
 package com.harluss.notes.controllers;
 
-import com.harluss.notes.dtos.NoteRequestDto;
+import com.harluss.notes.dtos.NoteCreateRequestDto;
 import com.harluss.notes.dtos.NoteResponseDto;
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.mappers.NoteMapper;
@@ -68,10 +68,10 @@ class NoteControllerTest {
   @DisplayName("should return saved note")
   @Test
   void saveNote() {
-    NoteRequestDto noteRequest = NoteRequestDto.builder().build();
+    NoteCreateRequestDto noteRequest = NoteCreateRequestDto.builder().build();
     NoteEntity noteEntity = NoteEntity.builder().build();
     NoteResponseDto noteResponse = NoteResponseDto.builder().build();
-    when(mockMapper.requestDtoToEntity(noteRequest)).thenReturn(noteEntity);
+    when(mockMapper.createRequestDtoToEntity(noteRequest)).thenReturn(noteEntity);
     when(mockNoteService.save(noteEntity)).thenReturn(noteEntity);
     when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteResponse);
 

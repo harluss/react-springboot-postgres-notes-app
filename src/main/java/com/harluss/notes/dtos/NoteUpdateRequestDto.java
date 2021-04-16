@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoteRequestDto {
+public class NoteUpdateRequestDto {
 
   @NotBlank
   private String title;
