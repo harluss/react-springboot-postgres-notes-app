@@ -1,6 +1,7 @@
 package com.harluss.notes.exceptions;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException exception, WebRequest request) {
 
     return buildErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+  }
+
+  @ExceptionHandler(EmptyResultDataAccessException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseEntity<ErrorResponse> handleEmptyResultDataAccessException(EmptyResultDataAccessException exception, WebRequest request) {
+
+    return  buildErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 
   @ExceptionHandler(Exception.class)

@@ -24,7 +24,7 @@ node {
   download = true
   workDir = file("${projectDir}/.gradle/nodejs")
   yarnWorkDir = file("${projectDir}/.gradle/yarn")
-  // This is where the package.json file and node_modules directory are located
+  // Location of package.json file and node_modules directory
   nodeProjectDir = file("${projectDir}/src/client")
 }
 
@@ -53,6 +53,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
+  implementation("org.liquibase:liquibase-core")
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'org.postgresql:postgresql'
@@ -61,7 +63,6 @@ dependencies {
   implementation "org.mapstruct:mapstruct:$mapstructVersion"
   annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
   testAnnotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
-  implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
 }
 
 test {

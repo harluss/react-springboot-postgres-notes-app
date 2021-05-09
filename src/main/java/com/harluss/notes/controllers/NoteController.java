@@ -54,8 +54,8 @@ public class NoteController {
   @Operation(summary = "Save new note")
   @ApiResponse(responseCode = "201", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoteResponseDto.class)) })
   @PostMapping
-  public ResponseEntity<NoteResponseDto> saveNote(@Valid @RequestBody NoteCreateRequestDto noteRequest) {
-    NoteEntity noteEntity = mapper.createRequestDtoToEntity(noteRequest);
+  public ResponseEntity<NoteResponseDto> saveNote(@Valid @RequestBody NoteCreateRequestDto noteCreateRequest) {
+    NoteEntity noteEntity = mapper.createRequestDtoToEntity(noteCreateRequest);
     NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.save(noteEntity));
 
     return ResponseEntity.status(HttpStatus.CREATED).body(noteResponse);
@@ -65,10 +65,10 @@ public class NoteController {
   @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoteResponseDto.class)) })
   @PutMapping(value = "/{id}")
   public ResponseEntity<NoteResponseDto> updateNote(
-      @Valid @RequestBody NoteUpdateRequestDto noteRequest,
+      @Valid @RequestBody NoteUpdateRequestDto noteUpdateRequest,
       @NotBlank @PathVariable long id
   ) {
-    NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.update(noteRequest, id));
+    NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.update(noteUpdateRequest, id));
 
     return ResponseEntity.status(HttpStatus.OK).body(noteResponse);
   }
