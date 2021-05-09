@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,4 +16,7 @@ public class NoteResponseDto {
   private Long id;
   private String title;
   private String details;
+  private Boolean isPinned;
+  private Date createdAt;
+  private Date updatedAt;
 }

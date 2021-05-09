@@ -1,19 +1,17 @@
 package com.harluss.notes.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "notes")
-public class NoteEntity {
+public class NoteEntity extends DateAuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +22,7 @@ public class NoteEntity {
 
   @Column(name = "details", nullable = false)
   private String details;
+
+  @Column(name = "is_pinned", nullable = false)
+  private Boolean isPinned;
 }
