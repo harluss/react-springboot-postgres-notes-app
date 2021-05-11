@@ -15,3 +15,20 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yml
+
+---
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: false
+
+  liquibase:
+    contexts: test
+    drop-first: true

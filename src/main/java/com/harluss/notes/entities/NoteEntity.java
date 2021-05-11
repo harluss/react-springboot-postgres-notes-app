@@ -3,6 +3,7 @@ package com.harluss.notes.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,10 +18,11 @@ public class NoteEntity extends DateAuditEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "title", nullable = false)
+  @Column(name = "title", nullable = false, length = 100)
+  @Size(min = 1, max = 100)
   private String title;
 
-  @Column(name = "details", nullable = false)
+  @Column(name = "details", nullable = false, columnDefinition = "text")
   private String details;
 
   @Column(name = "is_pinned", nullable = false)
