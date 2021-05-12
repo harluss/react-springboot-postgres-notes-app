@@ -1,9 +1,11 @@
 package com.harluss.notes.utilities;
 
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+@ActiveProfiles("test")
 public class PostgresTestContainer {
   private static final String IMAGE_VERSION = "postgres:13-alpine";
   private static final String DB_NAME = "notes_test_db";

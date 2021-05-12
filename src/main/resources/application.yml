@@ -18,8 +18,9 @@ spring:
 
 ---
 spring:
-  profiles:
-    active: test
+  config:
+    activate:
+      on-profile: test
 
   datasource:
     url: ${DB_URL}
