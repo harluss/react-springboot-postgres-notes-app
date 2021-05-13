@@ -6,6 +6,7 @@ import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.exceptions.NotFoundException;
 import com.harluss.notes.mappers.NoteMapper;
 import com.harluss.notes.repositories.NoteRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,10 @@ public class NoteServiceImpl implements NoteService {
   @Override
   @Transactional
   public void delete(long id) {
+    try {
       noteRepository.deleteById(id);
+    } catch (EmptyResultDataAccessException exception) {
+      throw new NotFoundException(String.format(NoteApiConstants.NOTE_NOT_FOUND, id));
+    }
   }
 }

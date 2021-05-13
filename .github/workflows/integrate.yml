@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
 
 env:
-  POSTGRESQL_VERSION: 13.1
-  POSTGRESQL_DB: notes_db
-  POSTGRESQL_USER: postgres
-  POSTGRESQL_PASSWORD: password
+#  POSTGRESQL_VERSION: 13.1
+#  POSTGRESQL_DB: notes_db
+#  POSTGRESQL_USER: postgres
+#  POSTGRESQL_PASSWORD: password
   JAVA_VERSION: 15
   JAVA_DISTRIBUTION: 'adopt'
 
@@ -19,16 +19,16 @@ jobs:
     name: Test and Build
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:13-alpine
-        env:
-          POSTGRES_DB: ${{ env.POSTGRESQL_DB }}
-          POSTGRES_USER: ${{ env.POSTGRESQL_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+#    services:
+#      postgres:
+#        image: postgres:13-alpine
+#        env:
+#          POSTGRES_DB: ${{ env.POSTGRESQL_DB }}
+#          POSTGRES_USER: ${{ env.POSTGRESQL_USER }}
+#          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+#        ports:
+#          - 5432:5432
+#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - uses: actions/checkout@v2

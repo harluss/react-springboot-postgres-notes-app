@@ -32,7 +32,7 @@ task cleanBuildFrontend(type: YarnTask, dependsOn: 'yarn') {
   args = ['run', 'clean-build']
 }
 
-task copyFrontEndResources(type: Copy, dependsOn: 'cleanBuildFrontend') {
+task copyFrontendResources(type: Copy, dependsOn: 'cleanBuildFrontend') {
   from "$projectDir/src/client/build/"
   into "$projectDir/src/main/resources/static"
 }
@@ -42,7 +42,7 @@ task testFrontend(type: YarnTask) {
   args = ['run', 'test']
 }
 
-processResources.dependsOn(copyFrontEndResources)
+processResources.dependsOn(copyFrontendResources)
 check.dependsOn(testFrontend)
 test.dependsOn(testFrontend)
 
@@ -50,6 +50,7 @@ dependencies {
   def lombokVersion = '1.18.20'
   def mapstructVersion = '1.4.2.Final'
   def springdocVersion = '1.5.2'
+  def testContainerVersion = '1.15.3'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -57,6 +58,8 @@ dependencies {
   implementation("org.liquibase:liquibase-core")
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation "org.testcontainers:postgresql:$testContainerVersion"
+  testImplementation "org.testcontainers:junit-jupiter:$testContainerVersion"
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
 	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
