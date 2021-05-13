@@ -1,7 +1,7 @@
 package com.harluss.notes.exceptions;
 
+import com.harluss.notes.constants.NoteApiConstants;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +40,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @Override
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-    final String errorMessage = "Validation error, check 'errors' field for details";
 
-    return buildErrorResponse(HttpStatus.BAD_REQUEST, errorMessage, exception.getBindingResult());
+    return buildErrorResponse(HttpStatus.BAD_REQUEST, NoteApiConstants.VALIDATION_MESSAGE, exception.getBindingResult());
   }
 
   @Override

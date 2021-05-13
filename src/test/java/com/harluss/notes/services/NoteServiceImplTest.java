@@ -37,7 +37,7 @@ class NoteServiceImplTest {
   @DisplayName("should return list of notes")
   @Test
   void getAll() {
-    List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
+    final List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
     when(mockNoteRepository.findAll()).thenReturn(noteEntities);
 
     List<NoteEntity> notes = noteService.getAll();
@@ -61,12 +61,12 @@ class NoteServiceImplTest {
   @Test
   void getById() {
     final long id = 2;
-    NoteEntity noteEntity = NoteEntity.builder().id(id).build();
+    final NoteEntity noteEntity = NoteEntity.builder().build();
     when(mockNoteRepository.findById(id)).thenReturn(Optional.of(noteEntity));
 
     NoteEntity note = noteService.getById(id);
 
-    assertThat(note.getId()).isEqualTo(id);
+    assertThat(note).isNotNull();
   }
 
   @DisplayName("should throw NotFound exception when note not found")
@@ -85,8 +85,8 @@ class NoteServiceImplTest {
   @DisplayName("should save and return new note")
   @Test
   void save() {
-    NoteEntity noteEntity = NoteEntity.builder().build();
-    NoteEntity savedNoteEntity = NoteEntity.builder().id(2L).build();
+    final NoteEntity noteEntity = NoteEntity.builder().build();
+    final NoteEntity savedNoteEntity = NoteEntity.builder().id(2L).build();
     when(mockNoteRepository.save(noteEntity)).thenReturn(savedNoteEntity);
 
     NoteEntity savedNote = noteService.save(noteEntity);
@@ -99,8 +99,8 @@ class NoteServiceImplTest {
   void update() {
     final long id = 2;
     final String title = "some title";
-    NoteEntity noteEntity = NoteEntity.builder().id(id).build();
-    NoteEntity updatedNoteEntity = NoteEntity.builder().title(title).build();
+    final NoteEntity noteEntity = NoteEntity.builder().id(id).build();
+    final NoteEntity updatedNoteEntity = NoteEntity.builder().title(title).build();
     when(mockNoteRepository.findById(id)).thenReturn(Optional.of(noteEntity));
     doNothing().when(mockMapper).entityUpdate(any(),any());
     when(mockNoteRepository.save(noteEntity)).thenReturn(updatedNoteEntity);

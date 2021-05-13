@@ -47,8 +47,8 @@ class NoteControllerTest {
   @DisplayName("should return a list of notes")
   @Test
   void getNotes() throws Exception {
-    List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
-    List<NoteResponseDto> noteDtos = Arrays.asList(NoteResponseDto.builder().build());
+    final List<NoteEntity> noteEntities = Arrays.asList(NoteEntity.builder().build());
+    final List<NoteResponseDto> noteDtos = Arrays.asList(NoteResponseDto.builder().build());
     when(mockNoteService.getAll()).thenReturn(noteEntities);
     when(mockMapper.entityListToResponseDtoList(noteEntities)).thenReturn(noteDtos);
 
@@ -78,8 +78,8 @@ class NoteControllerTest {
   @Test
   void getNoteById() throws Exception {
     final long noteId = 2;
-    NoteEntity noteEntity = NoteEntity.builder().build();
-    NoteResponseDto noteDto = NoteResponseDto.builder().build();
+    final NoteEntity noteEntity = NoteEntity.builder().build();
+    final NoteResponseDto noteDto = NoteResponseDto.builder().build();
     when(mockNoteService.getById(noteId)).thenReturn(noteEntity);
     when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteDto);
 
@@ -107,9 +107,9 @@ class NoteControllerTest {
   @DisplayName("should saved and return new note")
   @Test
   void saveNote() throws Exception {
-    NoteCreateRequestDto noteRequest = NoteCreateRequestDto.builder().title("title").details("details").isPinned(false).build();
-    NoteEntity noteEntity = NoteEntity.builder().build();
-    NoteResponseDto noteResponse = NoteResponseDto.builder().build();
+    final NoteCreateRequestDto noteRequest = NoteCreateRequestDto.builder().title("title").details("details").isPinned(false).build();
+    final NoteEntity noteEntity = NoteEntity.builder().build();
+    final NoteResponseDto noteResponse = NoteResponseDto.builder().build();
     when(mockMapper.createRequestDtoToEntity(noteRequest)).thenReturn(noteEntity);
     when(mockNoteService.save(noteEntity)).thenReturn(noteEntity);
     when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteResponse);
@@ -123,13 +123,29 @@ class NoteControllerTest {
         .andExpect(jsonPath("$").isNotEmpty());
   }
 
-  @DisplayName("should update and return an existing note with given id")
+  @DisplayName("should return 400 Bad Request with validation message containing missing save request body properties")
   @Test
-  void update() throws Exception {
+  void saveNote_validation() throws Exception {
+    final NoteCreateRequestDto noteRequest = NoteCreateRequestDto.builder().title("title").build();
+
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/notes")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(noteRequest)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(containsStringIgnoringCase(NoteApiConstants.VALIDATION_MESSAGE)))
+        .andExpect(jsonPath("$.validationErrors.isPinned").value("must not be null"))
+        .andExpect(jsonPath("$.validationErrors.details").value("must not be blank"))
+        .andExpect(jsonPath("$.validationErrors.title").doesNotHaveJsonPath());
+  }
+
+  @DisplayName("should update and return updated note with given id")
+  @Test
+  void updateNote() throws Exception {
     final long noteId = 2;
-    NoteUpdateRequestDto noteRequest = NoteUpdateRequestDto.builder().title("title").details("details").isPinned(false).build();
-    NoteEntity noteEntity = NoteEntity.builder().build();
-    NoteResponseDto noteResponse = NoteResponseDto.builder().build();
+    final NoteUpdateRequestDto noteRequest = NoteUpdateRequestDto.builder().title("title").details("details").isPinned(false).build();
+    final NoteEntity noteEntity = NoteEntity.builder().build();
+    final NoteResponseDto noteResponse = NoteResponseDto.builder().build();
     when(mockNoteService.update(noteRequest, noteId)).thenReturn(noteEntity);
     when(mockMapper.entityToResponseDto(noteEntity)).thenReturn(noteResponse);
 
@@ -144,10 +160,10 @@ class NoteControllerTest {
 
   @DisplayName("should return 404 Not Found when note to be updated not found")
   @Test
-  void update_NotFound() throws Exception {
+  void updateNote_NotFound() throws Exception {
     final long noteId = 99;
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, noteId);
-    NoteUpdateRequestDto noteRequest = NoteUpdateRequestDto.builder().title("title").details("details").isPinned(false).build();
+    final NoteUpdateRequestDto noteRequest = NoteUpdateRequestDto.builder().title("title").details("details").isPinned(false).build();
     when(mockNoteService.update(noteRequest, noteId)).thenThrow(new NotFoundException(errorMessage));
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/notes/{id}", noteId)
@@ -159,9 +175,25 @@ class NoteControllerTest {
         .andExpect(content().string(containsString(errorMessage)));
   }
 
-  @DisplayName("should delete a note with given id")
+  @DisplayName("should return 400 Bad Request with validation message containing missing update request body properties")
   @Test
-  void delete() throws Exception {
+  void updateNote_validation() throws Exception {
+    final NoteCreateRequestDto noteRequest = NoteCreateRequestDto.builder().details("some details").isPinned(true).build();
+
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/notes")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(noteRequest)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(containsStringIgnoringCase(NoteApiConstants.VALIDATION_MESSAGE)))
+        .andExpect(jsonPath("$.validationErrors.title").value("must not be blank"))
+        .andExpect(jsonPath("$.validationErrors.details").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.validationErrors.isPinned").doesNotHaveJsonPath());
+  }
+
+  @DisplayName("should delete note with given id")
+  @Test
+  void deleteNote() throws Exception {
     final long noteId = 2;
     doNothing().when(mockNoteService).delete(anyLong());
 
@@ -175,7 +207,7 @@ class NoteControllerTest {
 
   @DisplayName("should return 404 Not Found when note to be deleted not found")
   @Test
-  void delete_NotFound() throws Exception {
+  void deleteNote_NotFound() throws Exception {
     final long noteId = 99;
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, noteId);
     doThrow(new NotFoundException(errorMessage)).when(mockNoteService).delete(noteId);
