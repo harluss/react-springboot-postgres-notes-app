@@ -28,13 +28,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return buildErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 
-  @ExceptionHandler(EmptyResultDataAccessException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<ErrorResponse> handleEmptyResultDataAccessException(EmptyResultDataAccessException exception, WebRequest request) {
-
-    return  buildErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
-  }
-
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<ErrorResponse> handleUncaughtException(Exception exception, WebRequest request) {

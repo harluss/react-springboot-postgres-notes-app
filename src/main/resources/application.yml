@@ -23,13 +23,13 @@ spring:
       on-profile: test
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${TEST_CONTAINER_DB_URL}
+    username: ${TEST_CONTAINER_DB_USERNAME}
+    password: ${TEST_CONTAINER_DB_PASSWORD}
 
   jpa:
     show-sql: false
 
-  liquibase:
-    contexts: test
-    drop-first: true
+#  liquibase:
+#    contexts: test
+#    drop-first: true

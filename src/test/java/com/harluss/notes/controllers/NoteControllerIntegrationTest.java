@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,7 +26,7 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
   @Autowired
   private ObjectMapper objectMapper;
 
-  @DisplayName("GET NOTES should return list of notes")
+  @DisplayName("should return list of notes")
   @Test
   void getNotes() throws Exception {
 
@@ -37,10 +36,10 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
         .andExpect(status().isOk());
   }
 
-  @DisplayName("GET NOTE BY ID should return a note with given id")
+  @DisplayName("should return a note with given id")
   @Test
   void getNoteById() throws Exception {
-    Long noteId = 1L;
+    final long noteId = 1;
 
     MvcResult result = mockMvc
         .perform(MockMvcRequestBuilders.get("/api/notes/{id}", noteId))

@@ -19,8 +19,8 @@ public class PostgresTestContainer {
 
   @DynamicPropertySource
   static void setDatasourceProperties(DynamicPropertyRegistry propertyRegistry) {
-    propertyRegistry.add("DB_URL", TEST_CONTAINER::getJdbcUrl);
-    propertyRegistry.add("DB_USERNAME", TEST_CONTAINER::getUsername);
-    propertyRegistry.add("DB_PASSWORD", TEST_CONTAINER::getPassword);
+    propertyRegistry.add("TEST_CONTAINER_DB_URL", TEST_CONTAINER::getJdbcUrl);
+    propertyRegistry.add("TEST_CONTAINER_DB_USERNAME", TEST_CONTAINER::getUsername);
+    propertyRegistry.add("TEST_CONTAINER_DB_PASSWORD", TEST_CONTAINER::getPassword);
   }
 }
