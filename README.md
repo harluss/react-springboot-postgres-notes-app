@@ -15,7 +15,7 @@ The main purpose of this project is to learn and practice.
 - [x] Global exception handler
 - [x] MapStruct mapper
 - [x] Unit tests
-- [ ] Integration tests **or** Contract tests
+- [x] Integration tests with Testcontainers
 - [x] Pre-push hook (test and build locally)
 - [x] CI workflow (test and build)
 - [ ] JIB for containerization
@@ -24,7 +24,7 @@ The main purpose of this project is to learn and practice.
 - [ ] Spring Security with JWT
 - [x] Serve React project
 - [x] Liquibase migrations
-- [ ] AOP logging (maybe)
+- [x] AOP logging
 - [x] Data validation
 - [ ] Caching
 - [ ] ...
@@ -42,7 +42,7 @@ The main purpose of this project is to learn and practice.
 #### Docs
 - [x] Swagger for backend
 - [ ] StoryBook for frontend (maybe)
-- [ ] ERD (updated as the project evolves)
+- [x] ERD (updated as the project evolves)
 - [ ] UI prototype (updated as the project evolves)
 
 ### Setup
