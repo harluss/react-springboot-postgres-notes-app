@@ -15,7 +15,7 @@ The main purpose of this project is to learn and practice.
 - [x] Global exception handler
 - [x] MapStruct mapper
 - [x] Unit tests
-- [x] Integration tests with Testcontainers
+- [x] Integration tests with MockMvc and Testcontainers
 - [x] Pre-push hook (test and build locally)
 - [x] CI workflow (test and build)
 - [ ] JIB for containerization
@@ -26,7 +26,7 @@ The main purpose of this project is to learn and practice.
 - [x] Liquibase migrations
 - [x] AOP logging
 - [x] Data validation
-- [ ] Caching
+- [x] Caching with Caffeine
 - [ ] ...
 
 #### Frontend

@@ -6,6 +6,10 @@ import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.exceptions.NotFoundException;
 import com.harluss.notes.mappers.NoteMapper;
 import com.harluss.notes.repositories.NoteRepository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "notes")
 public class NoteServiceImpl implements NoteService {
 
   private final NoteRepository noteRepository;
@@ -24,12 +29,14 @@ public class NoteServiceImpl implements NoteService {
   }
 
   @Override
+  @Cacheable(key = "#root.methodName")
   @Transactional(readOnly = true)
   public List<NoteEntity> getAll() {
     return noteRepository.findAll();
   }
 
   @Override
+  @Cacheable(key = "#id")
   @Transactional(readOnly = true)
   public NoteEntity getById(long id) {
     return noteRepository
@@ -38,12 +45,16 @@ public class NoteServiceImpl implements NoteService {
   }
 
   @Override
+  @CacheEvict(key = "'getAll'")
+  @CachePut(key = "#result.id")
   @Transactional
   public NoteEntity save(NoteEntity noteEntity) {
     return noteRepository.save(noteEntity);
   }
 
   @Override
+  @CacheEvict(key = "'getAll'")
+  @CachePut(key = "#result.id")
   @Transactional
   public NoteEntity update(NoteUpdateRequestDto noteUpdateRequest, long id) {
     NoteEntity noteToBeUpdated = noteRepository
@@ -56,6 +67,7 @@ public class NoteServiceImpl implements NoteService {
   }
 
   @Override
+  @CacheEvict(allEntries = true)
   @Transactional
   public void delete(long id) {
     try {

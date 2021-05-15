@@ -16,6 +16,11 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yml
 
+  cache:
+    cache-names: notes
+    caffeine:
+      spec: maximumSize=100, expireAfterWrite=5m
+
 ---
 spring:
   config:
