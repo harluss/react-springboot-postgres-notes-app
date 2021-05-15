@@ -1,0 +1,31 @@
+user
+---
+id bigserial PK
+username text
+email text UNIQUE
+password text
+created_at timestamptz
+updated_at timestamptz
+is_enabled boolean
+
+note
+---
+id bigserial PK
+title text
+details text
+is_pinned boolean
+created_at timestamptz
+updated_at timestamptz
+user_id bigserial FK >- user.id
+
+note_tag
+---
+note_id bigserial PK FK >- note.id
+tag_id bigserial PK FK >- tag.id
+
+tag
+---
+id bigserial PK
+name text
+created_at timestamptz
+updated_at timestamptz

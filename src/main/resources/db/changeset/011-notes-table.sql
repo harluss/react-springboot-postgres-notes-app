@@ -2,7 +2,7 @@
 --changeset harluss:1
 CREATE TABLE IF NOT EXISTS notes (
     id bigserial PRIMARY KEY,
-    title varchar(100) NOT NULL,
+    title text NOT NULL,
     details text NOT NULL
 );
 --rollback drop table notes
