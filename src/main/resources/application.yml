@@ -13,15 +13,29 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-  liquibase:
-    change-log: classpath:/db/changelog/changelog-master.yml
-
   cache:
     cache-names: notes
     caffeine:
       spec: maximumSize=100, expireAfterWrite=5m
 
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yml
+
+  profiles:
+    active: dev
+
 ---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  liquibase:
+    contexts: dev
+
+---
+
 spring:
   config:
     activate:
@@ -35,6 +49,6 @@ spring:
   jpa:
     show-sql: false
 
-#  liquibase:
-#    contexts: test
-#    drop-first: true
+  liquibase:
+    contexts: test
+    drop-first: true

@@ -1,3 +1,10 @@
 databaseChangeLog:
-  - includeAll:
-      path: db/changeset
+  - include:
+      file: db/changeset/changeset-notes-table-01.sql
+      context: dev, test
+  - include:
+      file: db/changeset/dataset-dev.sql
+      context: dev
+  - include:
+      file: db/changeset/dataset-test.sql
+      context: test
