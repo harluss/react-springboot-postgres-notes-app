@@ -22,7 +22,8 @@
     "preserveConstEnums": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "noImplicitAny": true,
+    "baseUrl": "./src"
   },
   "include": [
     "src"
