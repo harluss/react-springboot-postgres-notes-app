@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import { Note } from 'types';
-import { getNotes } from 'api/notesAPI';
+import * as notesAPI from 'api/notesAPI';
 
 type NotesState = {
   notes: Note[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string;
+  error: string | undefined;
 };
 
 const initialState: NotesState = {
@@ -15,12 +15,8 @@ const initialState: NotesState = {
   error: '',
 };
 
-export const fetchNotes = createAsyncThunk('notes/getNotes', async (_, { rejectWithValue }) => {
-  try {
-    return getNotes();
-  } catch (error) {
-    return rejectWithValue(error);
-  }
+export const fetchNotes = createAsyncThunk('notes/getNotes', async () => {
+  return notesAPI.getNotes();
 });
 
 export const notesSlice = createSlice({
@@ -29,22 +25,21 @@ export const notesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchNotes.pending, (state) => {
-      state.status = 'loading';
       state.error = '';
+      state.status = 'loading';
     });
 
     builder.addCase(fetchNotes.fulfilled, (state, { payload }) => {
       state.notes = payload;
-      state.status = 'succeeded';
+      state.status = 'idle';
     });
 
     builder.addCase(fetchNotes.rejected, (state, { error }) => {
-      // if (payload) state.error = payload.errorMessage;
-      state.error = error as string;
+      state.error = error.message;
       state.status = 'failed';
     });
   },
 });
 
-export const selectNotes = (state: RootState): Note[] => state.notes.notes;
+export const selectAllNotes = (state: RootState): Note[] => state.notes.notes;
 export default notesSlice.reducer;

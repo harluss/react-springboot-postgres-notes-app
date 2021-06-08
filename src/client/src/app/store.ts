@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import notesReducer from 'features/Notes/notesSlice';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { notesReducer } from 'features/Notes';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     notes: notesReducer,
   },
@@ -9,4 +9,5 @@ const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export default store;
+export type AppDispatch = typeof store.dispatch;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;

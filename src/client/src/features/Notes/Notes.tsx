@@ -1,17 +1,15 @@
-import { ReactElement, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchNotes, selectNotes } from './notesSlice';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { fetchNotes, selectAllNotes } from './notesSlice';
 
-const Notes = (): ReactElement => {
-  const dispatch = useDispatch();
-  const notes = useSelector(selectNotes);
+const Notes = () => {
+  const dispatch = useAppDispatch();
+  const notes = useAppSelector(selectAllNotes);
 
   const getNotes = async () => {
-    try {
-      dispatch(fetchNotes());
-    } catch (error) {
-      console.error(error);
-    }
+    dispatch(fetchNotes());
+
+    // return () => promise.abort();
   };
 
   useEffect(() => {

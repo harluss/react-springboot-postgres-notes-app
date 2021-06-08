@@ -1,7 +1,6 @@
-import { ReactElement } from 'react';
-import { Notes } from 'features';
+import { Notes } from 'features/Notes';
 
-const App = (): ReactElement => {
+const App = () => {
   return (
     <div>
       <p>SOME APP!</p>
