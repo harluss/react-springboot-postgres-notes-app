@@ -1,8 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProviders } from 'utils/testHelpers';
 import Notes from './Notes';
 
-test('renders learn react link', () => {
-  render(<Notes />);
-  const linkElement = screen.getByText(/notes/i);
-  expect(linkElement).toBeInTheDocument();
+describe('Notes component', () => {
+  it('renders component correctly', () => {
+    renderWithProviders(<Notes />);
+    const linkElement = screen.getByText(/notes/i);
+    expect(linkElement).toBeInTheDocument();
+  });
 });

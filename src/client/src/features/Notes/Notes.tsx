@@ -20,7 +20,13 @@ const Notes = () => {
     <div>
       <p>some notes:</p>
       {notes.map((note) => (
-        <p key={note.id}>{note.title}</p>
+        <div key={note.id}>
+          <p>{note.title}</p>
+          <p>{note.details}</p>
+          <p>{note.isPinned.toString()}</p>
+          <p>{note.createdAt}</p>
+          <p>{note.updatedAt}</p>
+        </div>
       ))}
     </div>
   );
