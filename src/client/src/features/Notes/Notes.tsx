@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes } from './notesSlice';
+import { Container, Grid } from '@material-ui/core';
+import NoteCard from 'components/NoteCard';
 
 const Notes = () => {
   const dispatch = useAppDispatch();
@@ -9,6 +11,7 @@ const Notes = () => {
   const getNotes = async () => {
     dispatch(fetchNotes());
 
+    // TODO: cancel thunk od component unmount
     // return () => promise.abort();
   };
 
@@ -17,18 +20,16 @@ const Notes = () => {
   }, []);
 
   return (
-    <div>
+    <Container>
       <p>some notes:</p>
-      {notes.map((note) => (
-        <div key={note.id}>
-          <p>{note.title}</p>
-          <p>{note.details}</p>
-          <p>{note.isPinned.toString()}</p>
-          <p>{note.createdAt}</p>
-          <p>{note.updatedAt}</p>
-        </div>
-      ))}
-    </div>
+      <Grid container spacing={3}>
+        {notes.map((note) => (
+          <Grid item xs={12} sm={6} md={3} key={note.id}>
+            <NoteCard note={note} />
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 };
 

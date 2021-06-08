@@ -5,12 +5,25 @@ import { store } from './app/store';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Montserrat',
+    fontWeightLight: 300,
+    fontWeightMedium: 400,
+    fontWeightRegular: 500,
+    fontWeightBold: 700,
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

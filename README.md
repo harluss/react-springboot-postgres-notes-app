@@ -31,12 +31,13 @@ The main purpose of this project is to learn and practice.
 
 #### Frontend
 - [x] React project with TypeScript
-- [ ] Material UI
-- [ ] Unit tests
-- [ ] Redux **or** Recoil for state management
+- [x] Material UI
+- [x] Unit tests
+- [x] State management with Redux-Toolkit
 - [ ] Authentication with JWT
 - [ ] E2E tests with Cypress (maybe)
 - [ ] Speech to text
+- [ ] CRUD
 - [ ] ...
 
 #### Docs

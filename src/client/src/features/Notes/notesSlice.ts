@@ -4,17 +4,20 @@ import { Note } from 'types';
 import * as notesAPI from 'api/notesAPI';
 
 type NotesState = {
-  notes: Note[];
+  data: Note[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | undefined;
 };
 
 const initialState: NotesState = {
-  notes: [],
+  data: [],
   status: 'idle',
   error: '',
 };
 
+// TODO: cancel axios request on canceled thunk
+// TODO: handle rejected thunk message
+// TODO: write tests
 export const fetchNotes = createAsyncThunk('notes/getNotes', async () => {
   return notesAPI.getNotes();
 });
@@ -30,7 +33,7 @@ export const notesSlice = createSlice({
     });
 
     builder.addCase(fetchNotes.fulfilled, (state, { payload }) => {
-      state.notes = payload;
+      state.data = payload;
       state.status = 'idle';
     });
 
@@ -41,5 +44,5 @@ export const notesSlice = createSlice({
   },
 });
 
-export const selectAllNotes = (state: RootState): Note[] => state.notes.notes;
+export const selectAllNotes = (state: RootState): Note[] => state.notes.data;
 export default notesSlice.reducer;

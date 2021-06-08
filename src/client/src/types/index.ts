@@ -3,6 +3,8 @@ export type Note = {
   title: string;
   details: string;
   isPinned: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
+
+// TODO: fix date type/format issue
