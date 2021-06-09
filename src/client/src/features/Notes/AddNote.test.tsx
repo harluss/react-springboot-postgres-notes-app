@@ -6,7 +6,8 @@ describe('AddNote component', () => {
   it('renders component correctly', () => {
     renderWithProviders(<AddNote />);
 
-    // const linkElement = screen.getByText(/notes/i);
-    // expect(linkElement).toBeInTheDocument();
+    // expect(screen.getByLabelText(/title/i)).toBeInTheDocument;
+    // expect(screen.getByLabelText(/details/i)).toBeInTheDocument;
+    // expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument;
   });
 });

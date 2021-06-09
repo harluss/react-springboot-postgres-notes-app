@@ -12,7 +12,8 @@ describe('Layout component', () => {
       </Layout>
     );
 
-    const linkElement = screen.getByText(/dummy child component/i);
-    expect(linkElement).toBeInTheDocument();
+    expect(screen.getByText(/dummy child component/i)).toBeInTheDocument();
   });
+
+  it.todo('navigates to correct page');
 });

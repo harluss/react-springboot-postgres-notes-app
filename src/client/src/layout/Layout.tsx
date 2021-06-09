@@ -12,12 +12,12 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+import grey from '@material-ui/core/colors/grey';
 import AddCircleOutlineOutlined from '@material-ui/icons/AddCircleOutlineOutlined';
 import SubjectOutlined from '@material-ui/icons/SubjectOutlined';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { ReactElement } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -68,10 +68,8 @@ const menuItems = [
 
 const Layout = ({ children }: { children: ReactElement }) => {
   const classes = useStyles();
-  const history = useHistory();
   const location = useLocation();
 
-  const handleRedirect = (path: string) => history.push(path);
   const setActiveClass = (path: string) => (location.pathname == path ? classes.active : '');
 
   return (
@@ -89,12 +87,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
         <Divider />
         <List>
           {menuItems.map((item) => (
-            <ListItem
-              key={item.text}
-              button
-              onClick={() => handleRedirect(item.path)}
-              className={setActiveClass(item.path)}
-            >
+            <ListItem key={item.text} button component={Link} to={item.path} className={setActiveClass(item.path)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>
