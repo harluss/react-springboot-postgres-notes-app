@@ -1,16 +1,33 @@
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles, Typography } from '@material-ui/core';
+import {
+  AppBar,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Theme,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import AddCircleOutlineOutlined from '@material-ui/icons/AddCircleOutlineOutlined';
 import SubjectOutlined from '@material-ui/icons/SubjectOutlined';
+import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { ReactElement } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles((theme: Theme) => {
   return {
     active: {
       background: grey[100],
+    },
+    appbar: {
+      width: `calc(100% - ${drawerWidth}px)`,
     },
     drawer: {
       width: drawerWidth,
@@ -21,14 +38,16 @@ const useStyles = makeStyles((theme) => {
     page: {
       background: grey[50],
       width: '100%',
+      height: '100vh',
       padding: theme.spacing(3),
     },
     root: {
       display: 'flex',
     },
     title: {
-      padding: theme.spacing(2),
+      flexGrow: 1,
     },
+    toolbar: theme.mixins.toolbar,
   };
 });
 
@@ -45,6 +64,8 @@ const menuItems = [
   },
 ];
 
+// TODO: add loader
+
 const Layout = ({ children }: { children: ReactElement }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -55,12 +76,17 @@ const Layout = ({ children }: { children: ReactElement }) => {
 
   return (
     <div className={classes.root}>
+      <AppBar className={classes.appbar} color="inherit" elevation={2}>
+        <Toolbar>
+          <Typography className={classes.title}>Welcome to Some Notes</Typography>
+          <IconButton>
+            <InsertEmoticon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
       <Drawer className={classes.drawer} variant="permanent" anchor="left" classes={{ paper: classes.drawerPaper }}>
-        <div>
-          <Typography variant="h5" className={classes.title}>
-            Some Notes
-          </Typography>
-        </div>
+        <div className={classes.toolbar}></div>
+        <Divider />
         <List>
           {menuItems.map((item) => (
             <ListItem
@@ -75,7 +101,10 @@ const Layout = ({ children }: { children: ReactElement }) => {
           ))}
         </List>
       </Drawer>
-      <div className={classes.page}>{children}</div>
+      <div className={classes.page}>
+        <div className={classes.toolbar}></div>
+        {children}
+      </div>
     </div>
   );
 };

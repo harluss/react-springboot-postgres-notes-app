@@ -1,12 +1,12 @@
 // import { screen } from '@testing-library/react';
 import { renderWithProviders } from 'utils/testHelpers';
-import App from './App';
+import AddNote from './AddNote';
 
-describe('App component', () => {
+describe('AddNote component', () => {
   it('renders component correctly', () => {
-    renderWithProviders(<App />);
+    renderWithProviders(<AddNote />);
 
-    // const linkElement = screen.getByText(/some app/i);
+    // const linkElement = screen.getByText(/notes/i);
     // expect(linkElement).toBeInTheDocument();
   });
 });

@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Layout from 'components/Layout/Layout';
-import { AddNote, Notes } from 'features/Notes';
+import Layout from 'layout/Layout';
+import { AddNote, Notes } from 'features/notes';
+
+// TODO: add route with 404 component
 
 const App = () => {
   return (
