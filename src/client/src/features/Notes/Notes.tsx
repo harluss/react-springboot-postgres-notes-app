@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes } from './notesSlice';
 import { Container, Grid } from '@material-ui/core';
-import NoteCard from 'components/NoteCard';
+import NoteCard from 'components/NoteCard/NoteCard';
 
 const Notes = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ const Notes = () => {
       <p>some notes:</p>
       <Grid container spacing={3}>
         {notes.map((note) => (
-          <Grid item xs={12} sm={6} md={3} key={note.id}>
+          <Grid item xs={12} sm={12} md={6} lg={4} xl={3} key={note.id}>
             <NoteCard note={note} />
           </Grid>
         ))}
