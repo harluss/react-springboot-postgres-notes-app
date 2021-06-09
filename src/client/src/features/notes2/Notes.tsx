@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes } from './notesSlice';
-import NoteCard from 'components/noteCard/NoteCard';
+import NoteCard from 'components/noteCard2/NoteCard';
 import Masonry from 'react-masonry-css';
 import { makeStyles, useTheme } from '@material-ui/core';
 
