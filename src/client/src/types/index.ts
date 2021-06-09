@@ -1,10 +1,2 @@
-export type Note = {
-  id: number;
-  title: string;
-  details: string;
-  isPinned: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-// TODO: fix date type/format issue
+export type { default as Note } from './Note';
+export type { default as AddNote } from './AddNote';

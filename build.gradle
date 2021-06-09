@@ -21,6 +21,7 @@ repositories {
 
 node {
   version = '15.8.0'
+  yarnVersion = '1.22.10'
   download = true
   workDir = file("${projectDir}/.gradle/nodejs")
   yarnWorkDir = file("${projectDir}/.gradle/yarn")
