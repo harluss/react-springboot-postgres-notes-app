@@ -1,12 +1,39 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes } from './notesSlice';
-import { Grid } from '@material-ui/core';
 import NoteCard from 'components/noteCard/NoteCard';
+import Masonry from 'react-masonry-css';
+import { makeStyles, useTheme } from '@material-ui/core';
+
+const useStyles = makeStyles(() => {
+  return {
+    grid: {
+      display: 'flex',
+      marginLeft: -30,
+      width: 'auto',
+    },
+    gridColumn: {
+      paddingLeft: 30,
+      backgroundClip: 'padding-box',
+    },
+    gridColumnChild: {
+      marginBottom: 30,
+    },
+  };
+});
 
 const Notes = () => {
+  const classes = useStyles();
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectAllNotes);
+  const theme = useTheme();
+
+  const breakpoints = {
+    default: 4,
+    [theme.breakpoints.values.lg]: 3,
+    [theme.breakpoints.values.md]: 2,
+    [theme.breakpoints.values.sm]: 1,
+  };
 
   const getNotes = async () => {
     dispatch(fetchNotes());
@@ -21,13 +48,13 @@ const Notes = () => {
 
   return (
     <div>
-      <Grid container spacing={3}>
+      <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
         {notes.map((note) => (
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={2} key={note.id}>
+          <div key={note.id} className={classes.gridColumnChild}>
             <NoteCard note={note} />
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </Masonry>
     </div>
   );
 };

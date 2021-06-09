@@ -1,54 +1,79 @@
-import { Box, Button, Container, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Button, Checkbox, Container, FormControlLabel, makeStyles, TextField, Theme } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { Prompt, useHistory } from 'react-router-dom';
+import { useAppDispatch } from 'app/hooks';
+import { addNote } from './notesSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
     button: {
-      minWidth: 100,
+      width: 120,
+      marginTop: 30,
+      marginLeft: 'auto',
     },
-    buttonBox: {
-      display: 'flex',
-      justifyContent: 'flex-end',
+    checkbox: {
+      marginBottom: 10,
     },
     field: {
       marginTop: 20,
-      marginBottom: 20,
+      marginBottom: 10,
       display: 'block',
       background: theme.palette.background.paper,
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
     },
   };
 });
 
-const schema = yup.object().shape({
+const addNoteSchema = yup.object().shape({
   title: yup.string().required(),
   details: yup.string().required(),
 });
 
+// TODO: extract schema
+
 type Inputs = {
   title: string;
   details: string;
+  isPinned: boolean;
 };
 
-const defaultValues = {
+const defaultValues: Inputs = {
   title: '',
   details: '',
+  isPinned: false,
 };
+
+const unsavedChangesMessage = 'You have unsaved changes, are you sure you want to leave?';
 
 const AddNote = () => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
+  const history = useHistory();
   const {
     control,
-    formState: { errors },
+    formState: { isDirty, errors },
     handleSubmit,
-  } = useForm<Inputs>({ defaultValues, resolver: yupResolver(schema) });
+    reset,
+  } = useForm<Inputs>({ defaultValues, resolver: yupResolver(addNoteSchema) });
 
-  const onSubmit = (data: Inputs) => console.log(data);
+  const onSubmit = (data: Inputs) => {
+    dispatch(addNote(data))
+      .then(unwrapResult)
+      .then(reset)
+      .then(() => history.push('/'))
+      .catch((error) => console.log('something went wrong:', error));
+  };
 
   return (
-    <Container>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+    <Container maxWidth="sm">
+      <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <Prompt when={isDirty} message={unsavedChangesMessage} />
         <Controller
           name="title"
           control={control}
@@ -83,11 +108,20 @@ const AddNote = () => {
             />
           )}
         />
-        <Box className={classes.buttonBox}>
-          <Button className={classes.button} type="submit" variant="contained" color="primary" disableElevation>
-            Add
-          </Button>
-        </Box>
+        <Controller
+          name="isPinned"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              className={classes.checkbox}
+              control={<Checkbox {...field} name="isPinned" color="primary" />}
+              label="Pin Note"
+            />
+          )}
+        />
+        <Button className={classes.button} type="submit" variant="contained" color="primary" disableElevation>
+          Add
+        </Button>
       </form>
     </Container>
   );
