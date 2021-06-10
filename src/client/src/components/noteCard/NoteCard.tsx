@@ -1,15 +1,20 @@
 import { Card, CardContent, CardHeader, IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
+import { useAppDispatch } from 'app/hooks';
+import { deleteNote } from 'features/notes/notesSlice';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
 
 const NoteCard = ({ note }: { note: Note }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
 
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+
   const handleMenuClose = () => setAnchorEl(null);
+
   const handleDelete = () => {
-    console.log('delete', note.id);
+    dispatch(deleteNote(note.id));
     handleMenuClose();
   };
 
