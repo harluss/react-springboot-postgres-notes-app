@@ -38,7 +38,8 @@ const Notes = () => {
   const history = useHistory();
 
   const breakpoints = {
-    default: 4,
+    default: 5,
+    [theme.breakpoints.values.xl]: 4,
     [theme.breakpoints.values.lg]: 3,
     [theme.breakpoints.values.md]: 2,
     [theme.breakpoints.values.sm]: 1,
