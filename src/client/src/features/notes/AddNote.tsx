@@ -3,9 +3,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Prompt, useHistory } from 'react-router-dom';
-import { useAppDispatch } from 'app/hooks';
-import { addNote } from './notesSlice';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { addNote, selectNotesStatus } from './notesSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
+import Progress from 'components/progress/Progress';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -59,6 +60,7 @@ const unsavedChangesMessage = 'You have unsaved changes, are you sure you want t
 const AddNote = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
+  const progress = useAppSelector(selectNotesStatus);
   const history = useHistory();
   const {
     control,
@@ -76,6 +78,10 @@ const AddNote = () => {
   };
 
   // TODO: add ui error handling (toasts?)
+
+  if (progress === 'processing') {
+    return <Progress />;
+  }
 
   return (
     <Container maxWidth="sm" className={classes.container}>

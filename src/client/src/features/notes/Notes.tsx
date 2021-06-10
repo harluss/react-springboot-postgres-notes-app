@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { fetchNotes, selectAllNotes } from './notesSlice';
+import { fetchNotes, selectAllNotes, selectNotesStatus } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
 import Masonry from 'react-masonry-css';
 import { Container, makeStyles, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
+import Progress from 'components/progress/Progress';
 
 const useStyles = makeStyles(() => {
   return {
@@ -31,6 +32,7 @@ const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectAllNotes);
+  const progress = useAppSelector(selectNotesStatus);
   const theme = useTheme();
   const location = useLocation<locationState>();
   const history = useHistory();
@@ -51,6 +53,10 @@ const Notes = () => {
 
     return () => promise.abort();
   }, []);
+
+  if (progress === 'processing') {
+    return <Progress />;
+  }
 
   return (
     <Container maxWidth="xl">
