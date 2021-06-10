@@ -26,6 +26,10 @@ export const addNote = createAsyncThunk('notes/addNote', async (note: AddNote) =
   return notesAPI.addNote(note);
 });
 
+export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: number) => {
+  return notesAPI.deleteNote(noteId);
+});
+
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
@@ -57,6 +61,21 @@ export const notesSlice = createSlice({
     });
 
     builder.addCase(addNote.rejected, (state, { error }) => {
+      state.error = error.message;
+      state.status = 'failed';
+    });
+
+    builder.addCase(deleteNote.pending, (state) => {
+      state.error = '';
+      state.status = 'processing';
+    });
+
+    builder.addCase(deleteNote.fulfilled, (state, { meta }) => {
+      state.data = state.data.filter((note) => note.id !== meta.arg);
+      state.status = 'idle';
+    });
+
+    builder.addCase(deleteNote.rejected, (state, { error }) => {
       state.error = error.message;
       state.status = 'failed';
     });

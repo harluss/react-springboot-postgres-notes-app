@@ -17,3 +17,9 @@ export const addNote = async (note: AddNote) => {
 
   return data;
 };
+
+export const deleteNote = async (noteId: number) => {
+  const { data } = await axios.delete(`/api/notes/${noteId}`);
+
+  return data;
+};
