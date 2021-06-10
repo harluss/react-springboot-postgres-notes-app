@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { Note } from 'types';
+import { renderWithProviders } from 'utils/testHelpers';
 import NoteCard from './NoteCard';
 
 describe('NoteCard component', () => {
@@ -13,7 +14,7 @@ describe('NoteCard component', () => {
       updatedAt: new Date().toUTCString(),
     };
 
-    render(<NoteCard note={dummyNote} />);
+    renderWithProviders(<NoteCard note={dummyNote} />);
 
     const title = screen.getByText(/dummyNote/i);
     const details = screen.getByText(/testing purposes/i);
