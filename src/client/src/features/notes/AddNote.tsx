@@ -70,6 +70,8 @@ const AddNote = () => {
       .catch((error) => console.log('something went wrong:', error));
   };
 
+  // TODO: add ui error handling (toasts?)
+
   return (
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>

@@ -1,16 +1,34 @@
-import { Card, CardContent, CardHeader, IconButton, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
+import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
 
 const NoteCard = ({ note }: { note: Note }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+  const handleDelete = () => {
+    console.log('delete', note.id);
+    handleMenuClose();
+  };
+
   return (
     <div>
       <Card variant="outlined">
         <CardHeader
           action={
-            <IconButton onClick={() => console.log('note options clicked:', note.title)}>
-              <MoreVert />
-            </IconButton>
+            <div>
+              <IconButton onClick={handleMenuOpen}>
+                <MoreVert />
+              </IconButton>
+              <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
+                <MenuItem onClick={handleMenuClose} disabled>
+                  Edit
+                </MenuItem>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+              </Menu>
+            </div>
           }
           title={note.title}
           subheader={note.createdAt}
