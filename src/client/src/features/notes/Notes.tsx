@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { fetchNotes, selectAllNotes } from './notesSlice';
+import { fetchNotes, selectAllNotes, selectNotesStatus } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
 import Masonry from 'react-masonry-css';
-import { makeStyles, useTheme } from '@material-ui/core';
+import { Container, makeStyles, useTheme } from '@material-ui/core';
+import { useHistory, useLocation } from 'react-router-dom';
+import Progress from 'components/progress/Progress';
 
 const useStyles = makeStyles(() => {
   return {
@@ -22,11 +24,18 @@ const useStyles = makeStyles(() => {
   };
 });
 
+type locationState = {
+  noteAdded?: boolean;
+};
+
 const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectAllNotes);
+  const progress = useAppSelector(selectNotesStatus);
   const theme = useTheme();
+  const location = useLocation<locationState>();
+  const history = useHistory();
 
   const breakpoints = {
     default: 4,
@@ -35,19 +44,22 @@ const Notes = () => {
     [theme.breakpoints.values.sm]: 1,
   };
 
-  const getNotes = async () => {
-    dispatch(fetchNotes());
-
-    // TODO: cancel thunk od component unmount
-    // return () => promise.abort();
-  };
-
   useEffect(() => {
-    getNotes();
+    if (location.state?.noteAdded) {
+      return history.replace('/');
+    }
+
+    const promise = dispatch(fetchNotes());
+
+    return () => promise.abort();
   }, []);
 
+  if (progress === 'processing') {
+    return <Progress />;
+  }
+
   return (
-    <div>
+    <Container maxWidth="xl">
       <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
         {notes.map((note) => (
           <div key={note.id} className={classes.gridColumnChild}>
@@ -55,7 +67,7 @@ const Notes = () => {
           </div>
         ))}
       </Masonry>
-    </div>
+    </Container>
   );
 };
 

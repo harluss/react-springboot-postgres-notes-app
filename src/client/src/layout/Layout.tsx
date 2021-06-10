@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => {
     page: {
       background: grey[50],
       width: '100%',
-      height: '100vh',
+      height: '100%',
       padding: theme.spacing(3),
     },
     root: {

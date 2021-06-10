@@ -3,9 +3,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Prompt, useHistory } from 'react-router-dom';
-import { useAppDispatch } from 'app/hooks';
-import { addNote } from './notesSlice';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { addNote, selectNotesStatus } from './notesSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
+import Progress from 'components/progress/Progress';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -16,6 +17,11 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     checkbox: {
       marginBottom: 10,
+      fill: theme.palette.background.paper,
+    },
+    container: {
+      height: '100vh',
+      overflow: 'hidden',
     },
     field: {
       marginTop: 20,
@@ -54,6 +60,7 @@ const unsavedChangesMessage = 'You have unsaved changes, are you sure you want t
 const AddNote = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
+  const progress = useAppSelector(selectNotesStatus);
   const history = useHistory();
   const {
     control,
@@ -66,14 +73,18 @@ const AddNote = () => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
-      .then(() => history.push('/'))
+      .then(() => history.push('/', { noteAdded: true }))
       .catch((error) => console.log('something went wrong:', error));
   };
 
   // TODO: add ui error handling (toasts?)
 
+  if (progress === 'processing') {
+    return <Progress />;
+  }
+
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" className={classes.container}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={unsavedChangesMessage} />
         <Controller

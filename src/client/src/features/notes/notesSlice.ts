@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import { AddNote, Note } from 'types';
 import * as notesAPI from 'api/notesAPI';
+import axios from 'axios';
 
 type NotesState = {
   data: Note[];
@@ -15,11 +16,19 @@ const initialState: NotesState = {
   error: '',
 };
 
-// TODO: cancel axios request on canceled thunk
 // TODO: handle rejected thunk message
 // TODO: write tests
-export const fetchNotes = createAsyncThunk('notes/getNotes', async () => {
-  return notesAPI.getNotes();
+
+export const fetchNotes = createAsyncThunk('notes/getNotes', async (_: void, { signal }) => {
+  const source = axios.CancelToken.source();
+
+  const cancelReq = () => source.cancel();
+  signal.addEventListener('abort', cancelReq);
+
+  const response = await notesAPI.getNotes(source.token);
+  signal.removeEventListener('abort', cancelReq);
+
+  return response;
 });
 
 export const addNote = createAsyncThunk('notes/addNote', async (note: AddNote) => {
@@ -82,5 +91,6 @@ export const notesSlice = createSlice({
   },
 });
 
+export const selectNotesStatus = (state: RootState): string => state.notes.status;
 export const selectAllNotes = (state: RootState): Note[] => state.notes.data;
 export default notesSlice.reducer;
