@@ -23,4 +23,6 @@ describe('NoteCard component', () => {
     expect(details).toBeInTheDocument();
     expect(createdAt).toBeInTheDocument();
   });
+
+  it.todo('deletes note on delete menu item click');
 });

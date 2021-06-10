@@ -13,7 +13,7 @@ export const getNotes = async () => {
 };
 
 export const addNote = async (note: AddNote) => {
-  const { data } = await axios.post('/api/notes', note);
+  const { data } = await axios.post<Note>('/api/notes', note);
 
   return data;
 };

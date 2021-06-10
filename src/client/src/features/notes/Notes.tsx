@@ -4,6 +4,7 @@ import { fetchNotes, selectAllNotes } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
 import Masonry from 'react-masonry-css';
 import { makeStyles, useTheme } from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(() => {
   return {
@@ -22,11 +23,16 @@ const useStyles = makeStyles(() => {
   };
 });
 
+type locationState = {
+  noteAdded?: boolean;
+};
+
 const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectAllNotes);
   const theme = useTheme();
+  const { state } = useLocation<locationState>();
 
   const breakpoints = {
     default: 4,
@@ -43,7 +49,9 @@ const Notes = () => {
   };
 
   useEffect(() => {
-    getNotes();
+    if (!state?.noteAdded) {
+      getNotes();
+    }
   }, []);
 
   return (

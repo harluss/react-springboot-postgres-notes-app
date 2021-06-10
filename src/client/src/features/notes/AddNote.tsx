@@ -66,7 +66,7 @@ const AddNote = () => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
-      .then(() => history.push('/'))
+      .then(() => history.push('/', { noteAdded: true }))
       .catch((error) => console.log('something went wrong:', error));
   };
 
