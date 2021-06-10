@@ -16,6 +16,11 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     checkbox: {
       marginBottom: 10,
+      fill: theme.palette.background.paper,
+    },
+    container: {
+      height: '100vh',
+      overflow: 'hidden',
     },
     field: {
       marginTop: 20,
@@ -73,7 +78,7 @@ const AddNote = () => {
   // TODO: add ui error handling (toasts?)
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" className={classes.container}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={unsavedChangesMessage} />
         <Controller

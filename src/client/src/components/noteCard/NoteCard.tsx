@@ -39,9 +39,7 @@ const NoteCard = ({ note }: { note: Note }) => {
           subheader={note.createdAt}
         />
         <CardContent>
-          <Typography variant="body2" color="textSecondary">
-            {note.details}
-          </Typography>
+          <Typography color="textSecondary">{note.details}</Typography>
         </CardContent>
       </Card>
     </div>
