@@ -4,6 +4,7 @@ import { useAppDispatch } from 'app/hooks';
 import { deleteNote } from 'features/notes/notesSlice';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
+import { formatDate } from 'utils/dateFormat';
 
 const NoteCard = ({ note }: { note: Note }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -28,18 +29,18 @@ const NoteCard = ({ note }: { note: Note }) => {
                 <MoreVert />
               </IconButton>
               <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
-                <MenuItem onClick={handleMenuClose} disabled>
+                {/* <MenuItem onClick={handleMenuClose} disabled>
                   Pin
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose} disabled>
                   Edit
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
               </Menu>
             </div>
           }
           title={note.title}
-          subheader={note.createdAt}
+          subheader={formatDate(note.createdAt)}
         />
         <CardContent>
           <Typography color="textSecondary">{note.details}</Typography>

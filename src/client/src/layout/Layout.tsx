@@ -87,8 +87,6 @@ const menuItems = [
   },
 ];
 
-// TODO: add loader
-
 const Layout = ({ children }: { children: ReactElement }) => {
   const classes = useStyles();
   const location = useLocation();
@@ -104,7 +102,14 @@ const Layout = ({ children }: { children: ReactElement }) => {
       <Divider />
       <List>
         {menuItems.map((item) => (
-          <ListItem key={item.text} button component={Link} to={item.path} className={setActiveClass(item.path)}>
+          <ListItem
+            key={item.text}
+            button
+            component={Link}
+            to={item.path}
+            onClick={() => setMobileOpen(false)}
+            className={setActiveClass(item.path)}
+          >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItem>

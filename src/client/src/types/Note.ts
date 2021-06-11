@@ -8,5 +8,3 @@ type Note = {
 };
 
 export type { Note as default };
-
-// TODO: fix date type/format issue

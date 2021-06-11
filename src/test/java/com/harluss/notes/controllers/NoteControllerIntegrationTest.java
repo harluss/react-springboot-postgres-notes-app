@@ -16,6 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -99,8 +103,8 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
         .andExpect(jsonPath("$.title").value(noteUpdateRequest.getTitle()))
         .andExpect(jsonPath("$.details").value(noteUpdateRequest.getDetails()))
         .andExpect(jsonPath("$.isPinned").value(noteUpdateRequest.getIsPinned()))
-        .andExpect(jsonPath("$.createdAt").value(StringUtils.substringBefore(existingNote.getCreatedAt().toString(), ".")))
-        .andExpect(jsonPath("$.updatedAt").value(greaterThan(existingNote.getUpdatedAt().toString())));
+        .andExpect(jsonPath("$.createdAt").value(convertDateToZoneDateTimeString(existingNote.getCreatedAt())))
+        .andExpect(jsonPath("$.updatedAt").value(greaterThan(convertDateToZoneDateTimeString(existingNote.getUpdatedAt()))));
   }
 
   @DisplayName("should delete note with given id")
@@ -112,5 +116,9 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
         .andDo(print())
         .andExpect(status().isNoContent())
         .andExpect(jsonPath("$").doesNotHaveJsonPath());
+  }
+
+  private String convertDateToZoneDateTimeString(Date date) {
+    return ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toOffsetDateTime().toString();
   }
 }
