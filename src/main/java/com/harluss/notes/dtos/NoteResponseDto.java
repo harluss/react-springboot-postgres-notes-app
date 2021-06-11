@@ -1,6 +1,5 @@
 package com.harluss.notes.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +17,6 @@ public class NoteResponseDto {
   private String title;
   private String details;
   private Boolean isPinned;
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private ZonedDateTime createdAt;
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private ZonedDateTime updatedAt;
 }

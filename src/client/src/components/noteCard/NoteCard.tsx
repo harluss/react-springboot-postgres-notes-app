@@ -4,6 +4,7 @@ import { useAppDispatch } from 'app/hooks';
 import { deleteNote } from 'features/notes/notesSlice';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
+import { formatDate } from 'utils/dateFormat';
 
 const NoteCard = ({ note }: { note: Note }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -39,7 +40,7 @@ const NoteCard = ({ note }: { note: Note }) => {
             </div>
           }
           title={note.title}
-          subheader={note.createdAt}
+          subheader={formatDate(note.createdAt)}
         />
         <CardContent>
           <Typography color="textSecondary">{note.details}</Typography>
