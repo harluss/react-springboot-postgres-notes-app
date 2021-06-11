@@ -115,13 +115,13 @@ const Layout = ({ children }: { children: ReactElement }) => {
 
   return (
     <div className={classes.root}>
-      <AppBar className={classes.appBar} position="fixed" color="inherit" elevation={2}>
+      <AppBar className={classes.appBar} position="fixed" elevation={2}>
         <Toolbar>
-          <IconButton edge="start" onClick={handleDrawerToggle} className={classes.menuButton}>
+          <IconButton className={classes.menuButton} edge="start" onClick={handleDrawerToggle} color="inherit">
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title}>Welcome to Some Notes</Typography>
-          <IconButton>
+          <IconButton color="inherit">
             <InsertEmoticon />
           </IconButton>
         </Toolbar>

@@ -29,6 +29,9 @@ const NoteCard = ({ note }: { note: Note }) => {
               </IconButton>
               <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
                 <MenuItem onClick={handleMenuClose} disabled>
+                  Pin
+                </MenuItem>
+                <MenuItem onClick={handleMenuClose} disabled>
                   Edit
                 </MenuItem>
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
