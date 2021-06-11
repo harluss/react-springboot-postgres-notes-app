@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import { Note } from 'types';
 import { renderWithProviders } from 'utils/testHelpers';
 import NoteCard from './NoteCard';
+import { formatDate } from 'utils/dateFormat';
 
 describe('NoteCard component', () => {
   it('renders component correctly', () => {
@@ -18,7 +19,7 @@ describe('NoteCard component', () => {
 
     const title = screen.getByText(/dummyNote/i);
     const details = screen.getByText(/testing purposes/i);
-    const createdAt = screen.getByText(dummyNote.createdAt);
+    const createdAt = screen.getByText(formatDate(dummyNote.createdAt));
     expect(title).toBeInTheDocument();
     expect(details).toBeInTheDocument();
     expect(createdAt).toBeInTheDocument();
