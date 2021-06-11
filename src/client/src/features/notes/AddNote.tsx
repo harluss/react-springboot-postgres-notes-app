@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) => {
       marginTop: 20,
       marginBottom: 10,
       display: 'block',
-      background: theme.palette.background.paper,
     },
     form: {
       display: 'flex',
@@ -39,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => {
 const addNoteSchema = yup.object().shape({
   title: yup.string().required(),
   details: yup.string().required(),
+  isPinned: yup.boolean(),
 });
 
 // TODO: extract schema
