@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme: Theme) => {
       fill: theme.palette.background.paper,
     },
     container: {
-      height: '100vh',
-      overflow: 'hidden',
+      height: `calc(100vh - 110px)`,
     },
     field: {
       marginTop: 20,

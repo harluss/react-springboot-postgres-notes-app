@@ -1,31 +1,35 @@
-import { MouseEvent, useEffect } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes, selectNotesStatus } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
 import Masonry from 'react-masonry-css';
-import { Container, Fab, makeStyles, Theme, useScrollTrigger, useTheme, Zoom } from '@material-ui/core';
+import { Container, FormControl, InputLabel, makeStyles, MenuItem, Select, Theme, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
 import Progress from 'components/progress/Progress';
-import KeyboardArrowUpOutlined from '@material-ui/icons/KeyboardArrowUpOutlined';
+import ScrollUpButton from 'components/scrollUpButton/ScrollUpButton';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
+    formControl: {
+      marginBottom: theme.spacing(2),
+      alignSelf: 'flex-end',
+      minWidth: 120,
+    },
     grid: {
       display: 'flex',
       marginLeft: -30,
       width: 'auto',
     },
     gridColumn: {
-      paddingLeft: 30,
+      paddingLeft: 20,
       backgroundClip: 'padding-box',
     },
     gridColumnChild: {
-      marginBottom: 30,
+      marginBottom: 20,
     },
-    scrollUpButtom: {
-      position: 'fixed',
-      bottom: theme.spacing(3),
-      right: theme.spacing(3),
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
     },
   };
 });
@@ -34,28 +38,7 @@ type locationState = {
   noteAdded?: boolean;
 };
 
-const ScrollTopButton = () => {
-  const classes = useStyles();
-  const trigger = useScrollTrigger();
-
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
-    const anchor = ((event.target as HTMLDivElement).ownerDocument || document).querySelector('#back-to-top-anchor');
-
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
-
-  return (
-    <Zoom in={trigger}>
-      <div onClick={handleClick} className={classes.scrollUpButtom}>
-        <Fab color="secondary" size="small">
-          <KeyboardArrowUpOutlined />
-        </Fab>
-      </div>
-    </Zoom>
-  );
-};
+type sortType = 'Descending' | 'Ascending';
 
 const Notes = () => {
   const classes = useStyles();
@@ -65,6 +48,9 @@ const Notes = () => {
   const theme = useTheme();
   const location = useLocation<locationState>();
   const history = useHistory();
+  const [sort, setSort] = useState<sortType>('Descending');
+
+  // TODO: add sort and dark/light mode to global state
 
   const breakpoints = {
     default: 5,
@@ -73,6 +59,11 @@ const Notes = () => {
     [theme.breakpoints.values.md]: 2,
     [theme.breakpoints.values.sm]: 1,
   };
+
+  const handleSortChange = (event: ChangeEvent<{ value: unknown }>) => setSort(event.target.value as sortType);
+
+  const sortNotesByDate = (dateNoteA: string, dateNoteB: string) =>
+    sort === 'Descending' ? dateNoteB.localeCompare(dateNoteA) : dateNoteA.localeCompare(dateNoteB);
 
   useEffect(() => {
     if (location.state?.noteAdded) {
@@ -89,19 +80,26 @@ const Notes = () => {
   }
 
   return (
-    <>
-      <Container maxWidth="xl">
-        <div id="back-to-top-anchor" />
-        <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
-          {notes.map((note) => (
+    <Container maxWidth="xl" className={classes.root}>
+      <FormControl variant="outlined" size="small" className={classes.formControl}>
+        <InputLabel id="sort-notes-select">Sort</InputLabel>
+        <Select labelId="sort-notes-select" label="Sort" variant="outlined" value={sort} onChange={handleSortChange}>
+          <MenuItem value="Descending">Descending</MenuItem>
+          <MenuItem value="Ascending">Ascending</MenuItem>
+        </Select>
+      </FormControl>
+      <div id="back-to-top-anchor" />
+      <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
+        {[...notes]
+          .sort((a, b) => sortNotesByDate(a.createdAt, b.createdAt))
+          .map((note) => (
             <div key={note.id} className={classes.gridColumnChild}>
               <NoteCard note={note} />
             </div>
           ))}
-        </Masonry>
-      </Container>
-      <ScrollTopButton />
-    </>
+      </Masonry>
+      <ScrollUpButton />
+    </Container>
   );
 };
 

@@ -9,6 +9,9 @@ import { unstable_createMuiStrictModeTheme as createMuiTheme, ThemeProvider } fr
 
 const theme = createMuiTheme({
   typography: {
+    button: {
+      fontWeight: 'bold',
+    },
     fontFamily: 'Montserrat',
     fontWeightLight: 300,
     fontWeightMedium: 400,

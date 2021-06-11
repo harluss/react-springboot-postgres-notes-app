@@ -29,12 +29,12 @@ const NoteCard = ({ note }: { note: Note }) => {
                 <MoreVert />
               </IconButton>
               <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
-                <MenuItem onClick={handleMenuClose} disabled>
+                {/* <MenuItem onClick={handleMenuClose} disabled>
                   Pin
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose} disabled>
                   Edit
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
               </Menu>
             </div>
