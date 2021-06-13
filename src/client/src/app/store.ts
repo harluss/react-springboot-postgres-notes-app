@@ -1,9 +1,11 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { notesReducer } from 'features/notes';
 import { snackbarReducer } from 'features/snackbar';
+import { alertDialogReducer } from 'features/alertDialog';
 
 export const store = configureStore({
   reducer: {
+    alertDialog: alertDialogReducer,
     notes: notesReducer,
     snackbar: snackbarReducer,
   },
