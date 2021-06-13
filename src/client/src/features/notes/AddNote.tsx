@@ -86,8 +86,6 @@ const AddNote = () => {
       });
   };
 
-  // TODO: add ui error handling (toasts?)
-
   if (progress === 'processing') {
     return <ProgressIndicator />;
   }
@@ -107,6 +105,7 @@ const AddNote = () => {
               variant="outlined"
               fullWidth
               required
+              autoFocus
               error={!!errors.title}
               helperText={errors.title?.message}
             />

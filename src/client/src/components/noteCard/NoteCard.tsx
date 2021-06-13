@@ -11,18 +11,21 @@ import { deleteNote } from 'features/notes/notesSlice';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
 import { formatDate } from 'utils/dateFormat';
+// import AlertDialog from 'components/alertDialog/AlertDialog';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 const NoteCard = ({ note }: { note: Note }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
+  // const ref = useRef<any>();
 
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
 
   const handleMenuClose = () => setAnchorEl(null);
 
   const handleDelete = async () => {
+    // ref.current.showAlertDialog();
     handleMenuClose();
     dispatch(deleteNote(note.id))
       .then(unwrapResult)
@@ -35,6 +38,13 @@ const NoteCard = ({ note }: { note: Note }) => {
 
   return (
     <div>
+      {/* <AlertDialog
+        title="Delete note?"
+        content={`This will delete note: ${note.title}`}
+        confirmText="delete"
+        cancelText="cancel"
+        ref={ref}
+      /> */}
       <Card variant="outlined">
         <CardHeader
           action={
