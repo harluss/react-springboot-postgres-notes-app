@@ -56,6 +56,7 @@ const Notes = () => {
   const [sort, setSort] = useState<sortType>('Descending');
 
   // TODO: add sort and dark/light mode to global state
+  // TODO: add messages to display for empty notes list on: 1. error fetching, 2. success but empty list
 
   const breakpoints = {
     default: 5,

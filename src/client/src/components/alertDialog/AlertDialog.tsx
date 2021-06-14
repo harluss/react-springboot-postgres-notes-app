@@ -4,20 +4,33 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { MouseEvent } from 'react';
-import { selectAlertDialog, setAlertDialog } from './alertDialogSlice';
 
-const AlertDialog = () => {
-  const dispatch = useAppDispatch();
-  const { isOpen, title, details, cancelButtonText, confirmButtonText } = useAppSelector(selectAlertDialog);
+type alertDialogProps = {
+  isOpen: boolean;
+  title: string;
+  details: string;
+  confirmButtonText: string;
+  cancelButtonText: string;
+  confirmAction: () => void;
+  setIsOpen: (isOpen: boolean) => void;
+};
 
+const AlertDialog = ({
+  isOpen,
+  title,
+  details,
+  confirmButtonText,
+  cancelButtonText,
+  confirmAction,
+  setIsOpen,
+}: alertDialogProps) => {
   const handleClose = (_: MouseEvent<HTMLElement>, reason?: string) => {
     if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
       return;
     }
 
-    dispatch(setAlertDialog({ isOpen: false, cancelButtonText, confirmButtonText, details, title }));
+    setIsOpen(false);
   };
 
   return (
@@ -31,7 +44,7 @@ const AlertDialog = () => {
           <Button onClick={handleClose} color="primary">
             {cancelButtonText}
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={confirmAction} color="primary" autoFocus>
             {confirmButtonText}
           </Button>
         </DialogActions>

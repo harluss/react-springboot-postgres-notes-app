@@ -29,7 +29,7 @@ const GlobalSnackbar = () => {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={isOpen} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar open={isOpen} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} elevation={2} variant="filled" color={type}>
           {message}
         </Alert>
