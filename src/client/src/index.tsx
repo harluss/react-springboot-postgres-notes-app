@@ -6,8 +6,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { unstable_createMuiStrictModeTheme as createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { blue } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: blue,
+  },
   typography: {
     button: {
       fontWeight: 'bold',

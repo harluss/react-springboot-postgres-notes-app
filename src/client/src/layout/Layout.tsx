@@ -1,4 +1,4 @@
-import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
+import { makeStyles, Paper, Theme, Typography, useTheme } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -9,7 +9,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
-import grey from '@material-ui/core/colors/grey';
 import AddCircleOutlineOutlined from '@material-ui/icons/AddCircleOutlineOutlined';
 import SubjectOutlined from '@material-ui/icons/SubjectOutlined';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
@@ -23,7 +22,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => {
   return {
     active: {
-      background: grey[100],
+      background: theme.palette.action.selected,
     },
     appBar: {
       [theme.breakpoints.up('md')]: {
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => {
       },
     },
     content: {
-      background: grey[50],
+      background: theme.palette.background.default,
       height: '100%',
       flexGrow: 1,
       padding: theme.spacing(3),
@@ -151,10 +150,10 @@ const Layout = ({ children }: { children: ReactElement }) => {
           </Drawer>
         </Hidden>
       </nav>
-      <div className={classes.content}>
+      <Paper className={classes.content} square={true}>
         <div className={classes.toolbar}></div>
         {children}
-      </div>
+      </Paper>
     </div>
   );
 };
