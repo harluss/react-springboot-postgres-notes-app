@@ -1,12 +1,18 @@
-import { Button, Checkbox, Container, FormControlLabel, makeStyles, TextField, Theme } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Container from '@material-ui/core/Container';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles, Theme } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Prompt, useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { addNote, selectNotesStatus } from './notesSlice';
+import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
-import Progress from 'components/progress/Progress';
+import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -72,14 +78,16 @@ const AddNote = () => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
+      .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' })))
       .then(() => history.push('/', { noteAdded: true }))
-      .catch((error) => console.log('something went wrong:', error));
+      .catch((error) => {
+        console.log(error.message);
+        dispatch(setSnackbar({ isOpen: true, message: 'Failed to add note', type: 'error' }));
+      });
   };
 
-  // TODO: add ui error handling (toasts?)
-
   if (progress === 'processing') {
-    return <Progress />;
+    return <ProgressIndicator />;
   }
 
   return (
@@ -97,6 +105,7 @@ const AddNote = () => {
               variant="outlined"
               fullWidth
               required
+              autoFocus
               error={!!errors.title}
               helperText={errors.title?.message}
             />

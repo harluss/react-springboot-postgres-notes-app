@@ -1,26 +1,57 @@
-import { Card, CardContent, CardHeader, IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
 import MoreVert from '@material-ui/icons/MoreVert';
 import { useAppDispatch } from 'app/hooks';
-import { deleteNote } from 'features/notes/notesSlice';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
 import { formatDate } from 'utils/dateFormat';
+import AlertDialog from 'components/alertDialog/AlertDialog';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { setSnackbar } from 'features/snackbar';
+import { deleteNote } from 'features/notes';
 
 const NoteCard = ({ note }: { note: Note }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
 
   const handleMenuClose = () => setAnchorEl(null);
 
-  const handleDelete = () => {
-    dispatch(deleteNote(note.id));
+  const handleDeleteAlertDialog = () => {
     handleMenuClose();
+    setIsOpen(true);
+  };
+
+  const handleDelete = () => {
+    setIsOpen(false);
+
+    dispatch(deleteNote(note.id))
+      .then(unwrapResult)
+      .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' })))
+      .catch((error) => {
+        console.log(error.message);
+        dispatch(setSnackbar({ isOpen: true, message: 'Failed to delete note', type: 'error' }));
+      });
   };
 
   return (
     <div>
+      <AlertDialog
+        isOpen={isOpen}
+        title="Delete Note?"
+        details={`Note "${note.title}" will be deleted.`}
+        cancelButtonText="Cancel"
+        confirmButtonText="Delete"
+        confirmAction={handleDelete}
+        setIsOpen={setIsOpen}
+      />
       <Card variant="outlined">
         <CardHeader
           action={
@@ -35,7 +66,7 @@ const NoteCard = ({ note }: { note: Note }) => {
                 <MenuItem onClick={handleMenuClose} disabled>
                   Edit
                 </MenuItem> */}
-                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                <MenuItem onClick={handleDeleteAlertDialog}>Delete</MenuItem>
               </Menu>
             </div>
           }

@@ -3,9 +3,14 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes, selectNotesStatus } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
 import Masonry from 'react-masonry-css';
-import { Container, FormControl, InputLabel, makeStyles, MenuItem, Select, Theme, useTheme } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import { makeStyles, Theme, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
-import Progress from 'components/progress/Progress';
+import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
 import ScrollUpButton from 'components/scrollUpButton/ScrollUpButton';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -51,6 +56,7 @@ const Notes = () => {
   const [sort, setSort] = useState<sortType>('Descending');
 
   // TODO: add sort and dark/light mode to global state
+  // TODO: add messages to display for empty notes list on: 1. error fetching, 2. success but empty list
 
   const breakpoints = {
     default: 5,
@@ -76,7 +82,7 @@ const Notes = () => {
   }, []);
 
   if (progress === 'processing') {
-    return <Progress />;
+    return <ProgressIndicator />;
   }
 
   return (
