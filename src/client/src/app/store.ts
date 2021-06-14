@@ -1,10 +1,12 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { notesReducer } from 'features/notes';
 import { snackbarReducer } from 'features/snackbar';
+import { settingsReducer } from 'features/settings';
 
 export const store = configureStore({
   reducer: {
     notes: notesReducer,
+    settings: settingsReducer,
     snackbar: snackbarReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',

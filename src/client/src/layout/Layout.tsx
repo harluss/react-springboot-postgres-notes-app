@@ -10,12 +10,16 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
 import AddCircleOutlineOutlined from '@material-ui/icons/AddCircleOutlineOutlined';
-import SubjectOutlined from '@material-ui/icons/SubjectOutlined';
-import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+import SubjectIcon from '@material-ui/icons/Subject';
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ReactElement, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { selectIsDarkMode, toggleDarkMode } from 'features/settings';
 
 const drawerWidth = 240;
 
@@ -71,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) => {
 const menuItems = [
   {
     text: 'My Notes',
-    icon: <SubjectOutlined />,
+    icon: <SubjectIcon />,
     path: '/',
   },
   {
@@ -85,11 +89,15 @@ const Layout = ({ children }: { children: ReactElement }) => {
   const classes = useStyles();
   const location = useLocation();
   const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const isDarkMode = useAppSelector(selectIsDarkMode);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+  const handleDrawerToggle = () => setIsMobileOpen((prevState) => !prevState);
 
   const setActiveClass = (path: string) => (location.pathname == path ? classes.active : '');
+
+  const handleDarkModeToggle = () => dispatch(toggleDarkMode());
 
   const drawer = (
     <div>
@@ -101,7 +109,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
             button
             component={Link}
             to={item.path}
-            onClick={() => setMobileOpen(false)}
+            onClick={() => setIsMobileOpen(false)}
             className={setActiveClass(item.path)}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -119,9 +127,14 @@ const Layout = ({ children }: { children: ReactElement }) => {
           <IconButton className={classes.menuButton} edge="start" onClick={handleDrawerToggle} color="inherit">
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title}>Welcome to Some Notes</Typography>
+          <Typography className={classes.title} noWrap>
+            Welcome to Some Notes
+          </Typography>
+          <IconButton color="inherit" onClick={handleDarkModeToggle}>
+            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
           <IconButton color="inherit">
-            <InsertEmoticon />
+            <InsertEmoticonIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -130,7 +143,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
           <Drawer
             variant="temporary"
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-            open={mobileOpen}
+            open={isMobileOpen}
             onClose={handleDrawerToggle}
             classes={{ paper: classes.drawerPaper }}
             ModalProps={{ keepMounted: true }}

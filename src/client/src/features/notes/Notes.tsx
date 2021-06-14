@@ -88,10 +88,10 @@ const Notes = () => {
   return (
     <Container maxWidth="xl" className={classes.root}>
       <FormControl variant="outlined" size="small" className={classes.formControl}>
-        <InputLabel id="sort-notes-select">Sort</InputLabel>
-        <Select labelId="sort-notes-select" label="Sort" variant="outlined" value={sort} onChange={handleSortChange}>
-          <MenuItem value="Descending">Descending</MenuItem>
-          <MenuItem value="Ascending">Ascending</MenuItem>
+        <InputLabel id="sort-notes-select">Sort by</InputLabel>
+        <Select labelId="sort-notes-select" label="Sort by" variant="outlined" value={sort} onChange={handleSortChange}>
+          <MenuItem value="Descending">Date: Descending</MenuItem>
+          <MenuItem value="Ascending">Date: Ascending</MenuItem>
         </Select>
       </FormControl>
       <div id="back-to-top-anchor" />

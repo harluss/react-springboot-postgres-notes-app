@@ -1,11 +1,13 @@
 import { Typography } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import MoreVert from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { useAppDispatch } from 'app/hooks';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
@@ -57,7 +59,7 @@ const NoteCard = ({ note }: { note: Note }) => {
           action={
             <div>
               <IconButton onClick={handleMenuOpen}>
-                <MoreVert />
+                <MoreVertIcon />
               </IconButton>
               <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
                 {/* <MenuItem onClick={handleMenuClose} disabled>
@@ -66,7 +68,12 @@ const NoteCard = ({ note }: { note: Note }) => {
                 <MenuItem onClick={handleMenuClose} disabled>
                   Edit
                 </MenuItem> */}
-                <MenuItem onClick={handleDeleteAlertDialog}>Delete</MenuItem>
+                <MenuItem onClick={handleDeleteAlertDialog}>
+                  <ListItemIcon>
+                    <DeleteForeverIcon fontSize="small" />
+                  </ListItemIcon>
+                  Delete
+                </MenuItem>
               </Menu>
             </div>
           }
