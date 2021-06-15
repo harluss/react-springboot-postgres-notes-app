@@ -7,9 +7,6 @@ type settingsState = {
   sortBy: SortByKeys;
 };
 
-// TODO: add check for darkMode system settings
-// TODO: add save settings to local storage (temp, until user profile logic is added)
-
 const initialState: settingsState = {
   isDarkMode: true,
   sortBy: 'dateDown',
