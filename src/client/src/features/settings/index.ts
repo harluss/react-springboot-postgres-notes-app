@@ -1,2 +1,2 @@
 export { default as settingsReducer } from './settingsSlice';
-export { selectIsDarkMode, toggleDarkMode } from './settingsSlice';
+export { selectDarkMode, selectSortBy, toggleDarkMode, setSortDate } from './settingsSlice';

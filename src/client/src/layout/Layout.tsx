@@ -19,7 +19,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ReactElement, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectIsDarkMode, toggleDarkMode } from 'features/settings';
+import { selectDarkMode, toggleDarkMode } from 'features/settings';
 
 const drawerWidth = 240;
 
@@ -90,7 +90,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
   const location = useLocation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const isDarkMode = useAppSelector(selectIsDarkMode);
+  const isDarkMode = useAppSelector(selectDarkMode);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => setIsMobileOpen((prevState) => !prevState);

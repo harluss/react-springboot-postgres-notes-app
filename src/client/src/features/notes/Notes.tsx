@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectAllNotes, selectNotesStatus } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
@@ -12,6 +12,8 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
 import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
 import ScrollUpButton from 'components/scrollUpButton/ScrollUpButton';
+import { SortBy, SortByKeys } from 'types';
+import { selectSortBy, setSortDate } from 'features/settings';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -43,19 +45,16 @@ type locationState = {
   noteAdded?: boolean;
 };
 
-type sortType = 'Descending' | 'Ascending';
-
 const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectAllNotes);
   const progress = useAppSelector(selectNotesStatus);
+  const sortBy = useAppSelector(selectSortBy);
   const theme = useTheme();
   const location = useLocation<locationState>();
   const history = useHistory();
-  const [sort, setSort] = useState<sortType>('Descending');
 
-  // TODO: add sort and dark/light mode to global state
   // TODO: add messages to display for empty notes list on: 1. error fetching, 2. success but empty list
 
   const breakpoints = {
@@ -66,10 +65,11 @@ const Notes = () => {
     [theme.breakpoints.values.sm]: 1,
   };
 
-  const handleSortChange = (event: ChangeEvent<{ value: unknown }>) => setSort(event.target.value as sortType);
+  const handleSortChange = (event: ChangeEvent<{ value: unknown }>) =>
+    dispatch(setSortDate(event.target.value as SortByKeys));
 
   const sortNotesByDate = (dateNoteA: string, dateNoteB: string) =>
-    sort === 'Descending' ? dateNoteB.localeCompare(dateNoteA) : dateNoteA.localeCompare(dateNoteB);
+    sortBy === 'dateDown' ? dateNoteB.localeCompare(dateNoteA) : dateNoteA.localeCompare(dateNoteB);
 
   useEffect(() => {
     if (location.state?.noteAdded) {
@@ -89,9 +89,18 @@ const Notes = () => {
     <Container maxWidth="xl" className={classes.root}>
       <FormControl variant="outlined" size="small" className={classes.formControl}>
         <InputLabel id="sort-notes-select">Sort by</InputLabel>
-        <Select labelId="sort-notes-select" label="Sort by" variant="outlined" value={sort} onChange={handleSortChange}>
-          <MenuItem value="Descending">Date: Descending</MenuItem>
-          <MenuItem value="Ascending">Date: Ascending</MenuItem>
+        <Select
+          labelId="sort-notes-select"
+          label="Sort by"
+          variant="outlined"
+          value={sortBy}
+          onChange={handleSortChange}
+        >
+          {Object.entries(SortBy).map(([key, value]) => (
+            <MenuItem key={key} value={key}>
+              {value}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       <div id="back-to-top-anchor" />

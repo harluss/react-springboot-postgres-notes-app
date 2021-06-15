@@ -2,10 +2,10 @@ import { ReactElement, useMemo } from 'react';
 import { unstable_createMuiStrictModeTheme as createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 import { useAppSelector } from 'app/hooks';
-import { selectIsDarkMode } from 'features/settings';
+import { selectDarkMode } from 'features/settings';
 
 const GlobalThemeProvider = ({ children }: { children: ReactElement }) => {
-  const isDarkMode = useAppSelector(selectIsDarkMode);
+  const isDarkMode = useAppSelector(selectDarkMode);
 
   const theme = useMemo(
     () =>
