@@ -10,7 +10,6 @@ const GlobalThemeProvider = ({ children }: { children: ReactElement }) => {
   const isDarkMode = useAppSelector(selectDarkMode);
 
   useEffect(() => {
-    console.log(isDarkMode, prefersLightMode);
     if ((isDarkMode && prefersLightMode) || (!isDarkMode && !prefersLightMode)) {
       dispatch(toggleDarkMode());
     }

@@ -1,4 +1,4 @@
-type Note = {
+export type Note = {
   id: number;
   title: string;
   details: string;
@@ -6,5 +6,3 @@ type Note = {
   createdAt: string;
   updatedAt: string;
 };
-
-export type { Note as default };

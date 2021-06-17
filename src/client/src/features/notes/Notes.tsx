@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { fetchNotes, selectAllNotes, selectNotesStatus } from './notesSlice';
+import { fetchNotes, selectNotes } from './notesSlice';
 import NoteCard from 'components/noteCard/NoteCard';
 import Masonry from 'react-masonry-css';
 import Container from '@material-ui/core/Container';
@@ -8,15 +8,27 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { makeStyles, Theme, useTheme } from '@material-ui/core';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
 import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
 import ScrollUpButton from 'components/scrollUpButton/ScrollUpButton';
 import { SortBy, SortByKeys } from 'types';
 import { selectSortBy, setSortDate } from 'features/settings';
+import { setSnackbar } from 'features/snackbar';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
+    errorContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      height: '100vh',
+      marginTop: 100,
+    },
+    errorIcon: {
+      marginRight: theme.spacing(1),
+    },
     formControl: {
       marginBottom: theme.spacing(2),
       alignSelf: 'flex-end',
@@ -48,14 +60,11 @@ type locationState = {
 const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const notes = useAppSelector(selectAllNotes);
-  const progress = useAppSelector(selectNotesStatus);
+  const { data, status } = useAppSelector(selectNotes);
   const sortBy = useAppSelector(selectSortBy);
   const theme = useTheme();
   const location = useLocation<locationState>();
   const history = useHistory();
-
-  // TODO: add messages to display for empty notes list on: 1. error fetching, 2. success but empty list
 
   const breakpoints = {
     default: 5,
@@ -78,11 +87,35 @@ const Notes = () => {
 
     const promise = dispatch(fetchNotes());
 
+    promise.then(unwrapResult).catch((error) => {
+      if (error.name !== 'AbortError') {
+        console.log(error);
+        dispatch(setSnackbar({ isOpen: true, message: `Failed to load notes`, type: 'error' }));
+      }
+    });
+
     return () => promise.abort();
   }, []);
 
-  if (progress === 'processing') {
+  if (status === 'processing') {
     return <ProgressIndicator />;
+  }
+
+  if (status === 'failed') {
+    return (
+      <Container className={classes.errorContainer}>
+        <ErrorOutlineIcon className={classes.errorIcon} />
+        <Typography>Oops! Something went wrong...</Typography>
+      </Container>
+    );
+  }
+
+  if (status === 'succeeded' && !data.length) {
+    return (
+      <Container className={classes.errorContainer}>
+        <Typography>You have no saved notes</Typography>
+      </Container>
+    );
   }
 
   return (
@@ -105,13 +138,14 @@ const Notes = () => {
       </FormControl>
       <div id="back-to-top-anchor" />
       <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
-        {[...notes]
-          .sort((a, b) => sortNotesByDate(a.createdAt, b.createdAt))
-          .map((note) => (
-            <div key={note.id} className={classes.gridColumnChild}>
-              <NoteCard note={note} />
-            </div>
-          ))}
+        {data.length &&
+          [...data]
+            .sort((a, b) => sortNotesByDate(a.createdAt, b.createdAt))
+            .map((note) => (
+              <div key={note.id} className={classes.gridColumnChild}>
+                <NoteCard note={note} />
+              </div>
+            ))}
       </Masonry>
       <ScrollUpButton />
     </Container>

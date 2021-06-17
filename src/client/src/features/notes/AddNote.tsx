@@ -74,6 +74,8 @@ const AddNote = () => {
     reset,
   } = useForm<Inputs>({ defaultValues, resolver: yupResolver(addNoteSchema) });
 
+  // TODO: add white space trimming function
+
   const onSubmit = (data: Inputs) => {
     dispatch(addNote(data))
       .then(unwrapResult)
