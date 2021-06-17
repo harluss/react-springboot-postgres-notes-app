@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { CardActionArea, makeStyles, Theme, Typography } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -17,7 +17,25 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
 import { deleteNote } from 'features/notes';
 
+const useStyles = makeStyles((theme: Theme) => {
+  return {
+    cardHeader: {
+      marginRight: theme.spacing(3),
+    },
+    cardMenu: {
+      position: 'absolute',
+      zIndex: 1,
+      top: 0,
+      right: 0,
+    },
+    root: {
+      position: 'relative',
+    },
+  };
+});
+
 const NoteCard = ({ note }: { note: Note }) => {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +46,8 @@ const NoteCard = ({ note }: { note: Note }) => {
 
   const handleDeleteAlertDialog = () => {
     handleMenuClose();
-    setIsOpen(true);
+    console.log(`delete note: ${note.title}`);
+    // setIsOpen(true);
   };
 
   const handleDelete = () => {
@@ -54,35 +73,32 @@ const NoteCard = ({ note }: { note: Note }) => {
         confirmAction={handleDelete}
         setIsOpen={setIsOpen}
       />
-      <Card variant="outlined">
-        <CardHeader
-          action={
-            <div>
-              <IconButton onClick={handleMenuOpen}>
-                <MoreVertIcon />
-              </IconButton>
-              <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
-                {/* <MenuItem onClick={handleMenuClose} disabled>
-                  Pin
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose} disabled>
-                  Edit
-                </MenuItem> */}
-                <MenuItem onClick={handleDeleteAlertDialog}>
-                  <ListItemIcon>
-                    <DeleteForeverIcon fontSize="small" />
-                  </ListItemIcon>
-                  Delete
-                </MenuItem>
-              </Menu>
-            </div>
-          }
-          title={note.title}
-          subheader={formatDate(note.createdAt)}
-        />
-        <CardContent>
-          <Typography color="textSecondary">{note.details}</Typography>
-        </CardContent>
+      <Card variant="outlined" className={classes.root}>
+        <div>
+          <IconButton onClick={handleMenuOpen} className={classes.cardMenu}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
+            <MenuItem onClick={handleMenuClose} disabled>
+              Pin
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose} disabled>
+              Edit
+            </MenuItem>
+            <MenuItem onClick={handleDeleteAlertDialog}>
+              <ListItemIcon>
+                <DeleteForeverIcon fontSize="small" />
+              </ListItemIcon>
+              Delete
+            </MenuItem>
+          </Menu>
+        </div>
+        <CardActionArea onClick={() => console.log(note.title)}>
+          <CardHeader title={note.title} subheader={formatDate(note.createdAt)} className={classes.cardHeader} />
+          <CardContent>
+            <Typography color="textSecondary">{note.details}</Typography>
+          </CardContent>
+        </CardActionArea>
       </Card>
     </div>
   );

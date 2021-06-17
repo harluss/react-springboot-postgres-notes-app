@@ -90,7 +90,7 @@ const Notes = () => {
     promise.then(unwrapResult).catch((error) => {
       if (error.name !== 'AbortError') {
         console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to load notes`, type: 'error' }));
+        dispatch(setSnackbar({ isOpen: true, message: `Failed to load notes: ${error.message}`, type: 'error' }));
       }
     });
 

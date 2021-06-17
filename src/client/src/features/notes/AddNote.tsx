@@ -83,8 +83,8 @@ const AddNote = () => {
       .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' })))
       .then(() => history.push('/', { noteAdded: true }))
       .catch((error) => {
-        console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to add note', type: 'error' }));
+        console.log(error);
+        dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
       });
   };
 
@@ -103,6 +103,7 @@ const AddNote = () => {
             <TextField
               {...field}
               className={classes.field}
+              id="title-input"
               label="Title"
               variant="outlined"
               fullWidth
@@ -120,6 +121,7 @@ const AddNote = () => {
             <TextField
               {...field}
               className={classes.field}
+              id="details-input"
               label="Details"
               variant="outlined"
               fullWidth
@@ -138,6 +140,7 @@ const AddNote = () => {
             <FormControlLabel
               className={classes.checkbox}
               control={<Checkbox {...field} name="isPinned" color="primary" />}
+              id="is-pinned-checkbox"
               label="Pin Note"
             />
           )}
