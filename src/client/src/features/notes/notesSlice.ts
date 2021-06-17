@@ -7,7 +7,7 @@ import axios from 'axios';
 type NotesState = {
   data: Note[];
   status: 'idle' | 'processing' | 'succeeded' | 'failed';
-  error: string | undefined;
+  error: string;
 };
 
 const initialState: NotesState = {
@@ -16,8 +16,7 @@ const initialState: NotesState = {
   error: '',
 };
 
-// TODO: handle rejected thunk message
-// TODO: write tests
+const fallbackErrorMessage = (actionString: string) => `Failed to ${actionString}`;
 
 export const fetchNotes = createAsyncThunk('notes/getNotes', async (_: void, { signal }) => {
   const source = axios.CancelToken.source();
@@ -51,11 +50,11 @@ export const notesSlice = createSlice({
 
     builder.addCase(fetchNotes.fulfilled, (state, { payload }) => {
       state.data = payload;
-      state.status = 'idle';
+      state.status = 'succeeded';
     });
 
     builder.addCase(fetchNotes.rejected, (state, { error }) => {
-      state.error = error.message;
+      state.error = error.message ?? fallbackErrorMessage('fetch notes');
       state.status = 'failed';
     });
 
@@ -66,11 +65,11 @@ export const notesSlice = createSlice({
 
     builder.addCase(addNote.fulfilled, (state, { payload }) => {
       state.data.push(payload);
-      state.status = 'idle';
+      state.status = 'succeeded';
     });
 
     builder.addCase(addNote.rejected, (state, { error }) => {
-      state.error = error.message;
+      state.error = error.message ?? fallbackErrorMessage('add note');
       state.status = 'failed';
     });
 
@@ -81,16 +80,18 @@ export const notesSlice = createSlice({
 
     builder.addCase(deleteNote.fulfilled, (state, { meta }) => {
       state.data = state.data.filter((note) => note.id !== meta.arg);
-      state.status = 'idle';
+      state.status = 'succeeded';
     });
 
     builder.addCase(deleteNote.rejected, (state, { error }) => {
-      state.error = error.message;
+      state.error = error.message ?? fallbackErrorMessage('delete note');
       state.status = 'failed';
     });
   },
 });
 
 export const selectNotesStatus = (state: RootState): string => state.notes.status;
+export const selectNotesError = (state: RootState): string | undefined => state.notes.error;
 export const selectAllNotes = (state: RootState): Note[] => state.notes.data;
+export const selectNotes = (state: RootState): NotesState => state.notes;
 export default notesSlice.reducer;

@@ -5,28 +5,15 @@ import { store } from './app/store';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { unstable_createMuiStrictModeTheme as createMuiTheme, ThemeProvider } from '@material-ui/core';
-
-const theme = createMuiTheme({
-  typography: {
-    button: {
-      fontWeight: 'bold',
-    },
-    fontFamily: 'Montserrat',
-    fontWeightLight: 300,
-    fontWeightMedium: 400,
-    fontWeightRegular: 500,
-    fontWeightBold: 700,
-  },
-});
+import GlobalThemeProvider from 'Theme/Theme';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <GlobalThemeProvider>
         <App />
-      </Provider>
-    </ThemeProvider>
+      </GlobalThemeProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
