@@ -6,7 +6,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { MouseEvent } from 'react';
 
-type alertDialogProps = {
+type AlertDialogProps = {
   isOpen: boolean;
   title: string;
   details: string;
@@ -24,7 +24,7 @@ const AlertDialog = ({
   cancelButtonText,
   confirmAction,
   setIsOpen,
-}: alertDialogProps) => {
+}: AlertDialogProps) => {
   const handleClose = (_: MouseEvent<HTMLElement>, reason?: string) => {
     if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
       return;

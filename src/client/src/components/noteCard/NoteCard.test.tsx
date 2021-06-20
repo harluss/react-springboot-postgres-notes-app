@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { Note } from 'types';
-import { renderWithProviders } from 'utils/testHelpers';
+import { renderWithProvidersAndRouter } from 'utils/testHelpers';
 import NoteCard from './NoteCard';
 import { formatDate } from 'utils/dateFormat';
 
@@ -15,14 +15,11 @@ describe('NoteCard component', () => {
       updatedAt: new Date().toUTCString(),
     };
 
-    renderWithProviders(<NoteCard note={dummyNote} />);
+    renderWithProvidersAndRouter(<NoteCard note={dummyNote} />);
 
-    const title = screen.getByText(/dummyNote/i);
-    const details = screen.getByText(/testing purposes/i);
-    const createdAt = screen.getByText(formatDate(dummyNote.createdAt));
-    expect(title).toBeInTheDocument();
-    expect(details).toBeInTheDocument();
-    expect(createdAt).toBeInTheDocument();
+    expect(screen.getByText(/dummyNote/i)).toBeInTheDocument();
+    expect(screen.getByText(/testing purposes/i)).toBeInTheDocument();
+    expect(screen.getByText(formatDate(dummyNote.createdAt))).toBeInTheDocument();
   });
 
   it.todo('deletes note on delete menu item click');

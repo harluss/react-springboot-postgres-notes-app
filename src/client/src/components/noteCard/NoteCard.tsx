@@ -16,6 +16,7 @@ import AlertDialog from 'components/alertDialog/AlertDialog';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
 import { deleteNote } from 'features/notes';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -93,7 +94,7 @@ const NoteCard = ({ note }: { note: Note }) => {
             </MenuItem>
           </Menu>
         </div>
-        <CardActionArea onClick={() => console.log(note.title)}>
+        <CardActionArea component={Link} to={{ pathname: '/note', state: { note } }}>
           <CardHeader title={note.title} subheader={formatDate(note.createdAt)} className={classes.cardHeader} />
           <CardContent>
             <Typography color="textSecondary">{note.details}</Typography>

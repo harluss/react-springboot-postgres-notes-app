@@ -92,6 +92,6 @@ export const notesSlice = createSlice({
 
 export const selectNotesStatus = (state: RootState): string => state.notes.status;
 export const selectNotesError = (state: RootState): string | undefined => state.notes.error;
-export const selectAllNotes = (state: RootState): Note[] => state.notes.data;
-export const selectNotes = (state: RootState): NotesState => state.notes;
+export const selectNotes = (state: RootState): Note[] => state.notes.data;
+export const selectNotesState = (state: RootState): NotesState => state.notes;
 export default notesSlice.reducer;
