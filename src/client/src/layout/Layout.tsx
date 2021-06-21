@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlined from '@material-ui/icons/AddCircleOutlineOutlined';
 import SubjectIcon from '@material-ui/icons/Subject';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
@@ -75,12 +76,12 @@ const useStyles = makeStyles((theme: Theme) => {
 const menuItems = [
   {
     text: 'My Notes',
-    icon: <SubjectIcon />,
+    icon: <SubjectIcon color="primary" />,
     path: '/',
   },
   {
     text: 'Add Note',
-    icon: <AddCircleOutlineOutlined />,
+    icon: <AddCircleOutlineOutlined color="primary" />,
     path: '/create',
   },
 ];
@@ -130,9 +131,11 @@ const Layout = ({ children }: { children: ReactElement }) => {
           <Typography className={classes.title} noWrap>
             Welcome to Some Notes
           </Typography>
-          <IconButton color="inherit" onClick={handleDarkModeToggle}>
-            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
+          <Tooltip title="Toggle dark/light theme">
+            <IconButton color="inherit" onClick={handleDarkModeToggle}>
+              {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Tooltip>
           <IconButton color="inherit">
             <InsertEmoticonIcon />
           </IconButton>

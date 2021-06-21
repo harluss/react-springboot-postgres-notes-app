@@ -8,6 +8,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import EditIcon from '@material-ui/icons/Edit';
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { useAppDispatch } from 'app/hooks';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
@@ -48,7 +51,7 @@ const NoteCard = ({ note }: { note: Note }) => {
   const handleDeleteAlertDialog = () => {
     handleMenuClose();
     console.log(`delete note: ${note.title}`);
-    // setIsOpen(true);
+    setIsOpen(true);
   };
 
   const handleDelete = () => {
@@ -81,9 +84,15 @@ const NoteCard = ({ note }: { note: Note }) => {
           </IconButton>
           <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
             <MenuItem onClick={handleMenuClose} disabled>
-              Pin
+              <ListItemIcon>
+                {note.isPinned ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+              </ListItemIcon>
+              {note.isPinned ? 'Unpin' : 'Pin'}
             </MenuItem>
             <MenuItem onClick={handleMenuClose} disabled>
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
               Edit
             </MenuItem>
             <MenuItem onClick={handleDeleteAlertDialog}>

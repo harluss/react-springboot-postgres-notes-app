@@ -38,6 +38,10 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: nu
   return notesAPI.deleteNote(noteId);
 });
 
+export const editNote = createAsyncThunk('notes/editNote', async (note: Note) => {
+  return notesAPI.editNote({ noteId: note.id, note });
+});
+
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
@@ -84,6 +88,26 @@ export const notesSlice = createSlice({
     });
 
     builder.addCase(deleteNote.rejected, (state, { error }) => {
+      state.error = error.message ?? fallbackErrorMessage('delete note');
+      state.status = 'failed';
+    });
+
+    builder.addCase(editNote.pending, (state) => {
+      state.error = '';
+      state.status = 'processing';
+    });
+
+    builder.addCase(editNote.fulfilled, (state, { payload }) => {
+      let note = state.data.find((note) => note.id === payload.id);
+
+      if (note) {
+        note = payload;
+      }
+
+      state.status = 'succeeded';
+    });
+
+    builder.addCase(editNote.rejected, (state, { error }) => {
       state.error = error.message ?? fallbackErrorMessage('delete note');
       state.status = 'failed';
     });
