@@ -108,7 +108,7 @@ export const notesSlice = createSlice({
     });
 
     builder.addCase(editNote.rejected, (state, { error }) => {
-      state.error = error.message ?? fallbackErrorMessage('delete note');
+      state.error = error.message ?? fallbackErrorMessage('update note');
       state.status = 'failed';
     });
   },

@@ -25,9 +25,6 @@ const useStyles = makeStyles((theme: Theme) => {
       marginBottom: 10,
       fill: theme.palette.background.paper,
     },
-    container: {
-      height: `calc(100vh - 110px)`,
-    },
     field: {
       marginTop: 20,
       marginBottom: 10,
@@ -81,7 +78,7 @@ const AddNote = () => {
       .then(unwrapResult)
       .then(reset)
       .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' })))
-      .then(() => history.push('/', { noteAdded: true }))
+      .then(() => history.push('/', { stateUpdated: true }))
       .catch((error) => {
         console.log(error);
         dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
@@ -93,7 +90,7 @@ const AddNote = () => {
   }
 
   return (
-    <Container maxWidth="sm" className={classes.container}>
+    <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={unsavedChangesMessage} />
         <Controller

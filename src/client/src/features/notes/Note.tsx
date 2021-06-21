@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme: Theme) => {
     container: {
       height: `calc(100vh - 110px)`,
     },
+    date: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
     menuContainer: {
       display: 'flex',
       justifyContent: 'flex-end',
@@ -52,7 +56,7 @@ const Note = () => {
   return (
     <Container maxWidth="sm" className={classes.container}>
       <div className={classes.menuContainer}>
-        <Tooltip title="Pin">
+        <Tooltip title="Pin/Unpin">
           <IconButton onClick={() => console.log('pin')}>
             {noteDetails.isPinned ? <StarIcon /> : <StarBorderIcon />}
           </IconButton>
@@ -71,12 +75,22 @@ const Note = () => {
       <Typography variant="h5" component="h1" className={classes.title}>
         {noteDetails.title}
       </Typography>
-      <Typography variant="subtitle1" color="textSecondary">
-        Created: {formatDateTime(noteDetails.createdAt)}
-      </Typography>
-      <Typography variant="subtitle1" color="textSecondary">
-        Updated: {formatDateTime(noteDetails.updatedAt)}
-      </Typography>
+      <div className={classes.date}>
+        <Typography variant="subtitle1" color="textSecondary">
+          Created:
+        </Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          {formatDateTime(noteDetails.createdAt)}
+        </Typography>
+      </div>
+      <div className={classes.date}>
+        <Typography variant="subtitle1" color="textSecondary">
+          Last updated:
+        </Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          {formatDateTime(noteDetails.updatedAt)}
+        </Typography>
+      </div>
       <Typography variant="body1" className={classes.body}>
         {noteDetails.details}
       </Typography>

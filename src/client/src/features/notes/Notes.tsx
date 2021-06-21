@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 type LocationState = {
-  noteAdded?: boolean;
+  stateUpdated?: boolean;
 };
 
 const Notes = () => {
@@ -72,7 +72,7 @@ const Notes = () => {
     sortBy === 'dateDown' ? dateNoteB.localeCompare(dateNoteA) : dateNoteA.localeCompare(dateNoteB);
 
   useEffect(() => {
-    if (location.state?.noteAdded) {
+    if (location.state?.stateUpdated) {
       return history.replace('/');
     }
 

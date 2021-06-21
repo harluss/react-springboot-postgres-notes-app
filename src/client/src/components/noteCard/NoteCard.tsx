@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme: Theme) => {
       top: 0,
       right: 0,
     },
+    content: {
+      display: '-webkit-box',
+      WebkitLineClamp: 5,
+      WebkitBoxOrient: 'vertical',
+      overflow: 'hidden',
+    },
     root: {
       position: 'relative',
     },
@@ -106,7 +112,9 @@ const NoteCard = ({ note }: { note: Note }) => {
         <CardActionArea component={Link} to={{ pathname: '/note', state: { note } }}>
           <CardHeader title={note.title} subheader={formatDate(note.createdAt)} className={classes.cardHeader} />
           <CardContent>
-            <Typography color="textSecondary">{note.details}</Typography>
+            <Typography className={classes.content} color="textSecondary">
+              {note.details}
+            </Typography>
           </CardContent>
         </CardActionArea>
       </Card>
