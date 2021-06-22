@@ -29,7 +29,7 @@ export const deleteNote = async (noteId: number) => {
 };
 
 export const editNote = async ({ noteId, note }: EditNoteProps) => {
-  const { data } = await axios.post<Note>(`/api/notes/${noteId}`, note);
+  const { data } = await axios.put<Note>(`/api/notes/${noteId}`, note);
 
   return data;
 };

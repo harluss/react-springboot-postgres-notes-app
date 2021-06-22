@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const menuItems = [
   {
-    text: 'My Notes',
+    text: 'All Notes',
     icon: <SubjectIcon color="primary" />,
     path: '/',
   },

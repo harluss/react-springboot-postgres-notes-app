@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
-import { AddNote, Note } from 'types';
+import { AddNote, EditNote, Note } from 'types';
 import * as notesAPI from 'api/notesAPI';
 import axios from 'axios';
 
@@ -38,8 +38,19 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: nu
   return notesAPI.deleteNote(noteId);
 });
 
-export const editNote = createAsyncThunk('notes/editNote', async (note: Note) => {
-  return notesAPI.editNote({ noteId: note.id, note });
+type EditNoteProps = {
+  note: Note;
+  toggleIsPinned?: boolean;
+};
+
+export const editNote = createAsyncThunk('notes/editNote', async ({ note, toggleIsPinned = false }: EditNoteProps) => {
+  const noteToEdit: EditNote = {
+    title: note.title,
+    details: note.details,
+    isPinned: toggleIsPinned ? !note.isPinned : note.isPinned,
+  };
+
+  return notesAPI.editNote({ noteId: note.id, note: noteToEdit });
 });
 
 export const notesSlice = createSlice({
@@ -98,12 +109,8 @@ export const notesSlice = createSlice({
     });
 
     builder.addCase(editNote.fulfilled, (state, { payload }) => {
-      let note = state.data.find((note) => note.id === payload.id);
-
-      if (note) {
-        note = payload;
-      }
-
+      const index = state.data.findIndex((note) => note.id === payload.id);
+      state.data[index] = payload;
       state.status = 'succeeded';
     });
 

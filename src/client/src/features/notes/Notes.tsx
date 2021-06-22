@@ -68,8 +68,10 @@ const Notes = () => {
   const handleSortChange = (event: ChangeEvent<{ value: unknown }>) =>
     dispatch(setSortDate(event.target.value as SortByKeys));
 
-  const sortNotesByDate = (dateNoteA: string, dateNoteB: string) =>
-    sortBy === 'dateDown' ? dateNoteB.localeCompare(dateNoteA) : dateNoteA.localeCompare(dateNoteB);
+  const sortNotesByDate = (dateA: string, dateB: string) =>
+    sortBy === 'dateDown' ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
+
+  const sortNotesByIsPinned = (isPinnedA: boolean, isPinnedB: boolean) => Number(isPinnedB) - Number(isPinnedA);
 
   useEffect(() => {
     if (location.state?.stateUpdated) {
@@ -122,7 +124,7 @@ const Notes = () => {
       <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
         {data.length &&
           [...data]
-            .sort((a, b) => sortNotesByDate(a.createdAt, b.createdAt))
+            .sort((a, b) => sortNotesByIsPinned(a.isPinned, b.isPinned) || sortNotesByDate(a.createdAt, b.createdAt))
             .map((note) => (
               <div key={note.id} className={classes.gridColumnChild}>
                 <NoteCard note={note} />

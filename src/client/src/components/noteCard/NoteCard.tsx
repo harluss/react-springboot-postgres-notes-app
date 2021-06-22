@@ -20,6 +20,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
 import { deleteNote } from 'features/notes';
 import { Link } from 'react-router-dom';
+import { editNote } from 'features/notes/notesSlice';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -40,12 +41,14 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     root: {
       position: 'relative',
+      borderColor: (isPinned) => (isPinned ? theme.palette.primary.main : ''),
+      borderWidth: (isPinned) => (isPinned ? 2 : 1),
     },
   };
 });
 
 const NoteCard = ({ note }: { note: Note }) => {
-  const classes = useStyles();
+  const classes = useStyles(note.isPinned);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +59,6 @@ const NoteCard = ({ note }: { note: Note }) => {
 
   const handleDeleteAlertDialog = () => {
     handleMenuClose();
-    console.log(`delete note: ${note.title}`);
     setIsOpen(true);
   };
 
@@ -69,6 +71,26 @@ const NoteCard = ({ note }: { note: Note }) => {
       .catch((error) => {
         console.log(error.message);
         dispatch(setSnackbar({ isOpen: true, message: 'Failed to delete note', type: 'error' }));
+      });
+  };
+
+  const handleToggleIsPinned = () => {
+    handleMenuClose();
+
+    dispatch(editNote({ note, toggleIsPinned: true }))
+      .then(unwrapResult)
+      .then((updatedNote) =>
+        dispatch(
+          setSnackbar({
+            isOpen: true,
+            message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`,
+            type: 'success',
+          })
+        )
+      )
+      .catch((error) => {
+        console.log(error.message);
+        dispatch(setSnackbar({ isOpen: true, message: 'Failed to update note', type: 'error' }));
       });
   };
 
@@ -89,7 +111,7 @@ const NoteCard = ({ note }: { note: Note }) => {
             <MoreVertIcon />
           </IconButton>
           <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
-            <MenuItem onClick={handleMenuClose} disabled>
+            <MenuItem onClick={handleToggleIsPinned}>
               <ListItemIcon>
                 {note.isPinned ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
               </ListItemIcon>

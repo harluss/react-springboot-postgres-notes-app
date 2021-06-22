@@ -77,8 +77,10 @@ const AddNote = () => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
-      .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' })))
-      .then(() => history.push('/', { stateUpdated: true }))
+      .then(() => {
+        dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' }));
+        history.push('/', { stateUpdated: true });
+      })
       .catch((error) => {
         console.log(error);
         dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
