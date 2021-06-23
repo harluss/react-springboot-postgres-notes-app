@@ -66,3 +66,6 @@ spring:
   liquibase:
     contexts: test
     drop-first: true
+
+bucket4j:
+  enabled: false

@@ -6,6 +6,7 @@ import com.harluss.notes.dtos.NoteUpdateRequestDto;
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.repositories.NoteRepository;
 import com.harluss.notes.utilities.PostgresTestContainer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
 
   @DisplayName("should reject 6th request within 10s with status 429")
   @Test
+  @Disabled
   void getNotes_rateLimit() throws Exception {
     IntStream.rangeClosed(1, 5)
         .forEach(counter -> {
