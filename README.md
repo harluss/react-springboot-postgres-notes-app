@@ -4,9 +4,9 @@
 
 This a React/SpringBoot/Postgres app.
 
-The main purpose of this project is to learn and practice.
+The main purpose of this project is to learn more about React, TypeScript, Spring Boot and Postgres.
 
-### Features (in no particular order)
+### Tech (in no particular order)
 
 #### Backend
 - [x] Spring Boot project with Gradle
@@ -27,6 +27,7 @@ The main purpose of this project is to learn and practice.
 - [x] AOP logging
 - [x] Data validation
 - [x] Caching with Caffeine
+- [ ] Versioning
 - [ ] ...
 
 #### Frontend
@@ -34,11 +35,25 @@ The main purpose of this project is to learn and practice.
 - [x] Material UI
 - [x] Unit tests
 - [x] State management with Redux-Toolkit
+- [x] CRUD
 - [ ] Authentication with JWT
 - [ ] E2E tests with Cypress (maybe)
 - [ ] Speech to text
-- [ ] CRUD
+- [ ] Versioning
 - [ ] ...
+
+### Features
+- [x] Notes CRUD
+- [ ] Tags or Categories CRUD
+  - [ ] Backend
+  - [ ] Frontend
+- [ ] Authentication
+  - [ ] Backend
+  - [ ] Frontend
+- [ ] Speech to text
+  - [ ] Frontend
+- [ ] ...
+
 
 #### Docs
 - [x] Swagger for backend

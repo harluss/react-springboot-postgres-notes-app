@@ -1,34 +1,26 @@
 import { ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { fetchNotes, selectNotes } from './notesSlice';
-import NoteCard from 'components/noteCard/NoteCard';
+import { fetchNotes, selectNotesState } from './notesSlice';
+import { NoteCard } from 'components/noteCard';
 import Masonry from 'react-masonry-css';
 import Container from '@material-ui/core/Container';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
+import { makeStyles, Theme, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
-import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
-import ScrollUpButton from 'components/scrollUpButton/ScrollUpButton';
+import { ProgressIndicator } from 'components/progressIndicator';
+import { ScrollUpButton } from 'components/scrollUpButton';
 import { SortBy, SortByKeys } from 'types';
 import { selectSortBy, setSortDate } from 'features/settings';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { Message } from 'components/message/Message';
+import { Paths } from 'types';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
-    errorContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      height: '100vh',
-      marginTop: 100,
-    },
-    errorIcon: {
-      marginRight: theme.spacing(1),
-    },
     formControl: {
       marginBottom: theme.spacing(2),
       alignSelf: 'flex-end',
@@ -53,17 +45,17 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-type locationState = {
-  noteAdded?: boolean;
+type LocationState = {
+  stateUpdated?: boolean;
 };
 
 const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const { data, status } = useAppSelector(selectNotes);
+  const { data, status } = useAppSelector(selectNotesState);
   const sortBy = useAppSelector(selectSortBy);
   const theme = useTheme();
-  const location = useLocation<locationState>();
+  const location = useLocation<LocationState>();
   const history = useHistory();
 
   const breakpoints = {
@@ -77,12 +69,14 @@ const Notes = () => {
   const handleSortChange = (event: ChangeEvent<{ value: unknown }>) =>
     dispatch(setSortDate(event.target.value as SortByKeys));
 
-  const sortNotesByDate = (dateNoteA: string, dateNoteB: string) =>
-    sortBy === 'dateDown' ? dateNoteB.localeCompare(dateNoteA) : dateNoteA.localeCompare(dateNoteB);
+  const sortNotesByDate = (dateA: string, dateB: string) =>
+    sortBy === 'dateDown' ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
+
+  const sortNotesByIsPinned = (isPinnedA: boolean, isPinnedB: boolean) => Number(isPinnedB) - Number(isPinnedA);
 
   useEffect(() => {
-    if (location.state?.noteAdded) {
-      return history.replace('/');
+    if (location.state?.stateUpdated) {
+      return history.replace(Paths.notes);
     }
 
     const promise = dispatch(fetchNotes());
@@ -90,7 +84,7 @@ const Notes = () => {
     promise.then(unwrapResult).catch((error) => {
       if (error.name !== 'AbortError') {
         console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to load notes`, type: 'error' }));
+        dispatch(setSnackbar({ isOpen: true, message: `Failed to load notes: ${error.message}`, type: 'error' }));
       }
     });
 
@@ -102,20 +96,11 @@ const Notes = () => {
   }
 
   if (status === 'failed') {
-    return (
-      <Container className={classes.errorContainer}>
-        <ErrorOutlineIcon className={classes.errorIcon} />
-        <Typography>Oops! Something went wrong...</Typography>
-      </Container>
-    );
+    return <Message messageText="Oops! Something went wrong..." type="error" />;
   }
 
   if (status === 'succeeded' && !data.length) {
-    return (
-      <Container className={classes.errorContainer}>
-        <Typography>You have no saved notes</Typography>
-      </Container>
-    );
+    return <Message messageText="You have no saved notes" />;
   }
 
   return (
@@ -140,7 +125,7 @@ const Notes = () => {
       <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
         {data.length &&
           [...data]
-            .sort((a, b) => sortNotesByDate(a.createdAt, b.createdAt))
+            .sort((a, b) => sortNotesByIsPinned(a.isPinned, b.isPinned) || sortNotesByDate(a.createdAt, b.createdAt))
             .map((note) => (
               <div key={note.id} className={classes.gridColumnChild}>
                 <NoteCard note={note} />

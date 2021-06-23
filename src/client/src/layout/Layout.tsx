@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlined from '@material-ui/icons/AddCircleOutlineOutlined';
 import SubjectIcon from '@material-ui/icons/Subject';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
@@ -20,6 +21,7 @@ import { ReactElement, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectDarkMode, toggleDarkMode } from 'features/settings';
+import { Paths } from 'types';
 
 const drawerWidth = 240;
 
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     content: {
       background: theme.palette.background.default,
-      height: '100%',
+      minHeight: '100vh',
       flexGrow: 1,
       padding: theme.spacing(3),
     },
@@ -74,14 +76,14 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const menuItems = [
   {
-    text: 'My Notes',
-    icon: <SubjectIcon />,
-    path: '/',
+    text: 'All Notes',
+    icon: <SubjectIcon color="primary" />,
+    path: Paths.notes,
   },
   {
     text: 'Add Note',
-    icon: <AddCircleOutlineOutlined />,
-    path: '/create',
+    icon: <AddCircleOutlineOutlined color="primary" />,
+    path: Paths.addNote,
   },
 ];
 
@@ -130,9 +132,11 @@ const Layout = ({ children }: { children: ReactElement }) => {
           <Typography className={classes.title} noWrap>
             Welcome to Some Notes
           </Typography>
-          <IconButton color="inherit" onClick={handleDarkModeToggle}>
-            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
+          <Tooltip title="Toggle dark/light theme">
+            <IconButton color="inherit" onClick={handleDarkModeToggle}>
+              {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Tooltip>
           <IconButton color="inherit">
             <InsertEmoticonIcon />
           </IconButton>

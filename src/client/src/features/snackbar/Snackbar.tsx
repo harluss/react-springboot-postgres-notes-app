@@ -19,6 +19,8 @@ const GlobalSnackbar = () => {
   const dispatch = useAppDispatch();
   const { isOpen, message, type } = useAppSelector(selectSnackbar);
 
+  const duration = type === 'error' ? 5000 : 3000;
+
   const handleClose = (_?: SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -29,7 +31,7 @@ const GlobalSnackbar = () => {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={isOpen} autoHideDuration={3000} onClose={handleClose}>
+      <Snackbar open={isOpen} autoHideDuration={duration} onClose={handleClose}>
         <Alert onClose={handleClose} elevation={2} variant="filled" severity={type}>
           {message}
         </Alert>

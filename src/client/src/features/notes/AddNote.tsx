@@ -1,37 +1,28 @@
 import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import TextField from '@material-ui/core/TextField';
 import { makeStyles, Theme } from '@material-ui/core';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { Prompt, useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { addNote, selectNotesStatus } from './notesSlice';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
-import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
+import { ProgressIndicator } from 'components/progressIndicator';
+import { NoteInputs, Paths } from 'types';
+import { FormInput } from 'components/formInput';
+import { NoteSchema } from 'schema';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
     button: {
       width: 120,
       marginTop: 30,
-      marginLeft: 'auto',
+      marginLeft: theme.spacing(2),
     },
-    checkbox: {
-      marginBottom: 10,
-      fill: theme.palette.background.paper,
-    },
-    container: {
-      height: `calc(100vh - 110px)`,
-    },
-    field: {
-      marginTop: 20,
-      marginBottom: 10,
-      display: 'block',
+    buttonsContainer: {
+      display: 'flex',
+      justifyContent: 'flex-end',
     },
     form: {
       display: 'flex',
@@ -40,27 +31,15 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-const addNoteSchema = yup.object().shape({
-  title: yup.string().required(),
-  details: yup.string().required(),
-  isPinned: yup.boolean(),
-});
-
-// TODO: extract schema
-
-type Inputs = {
-  title: string;
-  details: string;
-  isPinned: boolean;
-};
-
-const defaultValues: Inputs = {
+const defaultValues: NoteInputs = {
   title: '',
   details: '',
   isPinned: false,
 };
 
 const unsavedChangesMessage = 'You have unsaved changes, are you sure you want to leave?';
+
+// TODO: replace browser's prompt with alertDialog
 
 const AddNote = () => {
   const classes = useStyles();
@@ -72,79 +51,62 @@ const AddNote = () => {
     formState: { isDirty, errors },
     handleSubmit,
     reset,
-  } = useForm<Inputs>({ defaultValues, resolver: yupResolver(addNoteSchema) });
+  } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
 
   // TODO: add white space trimming function
 
-  const onSubmit = (data: Inputs) => {
+  const onSubmit = (data: NoteInputs) => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
-      .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' })))
-      .then(() => history.push('/', { noteAdded: true }))
+      .then(() => {
+        dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' }));
+        history.push(Paths.notes, { stateUpdated: true });
+      })
       .catch((error) => {
-        console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to add note', type: 'error' }));
+        console.log(error);
+        dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
       });
   };
+
+  // TODO: refactor state reloading/refetching when switching between components
+  const handleCancel = () => history.goBack();
 
   if (progress === 'processing') {
     return <ProgressIndicator />;
   }
 
   return (
-    <Container maxWidth="sm" className={classes.container}>
+    <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={unsavedChangesMessage} />
-        <Controller
-          name="title"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className={classes.field}
-              label="Title"
-              variant="outlined"
-              fullWidth
-              required
-              autoFocus
-              error={!!errors.title}
-              helperText={errors.title?.message}
-            />
-          )}
-        />
-        <Controller
+        <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
+        <FormInput
           name="details"
+          label="Details"
+          id="details-input"
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className={classes.field}
-              label="Details"
-              variant="outlined"
-              fullWidth
-              required
-              multiline
-              rows={5}
-              error={!!errors.details}
-              helperText={errors.details?.message}
-            />
-          )}
+          errors={errors}
+          required
+          multiline
+          rows={5}
         />
-        <Controller
+        <FormInput
           name="isPinned"
+          label="Pin Note"
+          id="is-pinned-checkbox"
           control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              className={classes.checkbox}
-              control={<Checkbox {...field} name="isPinned" color="primary" />}
-              label="Pin Note"
-            />
-          )}
+          errors={errors}
+          type="checkbox"
         />
-        <Button className={classes.button} type="submit" variant="contained" color="primary" disableElevation>
-          Add
-        </Button>
+        <div className={classes.buttonsContainer}>
+          <Button className={classes.button} onClick={handleCancel} variant="outlined" color="primary" disableElevation>
+            Cancel
+          </Button>
+          <Button className={classes.button} type="submit" variant="contained" color="primary" disableElevation>
+            Add
+          </Button>
+        </div>
       </form>
     </Container>
   );

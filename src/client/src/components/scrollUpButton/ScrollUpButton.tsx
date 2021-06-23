@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-const ScrollUpButton = () => {
+export const ScrollUpButton = () => {
   const classes = useStyles();
   const trigger = useScrollTrigger({ disableHysteresis: true });
 
@@ -34,5 +34,3 @@ const ScrollUpButton = () => {
     </Zoom>
   );
 };
-
-export default ScrollUpButton;
