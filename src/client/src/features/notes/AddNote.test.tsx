@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { renderWithProvidersAndRouter } from 'utils/testHelpers';
-import AddNote from './AddNote';
+import { AddNote } from './AddNote';
 
 describe('AddNote component', () => {
   it('renders component correctly', () => {

@@ -41,7 +41,7 @@ const unsavedChangesMessage = 'You have unsaved changes, are you sure you want t
 
 // TODO: replace browser's prompt with alertDialog
 
-const AddNote = () => {
+export const AddNote = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const progress = useAppSelector(selectNotesStatus);
@@ -111,5 +111,3 @@ const AddNote = () => {
     </Container>
   );
 };
-
-export default AddNote;

@@ -39,7 +39,7 @@ export const addNote = createAsyncThunk('notes/addNote', async (note: AddNote) =
   return notesAPI.addNote(note);
 });
 
-export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: number) => {
+export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: string) => {
   return notesAPI.deleteNote(noteId);
 });
 

@@ -6,7 +6,7 @@ import { AddNote, EditNote, Note } from 'types';
 // axios interceptors
 
 type EditNoteProps = {
-  noteId: number;
+  noteId: string;
   note: EditNote;
 };
 
@@ -22,7 +22,7 @@ export const addNote = async (note: AddNote) => {
   return data;
 };
 
-export const deleteNote = async (noteId: number) => {
+export const deleteNote = async (noteId: string) => {
   const { data } = await axios.delete(`/api/notes/${noteId}`);
 
   return data;

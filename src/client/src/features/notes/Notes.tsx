@@ -49,7 +49,7 @@ type LocationState = {
   stateUpdated?: boolean;
 };
 
-const Notes = () => {
+export const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const { data, status } = useAppSelector(selectNotesState);
@@ -136,5 +136,3 @@ const Notes = () => {
     </Container>
   );
 };
-
-export default Notes;

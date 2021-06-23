@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -77,7 +78,7 @@ class NoteControllerTest {
   @DisplayName("should return a note with given id")
   @Test
   void getNoteById() throws Exception {
-    final long noteId = 2;
+    final UUID noteId = UUID.randomUUID();
     final NoteEntity noteEntity = NoteEntity.builder().build();
     final NoteResponseDto noteDto = NoteResponseDto.builder().build();
     when(mockNoteService.getById(noteId)).thenReturn(noteEntity);
@@ -93,7 +94,7 @@ class NoteControllerTest {
   @DisplayName("should return 404 Not Found when note not found")
   @Test
   void getNoteById_NotFound() throws Exception {
-    final long noteId = 99;
+    final UUID noteId = UUID.randomUUID();
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, noteId);
     when(mockNoteService.getById(noteId)).thenThrow(new NotFoundException(errorMessage));
 
@@ -142,7 +143,7 @@ class NoteControllerTest {
   @DisplayName("should update and return updated note with given id")
   @Test
   void updateNote() throws Exception {
-    final long noteId = 2;
+    final UUID noteId = UUID.randomUUID();
     final NoteUpdateRequestDto noteRequest = NoteUpdateRequestDto.builder().title("title").details("details").isPinned(false).build();
     final NoteEntity noteEntity = NoteEntity.builder().build();
     final NoteResponseDto noteResponse = NoteResponseDto.builder().build();
@@ -161,7 +162,7 @@ class NoteControllerTest {
   @DisplayName("should return 404 Not Found when note to be updated not found")
   @Test
   void updateNote_NotFound() throws Exception {
-    final long noteId = 99;
+    final UUID noteId = UUID.randomUUID();
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, noteId);
     final NoteUpdateRequestDto noteRequest = NoteUpdateRequestDto.builder().title("title").details("details").isPinned(false).build();
     when(mockNoteService.update(noteRequest, noteId)).thenThrow(new NotFoundException(errorMessage));
@@ -194,8 +195,8 @@ class NoteControllerTest {
   @DisplayName("should delete note with given id")
   @Test
   void deleteNote() throws Exception {
-    final long noteId = 2;
-    doNothing().when(mockNoteService).delete(anyLong());
+    final UUID noteId = UUID.randomUUID();
+    doNothing().when(mockNoteService).delete(noteId);
 
     mockMvc.perform(MockMvcRequestBuilders.delete("/api/notes/{id}", noteId))
         .andDo(print())
@@ -208,7 +209,7 @@ class NoteControllerTest {
   @DisplayName("should return 404 Not Found when note to be deleted not found")
   @Test
   void deleteNote_NotFound() throws Exception {
-    final long noteId = 99;
+    final UUID noteId = UUID.randomUUID();
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, noteId);
     doThrow(new NotFoundException(errorMessage)).when(mockNoteService).delete(noteId);
 

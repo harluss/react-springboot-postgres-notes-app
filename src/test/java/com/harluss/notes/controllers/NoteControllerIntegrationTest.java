@@ -6,7 +6,7 @@ import com.harluss.notes.dtos.NoteUpdateRequestDto;
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.repositories.NoteRepository;
 import com.harluss.notes.utilities.PostgresTestContainer;
-import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,6 +49,26 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(count));
+  }
+
+  @DisplayName("should reject 6th request within 10s with status 429")
+  @Test
+  @Disabled
+  void getNotes_rateLimit() throws Exception {
+    IntStream.rangeClosed(1, 5)
+        .forEach(counter -> {
+              try {
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/notes"))
+                    .andExpect(status().isOk());
+              } catch (Exception ex) {
+                ex.printStackTrace();
+                fail(ex.getMessage());
+              }
+            });
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/notes"))
+        .andDo(print())
+        .andExpect(status().isTooManyRequests());
   }
 
   @DisplayName("should return a note with given id")
@@ -99,7 +120,7 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.id").value(existingNote.getId()))
+        .andExpect(jsonPath("$.id").value(existingNote.getId().toString()))
         .andExpect(jsonPath("$.title").value(noteUpdateRequest.getTitle()))
         .andExpect(jsonPath("$.details").value(noteUpdateRequest.getDetails()))
         .andExpect(jsonPath("$.isPinned").value(noteUpdateRequest.getIsPinned()))
