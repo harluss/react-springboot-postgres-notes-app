@@ -3,6 +3,7 @@ package com.harluss.notes.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -12,7 +13,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "notes")
-public class NoteEntity extends DateAuditEntity {
+public class NoteEntity extends DateAuditEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

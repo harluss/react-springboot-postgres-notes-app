@@ -16,13 +16,27 @@ spring:
   cache:
     cache-names: notes
     caffeine:
-      spec: maximumSize=100, expireAfterWrite=5m
+      spec: maximumSize=200, expireAfterWrite=5m
+
 
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yml
 
   profiles:
     active: dev
+
+bucket4j:
+  enabled: true
+  filters:
+  - cache-name: notes
+    url: /api/.*
+    rate-limits:
+    - bandwidths:
+      - capacity: 5
+        time: 10
+        unit: seconds
+        fixed-refill-interval: 10
+        fixed-refill-interval-unit: seconds
 
 ---
 

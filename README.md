@@ -27,6 +27,7 @@ The main purpose of this project is to learn more about React, TypeScript, Sprin
 - [x] AOP logging
 - [x] Data validation
 - [x] Caching with Caffeine
+- [x] Rate-limiting API calls with Bucket4j
 - [ ] Versioning
 - [ ] ...
 
@@ -43,15 +44,11 @@ The main purpose of this project is to learn more about React, TypeScript, Sprin
 - [ ] ...
 
 ### Features
-- [x] Notes CRUD
-- [ ] Tags or Categories CRUD
-  - [ ] Backend
-  - [ ] Frontend
-- [ ] Authentication
-  - [ ] Backend
-  - [ ] Frontend
+- [x] Notes
+- [ ] Tags or categories
+- [ ] Registration and authentication
 - [ ] Speech to text
-  - [ ] Frontend
+- [x] User preferences or settings (not persistent until users added)
 - [ ] ...
 
 
