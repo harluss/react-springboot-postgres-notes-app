@@ -43,7 +43,7 @@ type LocationState = {
   note: NoteType;
 };
 
-const Note = () => {
+export const Note = () => {
   const classes = useStyles();
   const [noteDetails, setNoteDetails] = useState<NoteType>();
   const [isOpen, setIsOpen] = useState(false);
@@ -172,5 +172,3 @@ const Note = () => {
     </Container>
   );
 };
-
-export default Note;
