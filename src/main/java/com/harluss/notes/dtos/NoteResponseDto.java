@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +14,7 @@ import java.time.ZonedDateTime;
 @Builder
 public class NoteResponseDto {
 
-  private Long id;
+  private UUID id;
   private String title;
   private String details;
   private Boolean isPinned;

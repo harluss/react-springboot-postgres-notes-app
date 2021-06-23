@@ -6,7 +6,6 @@ import com.harluss.notes.dtos.NoteUpdateRequestDto;
 import com.harluss.notes.entities.NoteEntity;
 import com.harluss.notes.repositories.NoteRepository;
 import com.harluss.notes.utilities.PostgresTestContainer;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -99,7 +97,7 @@ public class NoteControllerIntegrationTest extends PostgresTestContainer {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.id").value(existingNote.getId()))
+        .andExpect(jsonPath("$.id").value(existingNote.getId().toString()))
         .andExpect(jsonPath("$.title").value(noteUpdateRequest.getTitle()))
         .andExpect(jsonPath("$.details").value(noteUpdateRequest.getDetails()))
         .andExpect(jsonPath("$.isPinned").value(noteUpdateRequest.getIsPinned()))

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @CacheConfig(cacheNames = "notes")
@@ -38,7 +39,7 @@ public class NoteServiceImpl implements NoteService {
   @Override
   @Cacheable(key = "#id")
   @Transactional(readOnly = true)
-  public NoteEntity getById(long id) {
+  public NoteEntity getById(UUID id) {
     return noteRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(String.format(NoteApiConstants.NOTE_NOT_FOUND, id)));
@@ -56,7 +57,7 @@ public class NoteServiceImpl implements NoteService {
   @CacheEvict(key = "'getAll'")
   @CachePut(key = "#result.id")
   @Transactional
-  public NoteEntity update(NoteUpdateRequestDto noteUpdateRequest, long id) {
+  public NoteEntity update(NoteUpdateRequestDto noteUpdateRequest, UUID id) {
     NoteEntity noteToBeUpdated = noteRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(String.format(NoteApiConstants.NOTE_NOT_FOUND, id)));
@@ -69,7 +70,7 @@ public class NoteServiceImpl implements NoteService {
   @Override
   @CacheEvict(allEntries = true)
   @Transactional
-  public void delete(long id) {
+  public void delete(UUID id) {
     try {
       noteRepository.deleteById(id);
     } catch (EmptyResultDataAccessException exception) {

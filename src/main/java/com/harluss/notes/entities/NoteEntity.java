@@ -3,6 +3,7 @@ package com.harluss.notes.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -14,8 +15,8 @@ import javax.persistence.*;
 public class NoteEntity extends DateAuditEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
   @Column(name = "title", nullable = false, columnDefinition = "text")
   private String title;

@@ -13,10 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -60,7 +57,7 @@ class NoteServiceImplTest {
   @DisplayName("should return a note with given id")
   @Test
   void getById() {
-    final long id = 2;
+    final UUID id = UUID.randomUUID();
     final NoteEntity noteEntity = NoteEntity.builder().build();
     when(mockNoteRepository.findById(id)).thenReturn(Optional.of(noteEntity));
 
@@ -72,7 +69,7 @@ class NoteServiceImplTest {
   @DisplayName("should throw NotFound exception when note not found")
   @Test
   void getById_throwsNotFoundException() {
-    final long id = 99;
+    final UUID id = UUID.randomUUID();
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, id);
 
     Throwable throwable = catchThrowable(() -> noteService.getById(id));
@@ -85,8 +82,9 @@ class NoteServiceImplTest {
   @DisplayName("should save and return new note")
   @Test
   void save() {
+    final UUID id = UUID.randomUUID();
     final NoteEntity noteEntity = NoteEntity.builder().build();
-    final NoteEntity savedNoteEntity = NoteEntity.builder().id(2L).build();
+    final NoteEntity savedNoteEntity = NoteEntity.builder().id(id).build();
     when(mockNoteRepository.save(noteEntity)).thenReturn(savedNoteEntity);
 
     NoteEntity savedNote = noteService.save(noteEntity);
@@ -97,7 +95,7 @@ class NoteServiceImplTest {
   @DisplayName("should update and return an existing note with given id")
   @Test
   void update() {
-    final long id = 2;
+    final UUID id = UUID.randomUUID();
     final String title = "some title";
     final NoteEntity noteEntity = NoteEntity.builder().id(id).build();
     final NoteEntity updatedNoteEntity = NoteEntity.builder().title(title).build();
@@ -113,7 +111,7 @@ class NoteServiceImplTest {
   @DisplayName("should throw NotFound exception when note to be updated not found")
   @Test
   void update_throwsNotFoundException() {
-    final long id = 99;
+    final UUID id = UUID.randomUUID();
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, id);
 
     Throwable throwable = catchThrowable(() -> noteService.update(any(), id));
@@ -126,7 +124,7 @@ class NoteServiceImplTest {
   @DisplayName("should delete a note with given id")
   @Test
   void delete() {
-    final long id = 2;
+    final UUID id = UUID.randomUUID();
 
     noteService.delete(id);
 
@@ -136,9 +134,9 @@ class NoteServiceImplTest {
   @DisplayName("should throw NotFound exception when note to be deleted not found")
   @Test
   void delete_throwsNotFoundException() {
-    final long id = 99;
+    final UUID id = UUID.randomUUID();
     final String errorMessage = String.format(NoteApiConstants.NOTE_NOT_FOUND, id);
-    doThrow(new EmptyResultDataAccessException((int) id)).when(mockNoteRepository).deleteById(id);
+    doThrow(new EmptyResultDataAccessException('x')).when(mockNoteRepository).deleteById(id);
 
     Throwable throwable = catchThrowable(() -> noteService.delete(id));
 

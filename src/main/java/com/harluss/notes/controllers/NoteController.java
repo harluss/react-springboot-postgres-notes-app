@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Notes", description = "Note related endpoints")
 @RestController
@@ -45,7 +46,7 @@ public class NoteController {
   @Operation(summary = "Get note with given Id")
   @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoteResponseDto.class)) })
   @GetMapping(value = "/{id}")
-  public ResponseEntity<NoteResponseDto> getNoteById(@PathVariable long id) {
+  public ResponseEntity<NoteResponseDto> getNoteById(@PathVariable UUID id) {
     NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.getById(id));
 
     return ResponseEntity.status(HttpStatus.OK).body(noteResponse);
@@ -66,7 +67,7 @@ public class NoteController {
   @PutMapping(value = "/{id}")
   public ResponseEntity<NoteResponseDto> updateNote(
       @Valid @RequestBody NoteUpdateRequestDto noteUpdateRequest,
-      @NotBlank @PathVariable long id
+      @NotBlank @PathVariable UUID id
   ) {
     NoteResponseDto noteResponse = mapper.entityToResponseDto(noteService.update(noteUpdateRequest, id));
 
@@ -76,7 +77,7 @@ public class NoteController {
   @Operation(summary = "Delete note with given Id")
   @ApiResponse(responseCode = "204")
   @DeleteMapping(value = "/{id}")
-  public ResponseEntity<Void> deleteNote(@NotBlank @PathVariable long id) {
+  public ResponseEntity<Void> deleteNote(@NotBlank @PathVariable UUID id) {
     noteService.delete(id);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
