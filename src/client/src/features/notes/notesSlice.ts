@@ -16,6 +16,11 @@ const initialState: NotesState = {
   error: '',
 };
 
+type EditNoteProps = {
+  note: Note;
+  toggleIsPinned?: boolean;
+};
+
 const fallbackErrorMessage = (actionString: string) => `Failed to ${actionString}`;
 
 export const fetchNotes = createAsyncThunk('notes/getNotes', async (_: void, { signal }) => {
@@ -37,11 +42,6 @@ export const addNote = createAsyncThunk('notes/addNote', async (note: AddNote) =
 export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: number) => {
   return notesAPI.deleteNote(noteId);
 });
-
-type EditNoteProps = {
-  note: Note;
-  toggleIsPinned?: boolean;
-};
 
 export const editNote = createAsyncThunk('notes/editNote', async ({ note, toggleIsPinned = false }: EditNoteProps) => {
   const noteToEdit: EditNote = {

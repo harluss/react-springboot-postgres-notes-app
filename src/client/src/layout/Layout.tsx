@@ -21,6 +21,7 @@ import { ReactElement, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectDarkMode, toggleDarkMode } from 'features/settings';
+import { Paths } from 'types';
 
 const drawerWidth = 240;
 
@@ -77,12 +78,12 @@ const menuItems = [
   {
     text: 'All Notes',
     icon: <SubjectIcon color="primary" />,
-    path: '/',
+    path: Paths.notes,
   },
   {
     text: 'Add Note',
     icon: <AddCircleOutlineOutlined color="primary" />,
-    path: '/create',
+    path: Paths.addNote,
   },
 ];
 

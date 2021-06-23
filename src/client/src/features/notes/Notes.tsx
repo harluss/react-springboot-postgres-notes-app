@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectNotesState } from './notesSlice';
-import NoteCard from 'components/noteCard/NoteCard';
+import { NoteCard } from 'components/noteCard';
 import Masonry from 'react-masonry-css';
 import Container from '@material-ui/core/Container';
 import FormControl from '@material-ui/core/FormControl';
@@ -10,13 +10,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
-import ProgressIndicator from 'components/progressIndicator/ProgressIndicator';
-import ScrollUpButton from 'components/scrollUpButton/ScrollUpButton';
+import { ProgressIndicator } from 'components/progressIndicator';
+import { ScrollUpButton } from 'components/scrollUpButton';
 import { SortBy, SortByKeys } from 'types';
 import { selectSortBy, setSortDate } from 'features/settings';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Message } from 'components/message/Message';
+import { Paths } from 'types';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -75,7 +76,7 @@ const Notes = () => {
 
   useEffect(() => {
     if (location.state?.stateUpdated) {
-      return history.replace('/');
+      return history.replace(Paths.notes);
     }
 
     const promise = dispatch(fetchNotes());

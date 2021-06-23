@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { Note } from 'types';
 import { renderWithProvidersAndRouter } from 'utils/testHelpers';
-import NoteCard from './NoteCard';
+import { NoteCard } from './NoteCard';
 import { formatDate } from 'utils/dateFormat';
 
 describe('NoteCard component', () => {

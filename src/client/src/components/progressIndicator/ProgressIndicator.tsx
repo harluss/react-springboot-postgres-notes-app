@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => {
   };
 });
 
-const ProgressIndicator = () => {
+export const ProgressIndicator = () => {
   const classes = useStyles();
 
   return (
@@ -20,5 +20,3 @@ const ProgressIndicator = () => {
     </div>
   );
 };
-
-export default ProgressIndicator;

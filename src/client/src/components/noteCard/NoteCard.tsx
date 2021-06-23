@@ -15,12 +15,13 @@ import { useAppDispatch } from 'app/hooks';
 import { MouseEvent, useState } from 'react';
 import { Note } from 'types';
 import { formatDate } from 'utils/dateFormat';
-import AlertDialog from 'components/alertDialog/AlertDialog';
+import { AlertDialog } from 'components/alertDialog';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
 import { deleteNote } from 'features/notes';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { editNote } from 'features/notes/notesSlice';
+import { Paths } from 'types';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -47,11 +48,12 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-const NoteCard = ({ note }: { note: Note }) => {
+export const NoteCard = ({ note }: { note: Note }) => {
   const classes = useStyles(note.isPinned);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const history = useHistory();
 
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
 
@@ -94,6 +96,8 @@ const NoteCard = ({ note }: { note: Note }) => {
       });
   };
 
+  const handleEditNote = () => history.push(Paths.editNote, { note });
+
   return (
     <div>
       <AlertDialog
@@ -113,11 +117,11 @@ const NoteCard = ({ note }: { note: Note }) => {
           <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>
             <MenuItem onClick={handleToggleIsPinned}>
               <ListItemIcon>
-                {note.isPinned ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+                {note.isPinned ? <StarIcon color="primary" fontSize="small" /> : <StarBorderIcon fontSize="small" />}
               </ListItemIcon>
               {note.isPinned ? 'Unpin' : 'Pin'}
             </MenuItem>
-            <MenuItem onClick={handleMenuClose} disabled>
+            <MenuItem onClick={handleEditNote}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />
               </ListItemIcon>
@@ -131,7 +135,7 @@ const NoteCard = ({ note }: { note: Note }) => {
             </MenuItem>
           </Menu>
         </div>
-        <CardActionArea component={Link} to={{ pathname: '/note', state: { note } }}>
+        <CardActionArea component={Link} to={{ pathname: Paths.viewNote, state: { note } }}>
           <CardHeader title={note.title} subheader={formatDate(note.createdAt)} className={classes.cardHeader} />
           <CardContent>
             <Typography className={classes.content} color="textSecondary">
@@ -143,5 +147,3 @@ const NoteCard = ({ note }: { note: Note }) => {
     </div>
   );
 };
-
-export default NoteCard;

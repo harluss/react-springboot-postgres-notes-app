@@ -16,7 +16,7 @@ type AlertDialogProps = {
   setIsOpen: (isOpen: boolean) => void;
 };
 
-const AlertDialog = ({
+export const AlertDialog = ({
   isOpen,
   title,
   details,
@@ -53,4 +53,4 @@ const AlertDialog = ({
   );
 };
 
-export default AlertDialog;
+// export default AlertDialog;

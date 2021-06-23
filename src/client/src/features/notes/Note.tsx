@@ -9,17 +9,15 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { Note as NoteType } from 'types';
 import { Message } from 'components/message/Message';
 import { formatDateTime } from 'utils/dateFormat';
-import AlertDialog from 'components/alertDialog/AlertDialog';
+import { AlertDialog } from 'components/alertDialog';
 import { useAppDispatch } from 'app/hooks';
 import { deleteNote, editNote } from './notesSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
+import { Paths } from 'types';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
-    body: {
-      marginTop: theme.spacing(3),
-    },
     button: {
       margin: theme.spacing(1),
     },
@@ -27,13 +25,16 @@ const useStyles = makeStyles((theme: Theme) => {
       display: 'flex',
       justifyContent: 'space-between',
     },
+    dateContainer: {
+      marginTop: theme.spacing(3),
+      marginBottom: theme.spacing(3),
+    },
     menuContainer: {
       display: 'flex',
       justifyContent: 'flex-end',
     },
     title: {
       marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(3),
     },
   };
 });
@@ -69,7 +70,7 @@ const Note = () => {
       .then(unwrapResult)
       .then(() => {
         dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' }));
-        history.push('/', { stateUpdated: true });
+        history.push(Paths.notes, { stateUpdated: true });
       })
       .catch((error) => {
         console.log(error.message);
@@ -90,12 +91,16 @@ const Note = () => {
             type: 'success',
           })
         );
-        history.push('/note', { note: updatedNote });
+        history.push(Paths.viewNote, { note: updatedNote });
       })
       .catch((error) => {
         console.log(error.message);
         dispatch(setSnackbar({ isOpen: true, message: 'Failed to update note', type: 'error' }));
       });
+  };
+
+  const handleEditNote = () => {
+    history.push(Paths.editNote, { note: noteDetails });
   };
 
   return (
@@ -120,7 +125,13 @@ const Note = () => {
         >
           {noteDetails.isPinned ? 'Unpin' : 'Pin'}
         </Button>
-        <Button variant="outlined" className={classes.button} size="small" startIcon={<EditIcon />}>
+        <Button
+          variant="outlined"
+          className={classes.button}
+          size="small"
+          startIcon={<EditIcon />}
+          onClick={handleEditNote}
+        >
           Edit
         </Button>
         <Button
@@ -137,27 +148,27 @@ const Note = () => {
       <Typography variant="h5" component="h1" className={classes.title}>
         {noteDetails.title}
       </Typography>
-      <div className={classes.date}>
-        <Typography variant="subtitle1" color="textSecondary">
-          Created:
-        </Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          {formatDateTime(noteDetails.createdAt)}
-        </Typography>
-      </div>
-      {isEdited() && (
+      <div className={classes.dateContainer}>
         <div className={classes.date}>
           <Typography variant="subtitle1" color="textSecondary">
-            Last updated:
+            Created:
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            {formatDateTime(noteDetails.updatedAt)}
+            {formatDateTime(noteDetails.createdAt)}
           </Typography>
         </div>
-      )}
-      <Typography variant="body1" className={classes.body}>
-        {noteDetails.details}
-      </Typography>
+        {isEdited() && (
+          <div className={classes.date}>
+            <Typography variant="subtitle1" color="textSecondary">
+              Last edited:
+            </Typography>
+            <Typography variant="subtitle1" color="textSecondary">
+              {formatDateTime(noteDetails.updatedAt)}
+            </Typography>
+          </div>
+        )}
+      </div>
+      <Typography variant="body1">{noteDetails.details}</Typography>
     </Container>
   );
 };

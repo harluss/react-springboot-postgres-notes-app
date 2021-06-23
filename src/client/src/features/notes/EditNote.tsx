@@ -1,20 +1,24 @@
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import { makeStyles, Theme } from '@material-ui/core';
+import { useEffect, useState } from 'react';
+import { Prompt, useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Prompt, useHistory } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { addNote, selectNotesStatus } from './notesSlice';
-import { setSnackbar } from 'features/snackbar';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { ProgressIndicator } from 'components/progressIndicator';
-import { NoteInputs, Paths } from 'types';
+import { Note as NoteType, NoteInputs } from 'types';
+import { Message } from 'components/message';
+import { makeStyles, Theme, Typography } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
 import { FormInput } from 'components/formInput';
+import { formatDateTime } from 'utils/dateFormat';
+import { useAppSelector } from 'app/hooks';
+import { selectNotesStatus } from './notesSlice';
+import { ProgressIndicator } from 'components/progressIndicator';
 import { NoteSchema } from 'schema';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
+    body: {
+      marginTop: theme.spacing(3),
+    },
     button: {
       width: 120,
       marginTop: 30,
@@ -23,6 +27,14 @@ const useStyles = makeStyles((theme: Theme) => {
     buttonsContainer: {
       display: 'flex',
       justifyContent: 'flex-end',
+    },
+    date: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+    dateContainer: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
     },
     form: {
       display: 'flex',
@@ -37,39 +49,43 @@ const defaultValues: NoteInputs = {
   isPinned: false,
 };
 
+type LocationState = {
+  note: NoteType;
+};
+
 const unsavedChangesMessage = 'You have unsaved changes, are you sure you want to leave?';
 
-const AddNote = () => {
+export const EditNote = () => {
   const classes = useStyles();
-  const dispatch = useAppDispatch();
   const progress = useAppSelector(selectNotesStatus);
   const history = useHistory();
   const {
     control,
     formState: { isDirty, errors },
     handleSubmit,
-    reset,
+    // reset,
     setValue,
   } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
+  const { state } = useLocation<LocationState>();
+  const [noteToEdit, setNoteToEdit] = useState<NoteType>();
 
-  // TODO: add white space trimming function
+  useEffect(() => {
+    if (state?.note) {
+      setNoteToEdit(state.note);
+    }
+  }, [state?.note]);
 
-  const onSubmit = (data: NoteInputs) => {
-    dispatch(addNote(data))
-      .then(unwrapResult)
-      .then(reset)
-      .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
-      });
+  if (!noteToEdit) {
+    return <Message messageText="Oops! Did you forget to select note?" type="error" />;
+  }
+
+  const onSubmit = () => {
+    console.log('submit');
   };
 
-  // TODO: refactor state reloading/refetching when switching between components
   const handleCancel = () => history.goBack();
+
+  const isEdited = () => noteToEdit.createdAt !== noteToEdit.updatedAt;
 
   if (progress === 'processing') {
     return <ProgressIndicator />;
@@ -85,16 +101,38 @@ const AddNote = () => {
           id="title-input"
           control={control}
           errors={errors}
+          value={noteToEdit?.title}
           setValue={setValue}
           required
           autofocus
         />
+        <div className={classes.dateContainer}>
+          <div className={classes.date}>
+            <Typography variant="subtitle1" color="textSecondary">
+              Created:
+            </Typography>
+            <Typography variant="subtitle1" color="textSecondary">
+              {formatDateTime(noteToEdit.createdAt)}
+            </Typography>
+          </div>
+          {isEdited() && (
+            <div className={classes.date}>
+              <Typography variant="subtitle1" color="textSecondary">
+                Last edited:
+              </Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                {formatDateTime(noteToEdit.updatedAt)}
+              </Typography>
+            </div>
+          )}
+        </div>
         <FormInput
           name="details"
           label="Details"
           id="details-input"
           control={control}
           errors={errors}
+          value={noteToEdit?.details}
           setValue={setValue}
           required
           multiline
@@ -114,12 +152,10 @@ const AddNote = () => {
             Cancel
           </Button>
           <Button className={classes.button} type="submit" variant="contained" color="primary" disableElevation>
-            Add
+            Save
           </Button>
         </div>
       </form>
     </Container>
   );
 };
-
-export default AddNote;
