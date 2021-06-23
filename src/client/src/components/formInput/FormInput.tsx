@@ -3,7 +3,6 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles, Theme } from '@material-ui/core';
-import { UseFormSetValue } from 'react-hook-form';
 import { NoteInputs } from 'types';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -28,8 +27,6 @@ type FormInputProps = {
   name: InputKeys;
   label: string;
   id: string;
-  setValue: UseFormSetValue<NoteInputs>;
-  value?: string | boolean;
   autofocus?: boolean;
   multiline?: boolean;
   required?: boolean;
@@ -43,8 +40,6 @@ export const FormInput = ({
   label,
   name,
   errors,
-  value = '',
-  setValue,
   autofocus = false,
   multiline = false,
   required = false,
@@ -62,7 +57,7 @@ export const FormInput = ({
           return (
             <FormControlLabel
               className={classes.checkbox}
-              control={<Checkbox {...field} name={name} color="primary" />}
+              control={<Checkbox {...field} checked={!!field.value} name={name} color="primary" />}
               id={id}
               label={label}
             />
@@ -77,8 +72,6 @@ export const FormInput = ({
             label={label}
             variant="outlined"
             fullWidth
-            value={value}
-            onChange={() => setValue(name, value)}
             autoFocus={autofocus}
             required={required}
             multiline={multiline}

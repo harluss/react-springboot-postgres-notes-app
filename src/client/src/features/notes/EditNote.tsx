@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import { Prompt, useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Note as NoteType, NoteInputs } from 'types';
+import { Note as NoteType, NoteInputs, Paths } from 'types';
 import { Message } from 'components/message';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { FormInput } from 'components/formInput';
 import { formatDateTime } from 'utils/dateFormat';
-import { useAppSelector } from 'app/hooks';
-import { selectNotesStatus } from './notesSlice';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { editNote, selectNotesStatus } from './notesSlice';
 import { ProgressIndicator } from 'components/progressIndicator';
 import { NoteSchema } from 'schema';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { setSnackbar } from 'features/snackbar';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -57,13 +59,14 @@ const unsavedChangesMessage = 'You have unsaved changes, are you sure you want t
 
 export const EditNote = () => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
   const progress = useAppSelector(selectNotesStatus);
   const history = useHistory();
   const {
     control,
     formState: { isDirty, errors },
     handleSubmit,
-    // reset,
+    reset,
     setValue,
   } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
   const { state } = useLocation<LocationState>();
@@ -72,6 +75,10 @@ export const EditNote = () => {
   useEffect(() => {
     if (state?.note) {
       setNoteToEdit(state.note);
+
+      setValue('title', state.note.title);
+      setValue('details', state.note.details);
+      setValue('isPinned', state.note.isPinned);
     }
   }, [state?.note]);
 
@@ -79,8 +86,22 @@ export const EditNote = () => {
     return <Message messageText="Oops! Did you forget to select note?" type="error" />;
   }
 
-  const onSubmit = () => {
-    console.log('submit');
+  const onSubmit = (data: NoteInputs) => {
+    const note = { ...noteToEdit, ...data };
+
+    // TODO: check if changes made before dispatching?
+
+    dispatch(editNote({ note }))
+      .then(unwrapResult)
+      .then(reset)
+      .then(() => {
+        dispatch(setSnackbar({ isOpen: true, message: 'Note edited', type: 'success' }));
+        history.push(Paths.notes, { stateUpdated: true });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(setSnackbar({ isOpen: true, message: `Failed to edit note ${error.message}`, type: 'error' }));
+      });
   };
 
   const handleCancel = () => history.goBack();
@@ -95,17 +116,7 @@ export const EditNote = () => {
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={unsavedChangesMessage} />
-        <FormInput
-          name="title"
-          label="Title"
-          id="title-input"
-          control={control}
-          errors={errors}
-          value={noteToEdit?.title}
-          setValue={setValue}
-          required
-          autofocus
-        />
+        <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
         <div className={classes.dateContainer}>
           <div className={classes.date}>
             <Typography variant="subtitle1" color="textSecondary">
@@ -132,8 +143,6 @@ export const EditNote = () => {
           id="details-input"
           control={control}
           errors={errors}
-          value={noteToEdit?.details}
-          setValue={setValue}
           required
           multiline
           rows={5}
@@ -144,7 +153,6 @@ export const EditNote = () => {
           id="is-pinned-checkbox"
           control={control}
           errors={errors}
-          setValue={setValue}
           type="checkbox"
         />
         <div className={classes.buttonsContainer}>

@@ -39,6 +39,8 @@ const defaultValues: NoteInputs = {
 
 const unsavedChangesMessage = 'You have unsaved changes, are you sure you want to leave?';
 
+// TODO: replace browser's prompt with alertDialog
+
 const AddNote = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
@@ -49,7 +51,6 @@ const AddNote = () => {
     formState: { isDirty, errors },
     handleSubmit,
     reset,
-    setValue,
   } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
 
   // TODO: add white space trimming function
@@ -79,23 +80,13 @@ const AddNote = () => {
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={unsavedChangesMessage} />
-        <FormInput
-          name="title"
-          label="Title"
-          id="title-input"
-          control={control}
-          errors={errors}
-          setValue={setValue}
-          required
-          autofocus
-        />
+        <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
         <FormInput
           name="details"
           label="Details"
           id="details-input"
           control={control}
           errors={errors}
-          setValue={setValue}
           required
           multiline
           rows={5}
@@ -106,7 +97,6 @@ const AddNote = () => {
           id="is-pinned-checkbox"
           control={control}
           errors={errors}
-          setValue={setValue}
           type="checkbox"
         />
         <div className={classes.buttonsContainer}>

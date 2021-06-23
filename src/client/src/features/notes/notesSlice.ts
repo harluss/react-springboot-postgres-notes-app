@@ -16,7 +16,7 @@ const initialState: NotesState = {
   error: '',
 };
 
-type EditNoteProps = {
+type EditNoteThunkProps = {
   note: Note;
   toggleIsPinned?: boolean;
 };
@@ -43,15 +43,18 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: nu
   return notesAPI.deleteNote(noteId);
 });
 
-export const editNote = createAsyncThunk('notes/editNote', async ({ note, toggleIsPinned = false }: EditNoteProps) => {
-  const noteToEdit: EditNote = {
-    title: note.title,
-    details: note.details,
-    isPinned: toggleIsPinned ? !note.isPinned : note.isPinned,
-  };
+export const editNote = createAsyncThunk(
+  'notes/editNote',
+  async ({ note, toggleIsPinned = false }: EditNoteThunkProps) => {
+    const noteToEdit: EditNote = {
+      title: note.title,
+      details: note.details,
+      isPinned: toggleIsPinned ? !note.isPinned : note.isPinned,
+    };
 
-  return notesAPI.editNote({ noteId: note.id, note: noteToEdit });
-});
+    return notesAPI.editNote({ noteId: note.id, note: noteToEdit });
+  }
+);
 
 export const notesSlice = createSlice({
   name: 'notes',
