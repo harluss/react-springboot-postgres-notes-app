@@ -33,6 +33,14 @@ describe('NoteCard component', () => {
     expect(screen.getByText(/pin/i)).toBeInTheDocument();
   });
 
+  it('opens confirmation alert dialog on delete menu option clicked', () => {
+    renderWithProvidersAndRouter(<NoteCard note={dummyNote} />);
+
+    fireEvent.click(screen.getByTestId('menu-icon-button'));
+    fireEvent.click(screen.getByText(/delete/i));
+    expect(screen.queryByText(/note "dummynote" will be deleted/i)).toBeInTheDocument();
+  });
+
   it('redirects to note component on card body click', () => {
     const { history } = renderWithProvidersAndRouter(<NoteCard note={dummyNote} />);
 

@@ -97,6 +97,8 @@ const Layout = ({ children }: { children: ReactElement }) => {
 
   const handleDrawerToggle = () => setIsMobileOpen((prevState) => !prevState);
 
+  const handleCloseDrawer = () => setIsMobileOpen(false);
+
   const setActiveClass = (path: string) => (location.pathname == path ? classes.active : '');
 
   const handleDarkModeToggle = () => dispatch(toggleDarkMode());
@@ -111,7 +113,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
             button
             component={Link}
             to={item.path}
-            onClick={() => setIsMobileOpen(false)}
+            onClick={handleCloseDrawer}
             className={setActiveClass(item.path)}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>

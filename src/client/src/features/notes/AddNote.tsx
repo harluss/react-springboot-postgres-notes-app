@@ -69,7 +69,7 @@ export const AddNote = () => {
       });
   };
 
-  const handleCancel = () => history.goBack();
+  const handleCancel = () => history.push(Paths.notes);
 
   if (progress === 'processing') {
     return <ProgressIndicator />;
