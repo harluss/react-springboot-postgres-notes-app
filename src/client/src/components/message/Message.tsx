@@ -26,7 +26,7 @@ export const Message = ({ messageText, type }: MessageProps) => {
 
   return (
     <Container className={classes.errorContainer}>
-      {type === 'error' && <ErrorOutlineIcon className={classes.errorIcon} />}
+      {type === 'error' && <ErrorOutlineIcon className={classes.errorIcon} data-testid="error-icon" />}
       <Typography>{messageText}</Typography>
     </Container>
   );

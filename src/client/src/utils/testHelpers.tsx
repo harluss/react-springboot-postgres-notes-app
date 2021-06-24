@@ -6,14 +6,17 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 export const renderWithProviders = (component: ReactElement) => {
-  render(<Provider store={store}>{component}</Provider>);
+  return render(<Provider store={store}>{component}</Provider>);
 };
 
 export const renderWithProvidersAndRouter = (component: ReactElement) => {
   const history = createMemoryHistory();
-  render(
-    <Provider store={store}>
-      <Router history={history}>{component}</Router>
-    </Provider>
-  );
+  return {
+    ...render(
+      <Provider store={store}>
+        <Router history={history}>{component}</Router>
+      </Provider>
+    ),
+    history,
+  };
 };
