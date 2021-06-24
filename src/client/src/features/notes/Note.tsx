@@ -70,7 +70,7 @@ export const Note = () => {
       .then(unwrapResult)
       .then(() => {
         dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
+        history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error.message);
@@ -126,8 +126,8 @@ export const Note = () => {
           {noteDetails.isPinned ? 'Unpin' : 'Pin'}
         </Button>
         <Button
-          variant="outlined"
           className={classes.button}
+          variant="outlined"
           size="small"
           startIcon={<EditIcon />}
           onClick={handleEditNote}

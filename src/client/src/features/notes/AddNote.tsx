@@ -61,7 +61,7 @@ export const AddNote = () => {
       .then(reset)
       .then(() => {
         dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
+        history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error);
@@ -69,7 +69,6 @@ export const AddNote = () => {
       });
   };
 
-  // TODO: refactor state reloading/refetching when switching between components
   const handleCancel = () => history.goBack();
 
   if (progress === 'processing') {

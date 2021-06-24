@@ -96,7 +96,7 @@ export const EditNote = () => {
       .then(reset)
       .then(() => {
         dispatch(setSnackbar({ isOpen: true, message: 'Note edited', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
+        history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error);
