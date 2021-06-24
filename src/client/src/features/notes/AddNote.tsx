@@ -60,12 +60,12 @@ export const AddNote = () => {
       .then(unwrapResult)
       .then(reset)
       .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' }));
+        dispatch(setSnackbar({ message: 'Note added', type: 'success' }));
         history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
+        dispatch(setSnackbar({ message: `Failed to add note ${error.message}`, type: 'error' }));
       });
   };
 

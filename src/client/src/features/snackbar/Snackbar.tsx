@@ -3,7 +3,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectSnackbar, setSnackbar } from './snackbarSlice';
+import { closeSnackbar, selectSnackbar } from './snackbarSlice';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -26,7 +26,7 @@ const GlobalSnackbar = () => {
       return;
     }
 
-    dispatch(setSnackbar({ isOpen: false, message, type }));
+    dispatch(closeSnackbar());
   };
 
   return (

@@ -69,12 +69,12 @@ export const Note = () => {
     dispatch(deleteNote(noteDetails.id))
       .then(unwrapResult)
       .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' }));
+        dispatch(setSnackbar({ message: 'Note deleted', type: 'success' }));
         history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to delete note', type: 'error' }));
+        dispatch(setSnackbar({ message: 'Failed to delete note', type: 'error' }));
       });
   };
 
@@ -84,18 +84,12 @@ export const Note = () => {
     dispatch(editNote({ note: noteDetails, toggleIsPinned: true }))
       .then(unwrapResult)
       .then((updatedNote) => {
-        dispatch(
-          setSnackbar({
-            isOpen: true,
-            message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`,
-            type: 'success',
-          })
-        );
+        dispatch(setSnackbar({ message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`, type: 'success' }));
         history.push(Paths.viewNote, { note: updatedNote });
       })
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to update note', type: 'error' }));
+        dispatch(setSnackbar({ message: 'Failed to update note', type: 'error' }));
       });
   };
 

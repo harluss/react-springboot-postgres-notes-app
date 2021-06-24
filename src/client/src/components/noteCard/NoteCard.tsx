@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => {
 export const NoteCard = ({ note }: { note: Note }) => {
   const classes = useStyles(note.isPinned);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -61,18 +61,18 @@ export const NoteCard = ({ note }: { note: Note }) => {
 
   const handleDeleteAlertDialog = () => {
     handleMenuClose();
-    setIsOpen(true);
+    setIsAlertDialogOpen(true);
   };
 
   const handleDelete = () => {
-    setIsOpen(false);
+    setIsAlertDialogOpen(false);
 
     dispatch(deleteNote(note.id))
       .then(unwrapResult)
-      .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' })))
+      .then(() => dispatch(setSnackbar({ message: 'Note deleted', type: 'success' })))
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to delete note', type: 'error' }));
+        dispatch(setSnackbar({ message: 'Failed to delete note', type: 'error' }));
       });
   };
 
@@ -82,17 +82,11 @@ export const NoteCard = ({ note }: { note: Note }) => {
     dispatch(editNote({ note, toggleIsPinned: true }))
       .then(unwrapResult)
       .then((updatedNote) =>
-        dispatch(
-          setSnackbar({
-            isOpen: true,
-            message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`,
-            type: 'success',
-          })
-        )
+        dispatch(setSnackbar({ message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`, type: 'success' }))
       )
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to update note', type: 'error' }));
+        dispatch(setSnackbar({ message: 'Failed to update note', type: 'error' }));
       });
   };
 
@@ -101,13 +95,13 @@ export const NoteCard = ({ note }: { note: Note }) => {
   return (
     <div>
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isAlertDialogOpen}
         title="Delete Note?"
         details={`Note "${note.title}" will be deleted.`}
         cancelButtonText="Cancel"
         confirmButtonText="Delete"
         confirmAction={handleDelete}
-        setIsOpen={setIsOpen}
+        setIsOpen={setIsAlertDialogOpen}
       />
       <Card variant="outlined" className={classes.root}>
         <div>

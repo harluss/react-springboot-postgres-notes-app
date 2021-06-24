@@ -95,12 +95,12 @@ export const EditNote = () => {
       .then(unwrapResult)
       .then(reset)
       .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note edited', type: 'success' }));
+        dispatch(setSnackbar({ message: 'Note edited', type: 'success' }));
         history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to edit note ${error.message}`, type: 'error' }));
+        dispatch(setSnackbar({ message: `Failed to edit note ${error.message}`, type: 'error' }));
       });
   };
 
