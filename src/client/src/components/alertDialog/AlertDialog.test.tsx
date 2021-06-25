@@ -27,4 +27,6 @@ describe('AlertDialog component', () => {
     fireEvent.click(screen.getByText(/cancel/i));
     expect(cancel).toHaveBeenCalled();
   });
+
+  it.todo('does not close on backdrop click or escape button press');
 });

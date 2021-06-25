@@ -6,7 +6,7 @@ import { AddNote } from './AddNote';
 
 describe('AddNote component', () => {
   it('renders component correctly', () => {
-    renderWithProvidersAndRouter(<AddNote />);
+    renderWithProvidersAndRouter({ component: <AddNote /> });
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
@@ -16,7 +16,7 @@ describe('AddNote component', () => {
   });
 
   it('shows req validation messages on empty form submission', async () => {
-    renderWithProvidersAndRouter(<AddNote />);
+    renderWithProvidersAndRouter({ component: <AddNote /> });
 
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
     await waitFor(() => expect(screen.getByText(/title is a required field/i)).toBeInTheDocument());
@@ -24,14 +24,14 @@ describe('AddNote component', () => {
   });
 
   it('redirects to notes page on cancel button click', async () => {
-    const { history } = renderWithProvidersAndRouter(<AddNote />);
+    const { history } = renderWithProvidersAndRouter({ component: <AddNote /> });
 
     fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
     expect(history.location.pathname).toBe(Paths.notes);
   });
 
   it.skip('shows alert prompt on an attempt to navigate away from already filled form', async () => {
-    renderWithProvidersAndRouter(<AddNote />);
+    renderWithProvidersAndRouter({ component: <AddNote /> });
 
     userEvent.type(screen.getByLabelText(/title/i), 'some title');
     userEvent.type(screen.getByLabelText(/details/i), 'some details');
@@ -42,4 +42,7 @@ describe('AddNote component', () => {
     // TODO: fix or find different solution
     await waitFor(() => expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument());
   });
+
+  it.todo('handles submit action');
+  it.todo('shows progress indicator after submit');
 });

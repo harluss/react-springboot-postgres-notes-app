@@ -4,6 +4,6 @@ import { Notes } from './Notes';
 
 describe('Notes component', () => {
   it('renders component correctly', () => {
-    renderWithProvidersAndRouter(<Notes />);
+    renderWithProvidersAndRouter({ component: <Notes /> });
   });
 });

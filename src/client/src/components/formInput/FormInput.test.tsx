@@ -4,10 +4,26 @@ import { NoteInputs } from 'types';
 import { FormInput } from './FormInput';
 
 describe('FromInput component', () => {
-  const FormInputTestComponent = ({ errors }: { errors: DeepMap<NoteInputs, FieldError> }) => {
+  const FormInputTestComponent = ({
+    errors,
+    type = undefined,
+  }: {
+    errors: DeepMap<NoteInputs, FieldError>;
+    type?: 'checkbox';
+  }) => {
     const { control } = useForm<NoteInputs>();
 
-    return <FormInput name="details" label="Details" id="details-input" control={control} errors={errors} required />;
+    return (
+      <FormInput
+        name="details"
+        label="Details"
+        id="details-input"
+        control={control}
+        errors={errors}
+        required
+        type={type}
+      />
+    );
   };
 
   it('renders component correctly', () => {
@@ -22,5 +38,12 @@ describe('FromInput component', () => {
 
     expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
     expect(screen.getByText(/details is a required field/i)).toBeInTheDocument();
+  });
+
+  it('renders as checkbox when checkbox passed as type', () => {
+    render(<FormInputTestComponent errors={{}} type="checkbox" />);
+
+    expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: /details/i })).toBeInTheDocument();
   });
 });
