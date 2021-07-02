@@ -7,10 +7,6 @@ import { createMemoryHistory } from 'history';
 import { HistoryProps } from 'types';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 
-export const renderWithProviders = (component: ReactElement) => {
-  return render(<Provider store={store}>{component}</Provider>);
-};
-
 type ScreenSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 type RenderWithProvidersAndRouterProps = {
@@ -18,6 +14,19 @@ type RenderWithProvidersAndRouterProps = {
   historyProps?: HistoryProps;
   screenSize?: ScreenSize;
 };
+
+type ScreenSizeWrapperProps = {
+  children?: ReactNode;
+  size?: ScreenSize;
+};
+
+const screenSizeWrapper = ({ children, size }: ScreenSizeWrapperProps) => {
+  const theme = createMuiTheme({ props: { MuiWithWidth: { initialWidth: size } } });
+
+  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+};
+
+export * from '@testing-library/react';
 
 export const renderWithProvidersAndRouter = ({
   component,
@@ -42,13 +51,6 @@ export const renderWithProvidersAndRouter = ({
   };
 };
 
-type ScreenSizeWrapperProps = {
-  children?: ReactNode;
-  size?: ScreenSize;
-};
-
-const screenSizeWrapper = ({ children, size }: ScreenSizeWrapperProps) => {
-  const theme = createMuiTheme({ props: { MuiWithWidth: { initialWidth: size } } });
-
-  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+export const renderWithProviders = (component: ReactElement) => {
+  return render(<Provider store={store}>{component}</Provider>);
 };

@@ -12,7 +12,7 @@ import { formatDateTime } from 'utils/dateFormat';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { editNote, selectNotesStatus } from './notesSlice';
 import { ProgressIndicator } from 'components/progressIndicator';
-import { NoteSchema } from 'schema';
+import { NoteSchema } from 'validation';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
 

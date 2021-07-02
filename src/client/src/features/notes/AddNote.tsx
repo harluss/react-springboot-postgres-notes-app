@@ -11,7 +11,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { ProgressIndicator } from 'components/progressIndicator';
 import { NoteInputs, Paths } from 'types';
 import { FormInput } from 'components/formInput';
-import { NoteSchema } from 'schema';
+import { NoteSchema } from 'validation';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {

@@ -1,24 +1,18 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { Note, Paths } from 'types';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { Paths } from 'types';
 import { renderWithProvidersAndRouter } from 'utils/testHelpers';
 import { NoteCard } from './NoteCard';
 import { formatDate } from 'utils/dateFormat';
+import { generateDummyNote } from 'mocks/mockData';
+
+const dummyNote = generateDummyNote();
 
 describe('NoteCard component', () => {
-  const dummyNote: Note = {
-    id: 'dummyId5',
-    title: 'dummyNote',
-    details: 'for testing purposes',
-    isPinned: false,
-    createdAt: new Date().toUTCString(),
-    updatedAt: new Date().toUTCString(),
-  };
-
   it('renders component correctly', () => {
     renderWithProvidersAndRouter({ component: <NoteCard note={dummyNote} /> });
 
-    expect(screen.getByText(/dummyNote/i)).toBeInTheDocument();
-    expect(screen.getByText(/testing purposes/i)).toBeInTheDocument();
+    expect(screen.getByText(dummyNote.title)).toBeInTheDocument();
+    expect(screen.getByText(dummyNote.details)).toBeInTheDocument();
     expect(screen.getByText(formatDate(dummyNote.createdAt))).toBeInTheDocument();
   });
 
@@ -33,12 +27,12 @@ describe('NoteCard component', () => {
     expect(screen.getByText(/pin/i)).toBeInTheDocument();
   });
 
-  it('opens confirmation alert dialog on delete menu option clicked', () => {
+  it('opens confirmation alert dialog on delete menu option click', () => {
     renderWithProvidersAndRouter({ component: <NoteCard note={dummyNote} /> });
 
     fireEvent.click(screen.getByTestId('menu-icon-button'));
     fireEvent.click(screen.getByText(/delete/i));
-    expect(screen.queryByText(/note "dummynote" will be deleted/i)).toBeInTheDocument();
+    expect(screen.queryByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
   });
 
   it('redirects to note component on card body click', () => {
@@ -46,11 +40,22 @@ describe('NoteCard component', () => {
 
     expect(history.location.pathname).toBe(Paths.notes);
 
-    fireEvent.click(screen.getByRole('button', { name: /dummynote/i }));
+    fireEvent.click(screen.getByText(dummyNote.details));
     expect(history.location.pathname).toBe(Paths.viewNote);
     expect(history.location.state).toMatchObject({ note: dummyNote });
   });
 
-  it.todo('handles delete action');
-  it.todo('handles toggle pin action');
+  it.skip('handles pin toggle on pin menu option click', async () => {
+    renderWithProvidersAndRouter({ component: <NoteCard note={dummyNote} /> });
+
+    fireEvent.click(screen.getByTestId('menu-icon-button'));
+    fireEvent.click(screen.getByText(/pin/i));
+
+    await waitFor(() => expect(screen.getByText(/note pinned/i)).toBeInTheDocument());
+    expect(screen.queryByText(/edit/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('menu-icon-button'));
+    expect(screen.getByText(/unpin/i)).toBeInTheDocument();
+    screen.debug();
+  });
+  it.todo('handles delete on delete menu option click');
 });
