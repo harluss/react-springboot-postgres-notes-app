@@ -1,4 +1,3 @@
-// import { screen } from '@testing-library/react';
 import { renderWithProviders } from 'utils/testHelpers';
 import App from './App';
 

@@ -1,22 +1,16 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { HistoryProps, Note as NoteType, Paths } from 'types';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { generateDummyNote } from 'mocks/mockData';
+import { HistoryProps, Paths } from 'types';
 import { formatDateTime } from 'utils/dateFormat';
 import { renderWithProvidersAndRouter } from 'utils/testHelpers';
 import { Note } from './Note';
 
 describe('Note component', () => {
-  const dummyNote: NoteType = {
-    id: 'dummyId5',
-    title: 'dummyNote',
-    details: 'for testing purposes',
-    isPinned: false,
-    createdAt: new Date().toUTCString(),
-    updatedAt: new Date().toUTCString(),
-  };
-
+  const dummyNote = generateDummyNote();
   const historyProps: HistoryProps = { path: Paths.viewNote, state: { note: dummyNote } };
 
   it('renders component correctly and populates the form with note from location state', () => {
+    dummyNote.updatedAt = dummyNote.createdAt;
     renderWithProvidersAndRouter({ component: <Note />, historyProps });
 
     expect(screen.getByText(dummyNote.title)).toBeInTheDocument();
@@ -47,9 +41,32 @@ describe('Note component', () => {
     renderWithProvidersAndRouter({ component: <Note />, historyProps });
 
     fireEvent.click(screen.getByRole('button', { name: /delete/i }));
-    expect(screen.queryByText(/note "dummynote" will be deleted/i)).toBeInTheDocument();
+    expect(screen.queryByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
   });
 
-  it.todo('handles pin/unpin action');
-  it.todo('handles delete action on delete confirmation');
+  it('handles pin/unpin action', async () => {
+    dummyNote.isPinned = false;
+    renderWithProvidersAndRouter({ component: <Note />, historyProps });
+
+    expect(screen.queryByRole('button', { name: /unpin/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /pin/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /pin/i }));
+    await waitFor(() => expect(screen.getByRole('button', { name: /unpin/i })).toBeInTheDocument());
+
+    fireEvent.click(screen.getByRole('button', { name: /unpin/i }));
+    await waitFor(() => expect(screen.getByRole('button', { name: /pin/i })).toBeInTheDocument());
+  });
+
+  it('handles delete action on delete confirmation', async () => {
+    const { history } = renderWithProvidersAndRouter({ component: <Note />, historyProps });
+
+    fireEvent.click(screen.getByRole('button', { name: /delete/i }));
+    expect(screen.getByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('confirm-button'));
+    await waitFor(() =>
+      expect(screen.queryByText(`Note "${dummyNote.title}" will be deleted.`)).not.toBeInTheDocument()
+    );
+    expect(history.location.pathname).toBe(Paths.notes);
+  });
 });

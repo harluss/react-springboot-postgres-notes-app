@@ -16,7 +16,7 @@ export const ProgressIndicator = () => {
 
   return (
     <div className={classes.root}>
-      <CircularProgress />
+      <CircularProgress data-testid="progress-indicator" />
     </div>
   );
 };

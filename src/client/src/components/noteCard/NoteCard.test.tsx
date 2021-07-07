@@ -1,6 +1,5 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Paths } from 'types';
-import { renderWithProvidersAndRouter } from 'utils/testHelpers';
+import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
 import { NoteCard } from './NoteCard';
 import { formatDate } from 'utils/dateFormat';
 import { generateDummyNote } from 'mocks/mockData';

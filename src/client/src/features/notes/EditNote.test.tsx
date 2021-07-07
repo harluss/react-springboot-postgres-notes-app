@@ -1,21 +1,15 @@
-import { screen } from '@testing-library/react';
-import { HistoryProps, Note, Paths } from 'types';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { generateDummyNote } from 'mocks/mockData';
+import { HistoryProps, Paths } from 'types';
 import { renderWithProvidersAndRouter } from 'utils/testHelpers';
 import { EditNote } from './EditNote';
 
 describe('EditNote component', () => {
-  const dummyNote: Note = {
-    id: 'dummyId5',
-    title: 'dummyNote',
-    details: 'for testing purposes',
-    isPinned: false,
-    createdAt: new Date().toUTCString(),
-    updatedAt: new Date().toUTCString(),
-  };
+  const dummyNote = generateDummyNote();
+  const historyProps: HistoryProps = { path: Paths.editNote, state: { note: dummyNote } };
 
   it('renders component correctly and populates the form with note from location state', () => {
-    const historyProps: HistoryProps = { path: Paths.editNote, state: { note: dummyNote } };
-
     renderWithProvidersAndRouter({ component: <EditNote />, historyProps });
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
@@ -35,8 +29,16 @@ describe('EditNote component', () => {
     expect(screen.getByText(/did you forget to select note/i)).toBeInTheDocument();
   });
 
-  it.todo('shows alert prompt on an attempt to navigate away from already filled form');
+  it('handles submit action', async () => {
+    const { history } = renderWithProvidersAndRouter({ component: <EditNote />, historyProps });
+
+    userEvent.type(screen.getByLabelText(/title/i), 'edited title');
+    userEvent.type(screen.getByLabelText(/details/i), 'edited details');
+    fireEvent.click(screen.getByRole('button', { name: /save/i }));
+    await waitFor(() => expect(screen.getByTestId('progress-indicator')).toBeInTheDocument());
+    await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));
+  });
+
+  it.todo('shows alert prompt on an attempt to navigate away when changes made');
   it.todo('handles pin checkbox click');
-  it.todo('handles submit action');
-  it.todo('shows progress indicator after submit');
 });

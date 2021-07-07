@@ -15,12 +15,17 @@ describe('AddNote component', () => {
     expect(screen.getByLabelText(/title/i)).toHaveFocus();
   });
 
-  it('shows req validation messages on empty form submission', async () => {
+  it('shows required validation messages', async () => {
     renderWithProvidersAndRouter({ component: <AddNote /> });
 
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
     await waitFor(() => expect(screen.getByText(/title is a required field/i)).toBeInTheDocument());
     expect(screen.getByText(/details is a required field/i)).toBeInTheDocument();
+
+    userEvent.type(screen.getByLabelText(/title/i), 'some title');
+    fireEvent.click(screen.getByRole('button', { name: /add/i }));
+    await waitFor(() => expect(screen.getByText(/details is a required field/i)).toBeInTheDocument());
+    expect(screen.queryByText(/title is a required field/i)).not.toBeInTheDocument();
   });
 
   it('redirects to notes page on cancel button click', async () => {
@@ -43,6 +48,13 @@ describe('AddNote component', () => {
     await waitFor(() => expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument());
   });
 
-  it.todo('handles submit action');
-  it.todo('shows progress indicator after submit');
+  it('handles submit action', async () => {
+    const { history } = renderWithProvidersAndRouter({ component: <AddNote /> });
+
+    userEvent.type(screen.getByLabelText(/title/i), 'some title');
+    userEvent.type(screen.getByLabelText(/details/i), 'some details');
+    fireEvent.click(screen.getByRole('button', { name: /add/i }));
+    await waitFor(() => expect(screen.getByTestId('progress-indicator')).toBeInTheDocument());
+    expect(history.location.pathname).toBe(Paths.notes);
+  });
 });
