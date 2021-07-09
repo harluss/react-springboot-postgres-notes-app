@@ -35,10 +35,9 @@ describe('EditNote component', () => {
     userEvent.type(screen.getByLabelText(/title/i), 'edited title');
     userEvent.type(screen.getByLabelText(/details/i), 'edited details');
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
-    await waitFor(() => expect(screen.getByTestId('progress-indicator')).toBeInTheDocument());
+    expect(await screen.findByTestId('progress-indicator')).toBeInTheDocument();
     await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));
   });
 
   it.todo('shows alert prompt on an attempt to navigate away when changes made');
-  it.todo('handles pin checkbox click');
 });

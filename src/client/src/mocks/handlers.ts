@@ -7,8 +7,6 @@ export const notes = [
   rest.get(`${Endpoints.notes}`, (_, res, ctx) => {
     const dummyNotes = mockData.note.getAll();
 
-    console.log('@@@@@@@@@');
-
     return res(ctx.status(200), ctx.json(dummyNotes));
   }),
   rest.post(`${Endpoints.notes}`, (req, res, ctx) => {

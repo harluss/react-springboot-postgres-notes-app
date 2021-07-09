@@ -2,8 +2,6 @@ import { Note } from 'types';
 import faker from 'faker';
 import { factory, primaryKey } from '@mswjs/data';
 
-// faker.seed(123);
-
 export const generateDummyNote = (): Note => {
   return {
     id: faker.datatype.uuid.toString(),

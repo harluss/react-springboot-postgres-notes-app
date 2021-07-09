@@ -52,10 +52,10 @@ describe('Note component', () => {
     expect(screen.getByRole('button', { name: /pin/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /pin/i }));
-    await waitFor(() => expect(screen.getByRole('button', { name: /unpin/i })).toBeInTheDocument());
+    expect(await screen.findByRole('button', { name: /unpin/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /unpin/i }));
-    await waitFor(() => expect(screen.getByRole('button', { name: /pin/i })).toBeInTheDocument());
+    expect(await screen.findByRole('button', { name: /pin/i })).toBeInTheDocument();
   });
 
   it('handles delete action on delete confirmation', async () => {

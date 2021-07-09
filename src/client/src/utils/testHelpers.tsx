@@ -1,11 +1,12 @@
 import { render } from '@testing-library/react';
-import { store } from 'app/store';
+import { rootReducer } from 'app/store';
 import { ReactElement, ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { HistoryProps } from 'types';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { configureStore } from '@reduxjs/toolkit';
 
 type ScreenSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -34,6 +35,7 @@ export const renderWithProvidersAndRouter = ({
   screenSize = undefined,
 }: RenderWithProvidersAndRouterProps) => {
   const history = createMemoryHistory();
+  const store = configureStore({ reducer: rootReducer });
 
   if (historyProps) {
     const { path, state } = historyProps;
@@ -52,5 +54,7 @@ export const renderWithProvidersAndRouter = ({
 };
 
 export const renderWithProviders = (component: ReactElement) => {
+  const store = configureStore({ reducer: rootReducer });
+
   return render(<Provider store={store}>{component}</Provider>);
 };

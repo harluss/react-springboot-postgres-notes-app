@@ -21,17 +21,17 @@ describe('NoteCard component', () => {
     expect(screen.queryByText(/delete/i)).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('menu-icon-button'));
-    expect(screen.getByText(/delete/i)).toBeInTheDocument();
-    expect(screen.getByText(/edit/i)).toBeInTheDocument();
-    expect(screen.getByText(/pin/i)).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /delete/i })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /edit/i })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /pin/i })).toBeInTheDocument();
   });
 
   it('opens confirmation alert dialog on delete menu option click', () => {
     renderWithProvidersAndRouter({ component: <NoteCard note={dummyNote} /> });
 
     fireEvent.click(screen.getByTestId('menu-icon-button'));
-    fireEvent.click(screen.getByText(/delete/i));
-    expect(screen.queryByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('menuitem', { name: /delete/i }));
+    expect(screen.getByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
   });
 
   it('redirects to note component on card body click', () => {
@@ -45,16 +45,26 @@ describe('NoteCard component', () => {
   });
 
   it.skip('handles pin toggle on pin menu option click', async () => {
+    dummyNote.isPinned = false;
     renderWithProvidersAndRouter({ component: <NoteCard note={dummyNote} /> });
 
+    expect(screen.queryByRole('menuitem', { name: /pin/i })).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('menu-icon-button'));
-    fireEvent.click(screen.getByText(/pin/i));
+    fireEvent.click(screen.getByRole('menuitem', { name: /^pin/i }));
+    await waitFor(() => expect(screen.queryByRole('menuitem', { name: /^pin/i })).not.toBeInTheDocument());
 
-    await waitFor(() => expect(screen.getByText(/note pinned/i)).toBeInTheDocument());
-    expect(screen.queryByText(/edit/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('menu-icon-button'));
-    expect(screen.getByText(/unpin/i)).toBeInTheDocument();
-    screen.debug();
+    expect(screen.getByRole('menuitem', { name: /unpin/i })).toBeInTheDocument();
   });
-  it.todo('handles delete on delete menu option click');
+
+  it('handles delete on delete menu option click', async () => {
+    const { history } = renderWithProvidersAndRouter({ component: <NoteCard note={dummyNote} /> });
+
+    fireEvent.click(screen.getByTestId('menu-icon-button'));
+    fireEvent.click(screen.getByRole('menuitem', { name: /delete/i }));
+    expect(screen.getByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /delete/i }));
+    await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));
+  });
 });

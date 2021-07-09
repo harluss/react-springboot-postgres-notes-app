@@ -19,12 +19,12 @@ describe('AddNote component', () => {
     renderWithProvidersAndRouter({ component: <AddNote /> });
 
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
-    await waitFor(() => expect(screen.getByText(/title is a required field/i)).toBeInTheDocument());
+    expect(await screen.findByText(/title is a required field/i)).toBeInTheDocument();
     expect(screen.getByText(/details is a required field/i)).toBeInTheDocument();
 
     userEvent.type(screen.getByLabelText(/title/i), 'some title');
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
-    await waitFor(() => expect(screen.getByText(/details is a required field/i)).toBeInTheDocument());
+    expect(await screen.findByText(/details is a required field/i)).toBeInTheDocument();
     expect(screen.queryByText(/title is a required field/i)).not.toBeInTheDocument();
   });
 
@@ -46,6 +46,7 @@ describe('AddNote component', () => {
     fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
     // TODO: fix or find different solution
     await waitFor(() => expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument());
+    // expect(await screen.findByText(/unsaved changes/i)).toBeInTheDocument();
   });
 
   it('handles submit action', async () => {
@@ -54,7 +55,7 @@ describe('AddNote component', () => {
     userEvent.type(screen.getByLabelText(/title/i), 'some title');
     userEvent.type(screen.getByLabelText(/details/i), 'some details');
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
-    await waitFor(() => expect(screen.getByTestId('progress-indicator')).toBeInTheDocument());
+    expect(await screen.findByTestId('progress-indicator')).toBeInTheDocument();
     expect(history.location.pathname).toBe(Paths.notes);
   });
 });
