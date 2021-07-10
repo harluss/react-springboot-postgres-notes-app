@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event';
+import { MESSAGE_NO_NOTE_SELECTED } from 'constants/constants';
 import { mockNote } from 'mocks/mockData';
 import { HistoryProps, Paths } from 'types';
 import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
@@ -8,7 +9,7 @@ describe('EditNote component', () => {
   const dummyNote = mockNote();
   const historyProps: HistoryProps = { path: Paths.editNote, state: { note: dummyNote } };
 
-  it('renders component correctly and populates the form with note from location state', () => {
+  it('renders and populates form with note from location state', () => {
     renderWithProvidersAndRouter({ component: <EditNote />, historyProps });
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
@@ -25,7 +26,7 @@ describe('EditNote component', () => {
   it('shows error message if no note is passed in location state', () => {
     renderWithProvidersAndRouter({ component: <EditNote /> });
 
-    expect(screen.getByText(/did you forget to select note/i)).toBeInTheDocument();
+    expect(screen.getByText(MESSAGE_NO_NOTE_SELECTED)).toBeInTheDocument();
   });
 
   it('handles submit action', async () => {

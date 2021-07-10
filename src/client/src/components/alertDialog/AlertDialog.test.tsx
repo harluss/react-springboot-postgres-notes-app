@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from 'utils/testHelpers';
 import { AlertDialog } from './AlertDialog';
 
 describe('AlertDialog component', () => {
-  it('renders component correctly', () => {
+  it('displays title and details and handles callback functions', () => {
     const confirm = jest.fn();
     const cancel = jest.fn();
 

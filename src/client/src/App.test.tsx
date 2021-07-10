@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event';
+import { SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_DELETE_SUCCESS } from 'constants/constants';
 import { mockData } from 'mocks/mockData';
 import { Note, NoteInputs } from 'types';
 import { formatDateTime } from 'utils/dateFormat';
@@ -31,8 +32,7 @@ describe('App component', () => {
     userEvent.type(screen.getByLabelText(/title/i), newNote.title);
     userEvent.type(screen.getByLabelText(/details/i), newNote.details);
     fireEvent.click(screen.getByRole('button', { name: 'Add' }));
-    // expect(await screen.findByTestId('progress-indicator')).toBeInTheDocument();
-    expect(await screen.findByText(/note added/i)).toBeInTheDocument();
+    expect(await screen.findByText(SNACKBAR_NOTE_ADD_SUCCESS)).toBeInTheDocument();
     expect(await screen.findAllByTestId('card-menu-icon-button')).toHaveLength(mockedNotes.length + 1);
     expect(screen.getByText(newNote.title)).toBeInTheDocument();
   });
@@ -62,6 +62,19 @@ describe('App component', () => {
     }
   });
 
-  it.todo('handles delete note');
+  it('handles delete note', async () => {
+    expect(screen.getByTestId('progress-indicator')).toBeInTheDocument();
+    const cardMenuButtons = await screen.findAllByTestId('card-menu-icon-button');
+    expect(cardMenuButtons).toHaveLength(mockedNotes.length);
+
+    fireEvent.click(cardMenuButtons[0]);
+    fireEvent.click(screen.getByRole('menuitem', { name: /delete/i }));
+    expect(screen.getByText(/will be deleted.$/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /delete/i }));
+    expect(await screen.findByText(SNACKBAR_NOTE_DELETE_SUCCESS)).toBeInTheDocument();
+    expect(await screen.findAllByTestId('card-menu-icon-button')).toHaveLength(mockedNotes.length - 1);
+  });
+
   it.todo('handles sortBy change');
 });

@@ -1,3 +1,4 @@
+import { APP_TITLE } from 'constants/constants';
 import { Paths } from 'types';
 import { fireEvent, renderWithProvidersAndRouter, screen } from 'utils/testHelpers';
 import Layout from './Layout';
@@ -5,7 +6,7 @@ import Layout from './Layout';
 describe('Layout component', () => {
   const DummyChildComponent = () => <div>Dummy child component</div>;
 
-  it('renders component correctly', () => {
+  it('displays app title, sidebar options and child component', () => {
     renderWithProvidersAndRouter({
       component: (
         <Layout>
@@ -16,7 +17,7 @@ describe('Layout component', () => {
     });
 
     expect(screen.getByText(/dummy child component/i)).toBeInTheDocument();
-    expect(screen.getByText(/welcome to some notes/i)).toBeInTheDocument();
+    expect(screen.getByText(APP_TITLE)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /all notes/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /add note/i })).toBeInTheDocument();
   });

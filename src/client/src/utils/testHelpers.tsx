@@ -52,10 +52,3 @@ export const renderWithProvidersAndRouter = ({
     history,
   };
 };
-
-export const renderWithProviders = (component: ReactElement) => {
-  const history = createMemoryHistory();
-  const store = configureStore({ reducer: rootReducer });
-
-  return { ...render(<Provider store={store}>{component}</Provider>), history };
-};

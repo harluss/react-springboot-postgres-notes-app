@@ -12,7 +12,7 @@ describe('AddNote component', () => {
     history = component.history;
   });
 
-  it('renders component correctly', () => {
+  it('renders form and sets focus', () => {
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/pin note/i)).toBeInTheDocument();
@@ -37,10 +37,12 @@ describe('AddNote component', () => {
   });
 
   it.skip('shows alert prompt on an attempt to navigate away from already filled form', async () => {
-    userEvent.type(screen.getByLabelText(/title/i), 'some title');
-    userEvent.type(screen.getByLabelText(/details/i), 'some details');
-    expect(screen.getByLabelText(/title/i)).toHaveValue('some title');
-    expect(screen.getByLabelText(/details/i)).toHaveValue('some details');
+    const dummyNote = { title: 'some title', details: 'some details' };
+
+    userEvent.type(screen.getByLabelText(/title/i), dummyNote.title);
+    userEvent.type(screen.getByLabelText(/details/i), dummyNote.details);
+    expect(screen.getByLabelText(/title/i)).toHaveValue(dummyNote.title);
+    expect(screen.getByLabelText(/details/i)).toHaveValue(dummyNote.details);
 
     fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
     // TODO: fix or find different solution or test with Cypress?
@@ -51,7 +53,6 @@ describe('AddNote component', () => {
     userEvent.type(screen.getByLabelText(/title/i), 'some title');
     userEvent.type(screen.getByLabelText(/details/i), 'some details');
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
-    // expect(await screen.findByTestId('progress-indicator')).toBeInTheDocument();
     await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));
   });
 });

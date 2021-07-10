@@ -16,6 +16,7 @@ import { selectSortBy, setSortDate } from 'features/settings';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Message } from 'components/message';
+import { MESSAGE_GENERIC_ERROR, MESSAGE_NO_NOTES_SAVED, SNACKBAR_NOTES_LOAD_ERROR } from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -75,7 +76,7 @@ export const Notes = () => {
 
     promise.then(unwrapResult).catch((error) => {
       if (error.name !== 'AbortError') {
-        dispatch(setSnackbar({ message: `Failed to load notes: ${error.message}`, type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTES_LOAD_ERROR(error.message), type: 'error' }));
       }
     });
 
@@ -87,11 +88,11 @@ export const Notes = () => {
   }
 
   if (status === 'failed') {
-    return <Message messageText="Oops! Something went wrong..." type="error" />;
+    return <Message messageText={MESSAGE_GENERIC_ERROR} type="error" />;
   }
 
   if (status === 'succeeded' && !data.length) {
-    return <Message messageText="You have no saved notes" />;
+    return <Message messageText={MESSAGE_NO_NOTES_SAVED} />;
   }
 
   return (

@@ -22,6 +22,13 @@ import { deleteNote } from 'features/notes';
 import { Link, useHistory } from 'react-router-dom';
 import { editNote } from 'features/notes/notesSlice';
 import { Paths } from 'types';
+import {
+  MESSAGE_NOTE_DELETE_WARNING,
+  SNACKBAR_NOTE_DELETE_ERROR,
+  SNACKBAR_NOTE_DELETE_SUCCESS,
+  SNACKBAR_NOTE_PIN_ERROR,
+  SNACKBAR_NOTE_PIN_SUCCESS,
+} from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -69,10 +76,10 @@ export const NoteCard = ({ note }: { note: Note }) => {
 
     dispatch(deleteNote(note.id))
       .then(unwrapResult)
-      .then(() => dispatch(setSnackbar({ message: 'Note deleted', type: 'success' })))
+      .then(() => dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_SUCCESS, type: 'success' })))
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ message: 'Failed to delete note', type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -82,11 +89,11 @@ export const NoteCard = ({ note }: { note: Note }) => {
     dispatch(editNote({ note, toggleIsPinned: true }))
       .then(unwrapResult)
       .then((updatedNote) =>
-        dispatch(setSnackbar({ message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`, type: 'success' }))
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_SUCCESS(updatedNote.isPinned), type: 'success' }))
       )
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ message: 'Failed to update note', type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -97,7 +104,7 @@ export const NoteCard = ({ note }: { note: Note }) => {
       <AlertDialog
         isOpen={isAlertDialogOpen}
         title="Delete Note?"
-        details={`Note "${note.title}" will be deleted.`}
+        details={MESSAGE_NOTE_DELETE_WARNING(note.title)}
         cancelButtonText="Cancel"
         confirmButtonText="Delete"
         confirmAction={handleDelete}

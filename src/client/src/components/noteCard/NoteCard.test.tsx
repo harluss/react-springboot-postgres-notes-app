@@ -4,6 +4,7 @@ import { NoteCard } from './NoteCard';
 import { formatDate } from 'utils/dateFormat';
 import { mockNote } from 'mocks/mockData';
 import { MemoryHistory } from 'history';
+import { MESSAGE_NOTE_DELETE_WARNING } from 'constants/constants';
 
 describe('NoteCard component', () => {
   const dummyNote = mockNote();
@@ -14,7 +15,7 @@ describe('NoteCard component', () => {
     history = component.history;
   });
 
-  it('renders component correctly', () => {
+  it('displays title, details and created date', () => {
     expect(screen.getByText(dummyNote.title)).toBeInTheDocument();
     expect(screen.getByText(dummyNote.details)).toBeInTheDocument();
     expect(screen.getByText(formatDate(dummyNote.createdAt))).toBeInTheDocument();
@@ -32,7 +33,7 @@ describe('NoteCard component', () => {
   it('opens confirmation alert dialog on delete menu option click', () => {
     fireEvent.click(screen.getByTestId('card-menu-icon-button'));
     fireEvent.click(screen.getByRole('menuitem', { name: /delete/i }));
-    expect(screen.getByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
+    expect(screen.getByText(MESSAGE_NOTE_DELETE_WARNING(dummyNote.title))).toBeInTheDocument();
   });
 
   it('redirects to note component on card body click', () => {
@@ -58,7 +59,7 @@ describe('NoteCard component', () => {
   it('handles delete on delete menu option click', async () => {
     fireEvent.click(screen.getByTestId('card-menu-icon-button'));
     fireEvent.click(screen.getByRole('menuitem', { name: /delete/i }));
-    expect(screen.getByText(`Note "${dummyNote.title}" will be deleted.`)).toBeInTheDocument();
+    expect(screen.getByText(MESSAGE_NOTE_DELETE_WARNING(dummyNote.title))).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /delete/i }));
     await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));

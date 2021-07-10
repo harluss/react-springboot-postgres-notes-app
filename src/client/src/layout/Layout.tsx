@@ -22,6 +22,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectDarkMode, toggleDarkMode } from 'features/settings';
 import { Paths } from 'types';
+import { APP_TITLE } from 'constants/constants';
 
 const drawerWidth = 240;
 
@@ -138,7 +139,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} noWrap>
-            Welcome to Some Notes
+            {APP_TITLE}
           </Typography>
           <Tooltip title="Toggle dark/light theme">
             <IconButton color="inherit" onClick={handleDarkModeToggle}>

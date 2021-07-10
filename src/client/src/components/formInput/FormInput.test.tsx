@@ -26,10 +26,11 @@ describe('FromInput component', () => {
     );
   };
 
-  it('renders component correctly', () => {
+  it('renders input as textbox by default', () => {
     render(<FormInputTestComponent errors={{}} />);
 
     expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /details/i })).toBeInTheDocument();
   });
 
   it('shows validation error', () => {
@@ -37,7 +38,7 @@ describe('FromInput component', () => {
     render(<FormInputTestComponent errors={dummyErrors} />);
 
     expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
-    expect(screen.getByText(/details is a required field/i)).toBeInTheDocument();
+    expect(screen.getByText(dummyErrors.details.message)).toBeInTheDocument();
   });
 
   it('renders as checkbox when checkbox passed as type', () => {
