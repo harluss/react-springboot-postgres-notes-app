@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from 'utils/testHelpers';
 import { AlertDialog } from './AlertDialog';
 
 describe('AlertDialog component', () => {

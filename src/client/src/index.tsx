@@ -5,7 +5,7 @@ import { store } from './app/store';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import GlobalThemeProvider from 'themeNameChange/Theme';
+import GlobalThemeProvider from 'theme/Theme';
 
 ReactDOM.render(
   <React.StrictMode>

@@ -9,8 +9,6 @@ const seedMockData = () => {
   }
 };
 
-seedMockData();
-
 const server = setupServer(...notes);
 
-export { rest, server };
+export { rest, seedMockData, server };

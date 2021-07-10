@@ -1,7 +1,7 @@
 import { Endpoints } from 'api/notesAPI';
 import { rest } from 'msw';
 import { Note, NoteInputs } from 'types';
-import { generateDummyNote, mockData } from './mockData';
+import { mockNote, mockData } from './mockData';
 
 export const notes = [
   rest.get(`${Endpoints.notes}`, (_, res, ctx) => {
@@ -11,7 +11,7 @@ export const notes = [
   }),
   rest.post(`${Endpoints.notes}`, (req, res, ctx) => {
     const newNoteData = req.body as NoteInputs;
-    const dummyNote = generateDummyNote();
+    const dummyNote = mockNote();
 
     const newNote: Note = { ...dummyNote, ...newNoteData };
 
@@ -19,7 +19,7 @@ export const notes = [
   }),
   rest.put(`${Endpoints.notes}/:id`, (req, res, ctx) => {
     const editedNoteData = req.body as NoteInputs;
-    const dummyNote = generateDummyNote();
+    const dummyNote = mockNote();
 
     const editedNote: Note = { ...dummyNote, ...editedNoteData };
 

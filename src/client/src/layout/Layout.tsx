@@ -128,7 +128,13 @@ const Layout = ({ children }: { children: ReactElement }) => {
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="fixed" elevation={2}>
         <Toolbar>
-          <IconButton className={classes.menuButton} edge="start" onClick={handleDrawerToggle} color="inherit">
+          <IconButton
+            className={classes.menuButton}
+            edge="start"
+            onClick={handleDrawerToggle}
+            color="inherit"
+            data-testid="sidebar-menu-icon-button"
+          >
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} noWrap>
@@ -155,7 +161,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
             ModalProps={{ keepMounted: true }}
           >
             <div className={classes.drawerHeader}>
-              <IconButton onClick={handleDrawerToggle}>
+              <IconButton onClick={handleDrawerToggle} data-testid="sidebar-menu-close-icon-button">
                 <ChevronLeft />
               </IconButton>
             </div>

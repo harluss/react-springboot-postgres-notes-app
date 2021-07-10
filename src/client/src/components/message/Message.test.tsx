@@ -1,4 +1,4 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render } from 'utils/testHelpers';
 import { Message } from './Message';
 
 describe('Message component', () => {

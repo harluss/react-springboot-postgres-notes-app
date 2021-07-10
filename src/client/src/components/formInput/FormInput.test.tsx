@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from 'utils/testHelpers';
 import { DeepMap, FieldError, useForm } from 'react-hook-form';
 import { NoteInputs } from 'types';
 import { FormInput } from './FormInput';

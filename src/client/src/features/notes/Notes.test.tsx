@@ -1,8 +1,7 @@
-import { screen, waitFor } from '@testing-library/react';
 import { Endpoints } from 'api/notesAPI';
 import { mockData } from 'mocks/mockData';
 import { rest, server } from 'mocks/mockServer';
-import { renderWithProvidersAndRouter } from 'utils/testHelpers';
+import { renderWithProvidersAndRouter, screen } from 'utils/testHelpers';
 import { Notes } from './Notes';
 
 describe('Notes component', () => {
@@ -11,7 +10,7 @@ describe('Notes component', () => {
     const mockedNotes = mockData.note.getAll();
 
     expect(screen.getByTestId('progress-indicator')).toBeInTheDocument();
-    await waitFor(() => expect(screen.getAllByTestId('menu-icon-button')).toHaveLength(mockedNotes.length));
+    expect(await screen.findAllByTestId('card-menu-icon-button')).toHaveLength(mockedNotes.length);
   });
 
   it('displays message if no notes saved', async () => {
@@ -23,7 +22,7 @@ describe('Notes component', () => {
     renderWithProvidersAndRouter({ component: <Notes /> });
 
     expect(screen.getByTestId('progress-indicator')).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByText(/you have no saved notes/i)).toBeInTheDocument());
+    expect(await screen.findByText(/you have no saved notes/i)).toBeInTheDocument();
   });
 
   it('displays generic error message on unsuccessful response', async () => {
@@ -35,6 +34,6 @@ describe('Notes component', () => {
     renderWithProvidersAndRouter({ component: <Notes /> });
 
     expect(screen.getByTestId('progress-indicator')).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByText(/oops! something went wrong/i)).toBeInTheDocument());
+    expect(await screen.findByText(/oops! something went wrong/i)).toBeInTheDocument();
   });
 });

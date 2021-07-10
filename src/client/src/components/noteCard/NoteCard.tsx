@@ -105,7 +105,7 @@ export const NoteCard = ({ note }: { note: Note }) => {
       />
       <Card variant="outlined" className={classes.root}>
         <div>
-          <IconButton onClick={handleMenuOpen} className={classes.cardMenu} data-testid="menu-icon-button">
+          <IconButton onClick={handleMenuOpen} className={classes.cardMenu} data-testid="card-menu-icon-button">
             <MoreVertIcon />
           </IconButton>
           <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>

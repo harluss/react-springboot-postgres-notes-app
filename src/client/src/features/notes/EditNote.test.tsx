@@ -1,12 +1,11 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { generateDummyNote } from 'mocks/mockData';
+import { mockNote } from 'mocks/mockData';
 import { HistoryProps, Paths } from 'types';
-import { renderWithProvidersAndRouter } from 'utils/testHelpers';
+import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
 import { EditNote } from './EditNote';
 
 describe('EditNote component', () => {
-  const dummyNote = generateDummyNote();
+  const dummyNote = mockNote();
   const historyProps: HistoryProps = { path: Paths.editNote, state: { note: dummyNote } };
 
   it('renders component correctly and populates the form with note from location state', () => {
