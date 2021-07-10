@@ -15,6 +15,14 @@ import { deleteNote, editNote } from './notesSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
 import { Paths } from 'types';
+import {
+  MESSAGE_NOTE_DELETE_WARNING,
+  MESSAGE_NO_NOTE_SELECTED,
+  SNACKBAR_NOTE_DELETE_ERROR,
+  SNACKBAR_NOTE_DELETE_SUCCESS,
+  SNACKBAR_NOTE_PIN_ERROR,
+  SNACKBAR_NOTE_PIN_SUCCESS,
+} from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -58,7 +66,7 @@ export const Note = () => {
   }, [state?.note]);
 
   if (!noteDetails) {
-    return <Message messageText="Oops! Did you forget to select note?" type="error" />;
+    return <Message messageText={MESSAGE_NO_NOTE_SELECTED} type="error" />;
   }
 
   const handleDeleteAlertDialog = () => setIsOpen(true);
@@ -69,12 +77,12 @@ export const Note = () => {
     dispatch(deleteNote(noteDetails.id))
       .then(unwrapResult)
       .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_SUCCESS, type: 'success' }));
+        history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to delete note', type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -84,18 +92,12 @@ export const Note = () => {
     dispatch(editNote({ note: noteDetails, toggleIsPinned: true }))
       .then(unwrapResult)
       .then((updatedNote) => {
-        dispatch(
-          setSnackbar({
-            isOpen: true,
-            message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`,
-            type: 'success',
-          })
-        );
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_SUCCESS(updatedNote.isPinned), type: 'success' }));
         history.push(Paths.viewNote, { note: updatedNote });
       })
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to update note', type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -108,7 +110,7 @@ export const Note = () => {
       <AlertDialog
         isOpen={isOpen}
         title="Delete Note?"
-        details={`Note "${noteDetails.title}" will be deleted.`}
+        details={MESSAGE_NOTE_DELETE_WARNING(noteDetails.title)}
         cancelButtonText="Cancel"
         confirmButtonText="Delete"
         confirmAction={handleDelete}
@@ -126,8 +128,8 @@ export const Note = () => {
           {noteDetails.isPinned ? 'Unpin' : 'Pin'}
         </Button>
         <Button
-          variant="outlined"
           className={classes.button}
+          variant="outlined"
           size="small"
           startIcon={<EditIcon />}
           onClick={handleEditNote}

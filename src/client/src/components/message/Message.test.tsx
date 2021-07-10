@@ -1,18 +1,18 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render } from 'utils/testHelpers';
 import { Message } from './Message';
 
 describe('Message component', () => {
-  it('renders component correctly', () => {
-    const { container } = render(<Message messageText="Good news" />);
+  it('displays message', () => {
+    render(<Message messageText="Good news" />);
 
-    expect(container.querySelector('.makeStyles-errorIcon-4')).not.toBeInTheDocument();
-    expect(screen.queryByText(/good news/i)).toBeInTheDocument();
+    expect(screen.queryByTestId('error-icon')).not.toBeInTheDocument();
+    expect(screen.getByText(/good news/i)).toBeInTheDocument();
   });
 
-  it('renders component correctly with an icon', () => {
-    const { container } = render(<Message messageText="Good news" type="error" />);
+  it('displays message with an error icon when error passed as type', () => {
+    render(<Message messageText="Bad news" type="error" />);
 
-    expect(container.querySelector('.makeStyles-errorIcon-4')).toBeInTheDocument();
-    expect(screen.queryByText(/good news/i)).toBeInTheDocument();
+    expect(screen.getByTestId('error-icon')).toBeInTheDocument();
+    expect(screen.getByText(/bad news/i)).toBeInTheDocument();
   });
 });

@@ -1,14 +1,16 @@
-import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { notesReducer } from 'features/notes';
 import { snackbarReducer } from 'features/snackbar';
 import { settingsReducer } from 'features/settings';
 
+export const rootReducer = combineReducers({
+  notes: notesReducer,
+  settings: settingsReducer,
+  snackbar: snackbarReducer,
+});
+
 export const store = configureStore({
-  reducer: {
-    notes: notesReducer,
-    settings: settingsReducer,
-    snackbar: snackbarReducer,
-  },
+  reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production',
 });
 

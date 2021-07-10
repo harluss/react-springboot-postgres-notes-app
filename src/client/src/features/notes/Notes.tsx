@@ -9,15 +9,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
-import { useHistory, useLocation } from 'react-router-dom';
 import { ProgressIndicator } from 'components/progressIndicator';
 import { ScrollUpButton } from 'components/scrollUpButton';
 import { SortBy, SortByKeys } from 'types';
 import { selectSortBy, setSortDate } from 'features/settings';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { Message } from 'components/message/Message';
-import { Paths } from 'types';
+import { Message } from 'components/message';
+import { MESSAGE_GENERIC_ERROR, MESSAGE_NO_NOTES_SAVED, SNACKBAR_NOTES_LOAD_ERROR } from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -45,18 +44,12 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-type LocationState = {
-  stateUpdated?: boolean;
-};
-
 export const Notes = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const { data, status } = useAppSelector(selectNotesState);
   const sortBy = useAppSelector(selectSortBy);
   const theme = useTheme();
-  const location = useLocation<LocationState>();
-  const history = useHistory();
 
   const breakpoints = {
     default: 5,
@@ -69,22 +62,21 @@ export const Notes = () => {
   const handleSortChange = (event: ChangeEvent<{ value: unknown }>) =>
     dispatch(setSortDate(event.target.value as SortByKeys));
 
-  const sortNotesByDate = (dateA: string, dateB: string) =>
+  const sortByDate = (dateA: string, dateB: string) =>
     sortBy === 'dateDown' ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
 
-  const sortNotesByIsPinned = (isPinnedA: boolean, isPinnedB: boolean) => Number(isPinnedB) - Number(isPinnedA);
+  const sortByIsPinned = (isPinnedA: boolean, isPinnedB: boolean) => Number(isPinnedB) - Number(isPinnedA);
 
   useEffect(() => {
-    if (location.state?.stateUpdated) {
-      return history.replace(Paths.notes);
+    if (status !== 'idle') {
+      return;
     }
 
     const promise = dispatch(fetchNotes());
 
     promise.then(unwrapResult).catch((error) => {
       if (error.name !== 'AbortError') {
-        console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to load notes: ${error.message}`, type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTES_LOAD_ERROR(error.message), type: 'error' }));
       }
     });
 
@@ -96,11 +88,11 @@ export const Notes = () => {
   }
 
   if (status === 'failed') {
-    return <Message messageText="Oops! Something went wrong..." type="error" />;
+    return <Message messageText={MESSAGE_GENERIC_ERROR} type="error" />;
   }
 
   if (status === 'succeeded' && !data.length) {
-    return <Message messageText="You have no saved notes" />;
+    return <Message messageText={MESSAGE_NO_NOTES_SAVED} />;
   }
 
   return (
@@ -125,7 +117,7 @@ export const Notes = () => {
       <Masonry breakpointCols={breakpoints} className={classes.grid} columnClassName={classes.gridColumn}>
         {data.length &&
           [...data]
-            .sort((a, b) => sortNotesByIsPinned(a.isPinned, b.isPinned) || sortNotesByDate(a.createdAt, b.createdAt))
+            .sort((a, b) => sortByIsPinned(a.isPinned, b.isPinned) || sortByDate(a.createdAt, b.createdAt))
             .map((note) => (
               <div key={note.id} className={classes.gridColumnChild}>
                 <NoteCard note={note} />

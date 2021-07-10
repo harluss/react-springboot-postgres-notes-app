@@ -44,7 +44,7 @@ export const AlertDialog = ({
           <Button onClick={handleClose} color="primary">
             {cancelButtonText}
           </Button>
-          <Button onClick={confirmAction} color="primary" autoFocus>
+          <Button onClick={confirmAction} color="primary" autoFocus data-testid="confirm-button">
             {confirmButtonText}
           </Button>
         </DialogActions>

@@ -22,6 +22,13 @@ import { deleteNote } from 'features/notes';
 import { Link, useHistory } from 'react-router-dom';
 import { editNote } from 'features/notes/notesSlice';
 import { Paths } from 'types';
+import {
+  MESSAGE_NOTE_DELETE_WARNING,
+  SNACKBAR_NOTE_DELETE_ERROR,
+  SNACKBAR_NOTE_DELETE_SUCCESS,
+  SNACKBAR_NOTE_PIN_ERROR,
+  SNACKBAR_NOTE_PIN_SUCCESS,
+} from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -51,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) => {
 export const NoteCard = ({ note }: { note: Note }) => {
   const classes = useStyles(note.isPinned);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -61,18 +68,18 @@ export const NoteCard = ({ note }: { note: Note }) => {
 
   const handleDeleteAlertDialog = () => {
     handleMenuClose();
-    setIsOpen(true);
+    setIsAlertDialogOpen(true);
   };
 
   const handleDelete = () => {
-    setIsOpen(false);
+    setIsAlertDialogOpen(false);
 
     dispatch(deleteNote(note.id))
       .then(unwrapResult)
-      .then(() => dispatch(setSnackbar({ isOpen: true, message: 'Note deleted', type: 'success' })))
+      .then(() => dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_SUCCESS, type: 'success' })))
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to delete note', type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -82,17 +89,11 @@ export const NoteCard = ({ note }: { note: Note }) => {
     dispatch(editNote({ note, toggleIsPinned: true }))
       .then(unwrapResult)
       .then((updatedNote) =>
-        dispatch(
-          setSnackbar({
-            isOpen: true,
-            message: `Note ${updatedNote.isPinned ? 'pinned' : 'unpinned'}`,
-            type: 'success',
-          })
-        )
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_SUCCESS(updatedNote.isPinned), type: 'success' }))
       )
       .catch((error) => {
         console.log(error.message);
-        dispatch(setSnackbar({ isOpen: true, message: 'Failed to update note', type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -101,17 +102,17 @@ export const NoteCard = ({ note }: { note: Note }) => {
   return (
     <div>
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isAlertDialogOpen}
         title="Delete Note?"
-        details={`Note "${note.title}" will be deleted.`}
+        details={MESSAGE_NOTE_DELETE_WARNING(note.title)}
         cancelButtonText="Cancel"
         confirmButtonText="Delete"
         confirmAction={handleDelete}
-        setIsOpen={setIsOpen}
+        setIsOpen={setIsAlertDialogOpen}
       />
       <Card variant="outlined" className={classes.root}>
         <div>
-          <IconButton onClick={handleMenuOpen} className={classes.cardMenu}>
+          <IconButton onClick={handleMenuOpen} className={classes.cardMenu} data-testid="card-menu-icon-button">
             <MoreVertIcon />
           </IconButton>
           <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleMenuClose}>

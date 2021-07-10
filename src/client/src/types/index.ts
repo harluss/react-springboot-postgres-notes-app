@@ -30,3 +30,8 @@ export enum Paths {
   editNote = '/edit',
   viewNote = '/note',
 }
+
+export type HistoryProps = {
+  path: string;
+  state: unknown;
+};

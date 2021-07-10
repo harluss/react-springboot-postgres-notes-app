@@ -65,12 +65,16 @@
     ]
   },
   "devDependencies": {
+    "@mswjs/data": "^0.4.0",
+    "@types/faker": "^5.5.6",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "faker": "^5.5.3",
     "husky": "4.3.8",
     "lint-staged": "^10.5.4",
+    "msw": "^0.30.1",
     "prettier": "^2.2.1"
   }
 }

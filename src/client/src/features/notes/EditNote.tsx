@@ -12,9 +12,15 @@ import { formatDateTime } from 'utils/dateFormat';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { editNote, selectNotesStatus } from './notesSlice';
 import { ProgressIndicator } from 'components/progressIndicator';
-import { NoteSchema } from 'schema';
+import { NoteSchema } from 'validation';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { setSnackbar } from 'features/snackbar';
+import {
+  MESSAGE_NO_NOTE_SELECTED,
+  MESSAGE_UNSAVED_CHANGES,
+  SNACKBAR_NOTE_EDIT_ERROR,
+  SNACKBAR_NOTE_EDIT_SUCCESS,
+} from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -55,8 +61,6 @@ type LocationState = {
   note: NoteType;
 };
 
-const unsavedChangesMessage = 'You have unsaved changes, are you sure you want to leave?';
-
 export const EditNote = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
@@ -83,7 +87,7 @@ export const EditNote = () => {
   }, [state?.note]);
 
   if (!noteToEdit) {
-    return <Message messageText="Oops! Did you forget to select note?" type="error" />;
+    return <Message messageText={MESSAGE_NO_NOTE_SELECTED} type="error" />;
   }
 
   const onSubmit = (data: NoteInputs) => {
@@ -95,12 +99,12 @@ export const EditNote = () => {
       .then(unwrapResult)
       .then(reset)
       .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note edited', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_EDIT_SUCCESS, type: 'success' }));
+        history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to edit note ${error.message}`, type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_EDIT_ERROR(error.message), type: 'error' }));
       });
   };
 
@@ -115,7 +119,7 @@ export const EditNote = () => {
   return (
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-        <Prompt when={isDirty} message={unsavedChangesMessage} />
+        <Prompt when={isDirty} message={MESSAGE_UNSAVED_CHANGES} />
         <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
         <div className={classes.dateContainer}>
           <div className={classes.date}>

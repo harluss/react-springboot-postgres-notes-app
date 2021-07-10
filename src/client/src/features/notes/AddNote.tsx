@@ -11,7 +11,8 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { ProgressIndicator } from 'components/progressIndicator';
 import { NoteInputs, Paths } from 'types';
 import { FormInput } from 'components/formInput';
-import { NoteSchema } from 'schema';
+import { NoteSchema } from 'validation';
+import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/constants';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -37,8 +38,6 @@ const defaultValues: NoteInputs = {
   isPinned: false,
 };
 
-const unsavedChangesMessage = 'You have unsaved changes, are you sure you want to leave?';
-
 // TODO: replace browser's prompt with alertDialog
 
 export const AddNote = () => {
@@ -60,17 +59,16 @@ export const AddNote = () => {
       .then(unwrapResult)
       .then(reset)
       .then(() => {
-        dispatch(setSnackbar({ isOpen: true, message: 'Note added', type: 'success' }));
-        history.push(Paths.notes, { stateUpdated: true });
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_ADD_SUCCESS, type: 'success' }));
+        history.push(Paths.notes);
       })
       .catch((error) => {
         console.log(error);
-        dispatch(setSnackbar({ isOpen: true, message: `Failed to add note ${error.message}`, type: 'error' }));
+        dispatch(setSnackbar({ message: SNACKBAR_NOTE_ADD_ERROR(error.message), type: 'error' }));
       });
   };
 
-  // TODO: refactor state reloading/refetching when switching between components
-  const handleCancel = () => history.goBack();
+  const handleCancel = () => history.push(Paths.notes);
 
   if (progress === 'processing') {
     return <ProgressIndicator />;
@@ -79,7 +77,7 @@ export const AddNote = () => {
   return (
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-        <Prompt when={isDirty} message={unsavedChangesMessage} />
+        <Prompt when={isDirty} message={MESSAGE_UNSAVED_CHANGES} />
         <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
         <FormInput
           name="details"

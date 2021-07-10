@@ -22,6 +22,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectDarkMode, toggleDarkMode } from 'features/settings';
 import { Paths } from 'types';
+import { APP_TITLE } from 'constants/constants';
 
 const drawerWidth = 240;
 
@@ -97,6 +98,8 @@ const Layout = ({ children }: { children: ReactElement }) => {
 
   const handleDrawerToggle = () => setIsMobileOpen((prevState) => !prevState);
 
+  const handleCloseDrawer = () => setIsMobileOpen(false);
+
   const setActiveClass = (path: string) => (location.pathname == path ? classes.active : '');
 
   const handleDarkModeToggle = () => dispatch(toggleDarkMode());
@@ -111,7 +114,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
             button
             component={Link}
             to={item.path}
-            onClick={() => setIsMobileOpen(false)}
+            onClick={handleCloseDrawer}
             className={setActiveClass(item.path)}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -126,11 +129,17 @@ const Layout = ({ children }: { children: ReactElement }) => {
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="fixed" elevation={2}>
         <Toolbar>
-          <IconButton className={classes.menuButton} edge="start" onClick={handleDrawerToggle} color="inherit">
+          <IconButton
+            className={classes.menuButton}
+            edge="start"
+            onClick={handleDrawerToggle}
+            color="inherit"
+            data-testid="sidebar-menu-icon-button"
+          >
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} noWrap>
-            Welcome to Some Notes
+            {APP_TITLE}
           </Typography>
           <Tooltip title="Toggle dark/light theme">
             <IconButton color="inherit" onClick={handleDarkModeToggle}>
@@ -153,7 +162,7 @@ const Layout = ({ children }: { children: ReactElement }) => {
             ModalProps={{ keepMounted: true }}
           >
             <div className={classes.drawerHeader}>
-              <IconButton onClick={handleDrawerToggle}>
+              <IconButton onClick={handleDrawerToggle} data-testid="sidebar-menu-close-icon-button">
                 <ChevronLeft />
               </IconButton>
             </div>
