@@ -1,10 +1,9 @@
 import { Paths } from 'types';
-import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
+import { fireEvent, formatDate, renderWithProvidersAndRouter, screen, waitFor } from 'utils';
 import { NoteCard } from './NoteCard';
-import { formatDate } from 'utils/dateFormat';
-import { mockNote } from 'mocks/mockData';
+import { mockNote } from 'mocks';
 import { MemoryHistory } from 'history';
-import { MESSAGE_NOTE_DELETE_WARNING } from 'constants/constants';
+import { MESSAGE_NOTE_DELETE_WARNING } from 'constants/const';
 
 describe('NoteCard component', () => {
   const dummyNote = mockNote();

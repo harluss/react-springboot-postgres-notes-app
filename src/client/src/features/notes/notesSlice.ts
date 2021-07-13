@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import { AddNote, EditNote, Note } from 'types';
-import * as notesAPI from 'api/notesAPI';
-import axios from 'axios';
+import { apiClientCancelToken, notesAPI } from 'api';
 
 type NotesState = {
   data: Note[];
@@ -21,10 +20,11 @@ type EditNoteThunkProps = {
   toggleIsPinned?: boolean;
 };
 
+const abortErrorName = 'AbortError';
 const fallbackErrorMessage = (actionString: string) => `Failed to ${actionString}`;
 
 export const fetchNotes = createAsyncThunk('notes/getNotes', async (_: void, { signal }) => {
-  const source = axios.CancelToken.source();
+  const source = apiClientCancelToken.source();
 
   const cancelReq = () => source.cancel();
   signal.addEventListener('abort', cancelReq);
@@ -73,7 +73,12 @@ export const notesSlice = createSlice({
 
     builder.addCase(fetchNotes.rejected, (state, { error }) => {
       state.error = error.message ?? fallbackErrorMessage('fetch notes');
-      state.status = 'failed';
+
+      if (error.name === abortErrorName) {
+        state.status = 'idle';
+      } else {
+        state.status = 'failed';
+      }
     });
 
     builder.addCase(addNote.pending, (state) => {

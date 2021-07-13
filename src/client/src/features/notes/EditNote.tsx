@@ -8,7 +8,7 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { FormInput } from 'components/formInput';
-import { formatDateTime } from 'utils/dateFormat';
+import { formatDateTime } from 'utils';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { editNote, selectNotesStatus } from './notesSlice';
 import { ProgressIndicator } from 'components/progressIndicator';
@@ -20,7 +20,7 @@ import {
   MESSAGE_UNSAVED_CHANGES,
   SNACKBAR_NOTE_EDIT_ERROR,
   SNACKBAR_NOTE_EDIT_SUCCESS,
-} from 'constants/constants';
+} from 'constants/const';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {

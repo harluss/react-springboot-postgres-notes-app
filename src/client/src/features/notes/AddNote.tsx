@@ -4,15 +4,15 @@ import { makeStyles, Theme } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Prompt, useHistory } from 'react-router-dom';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { addNote, selectNotesStatus } from './notesSlice';
 import { setSnackbar } from 'features/snackbar';
-import { unwrapResult } from '@reduxjs/toolkit';
 import { ProgressIndicator } from 'components/progressIndicator';
-import { NoteInputs, Paths } from 'types';
 import { FormInput } from 'components/formInput';
+import { NoteInputs, Paths } from 'types';
 import { NoteSchema } from 'validation';
-import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/constants';
+import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/const';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {

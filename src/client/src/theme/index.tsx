@@ -9,7 +9,7 @@ import { blue } from '@material-ui/core/colors';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectDarkMode, toggleDarkMode } from 'features/settings';
 
-const GlobalThemeProvider = ({ children }: { children: ReactElement }) => {
+export const GlobalThemeProvider = ({ children }: { children: ReactElement }) => {
   const dispatch = useAppDispatch();
   const prefersLightMode = useMediaQuery('(prefers-color-scheme: light)');
   const isDarkMode = useAppSelector(selectDarkMode);
@@ -48,5 +48,3 @@ const GlobalThemeProvider = ({ children }: { children: ReactElement }) => {
     </ThemeProvider>
   );
 };
-
-export default GlobalThemeProvider;

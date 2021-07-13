@@ -22,7 +22,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectDarkMode, toggleDarkMode } from 'features/settings';
 import { Paths } from 'types';
-import { APP_TITLE } from 'constants/constants';
+import { APP_TITLE } from 'constants/const';
 
 const drawerWidth = 240;
 
@@ -88,7 +88,7 @@ const menuItems = [
   },
 ];
 
-const Layout = ({ children }: { children: ReactElement }) => {
+export const Layout = ({ children }: { children: ReactElement }) => {
   const classes = useStyles();
   const location = useLocation();
   const theme = useTheme();
@@ -183,5 +183,3 @@ const Layout = ({ children }: { children: ReactElement }) => {
     </div>
   );
 };
-
-export default Layout;

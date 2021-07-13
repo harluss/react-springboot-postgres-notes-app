@@ -1,5 +1,5 @@
 import { Route, Switch } from 'react-router-dom';
-import Layout from 'layout/Layout';
+import { Layout } from 'layout';
 import { AddNote, EditNote, Note, Notes } from 'features/notes';
 import { Snackbar } from 'features/snackbar';
 import { Paths } from 'types';

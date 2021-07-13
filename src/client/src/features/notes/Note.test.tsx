@@ -1,10 +1,9 @@
-import { mockNote } from 'mocks/mockData';
+import { mockNote } from 'mocks';
 import { HistoryProps, Paths } from 'types';
-import { formatDateTime } from 'utils/dateFormat';
-import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
+import { fireEvent, formatDateTime, renderWithProvidersAndRouter, screen, waitFor } from 'utils';
 import { Note } from './Note';
 import { MemoryHistory } from 'history';
-import { MESSAGE_NOTE_DELETE_WARNING, MESSAGE_NO_NOTE_SELECTED } from 'constants/constants';
+import { MESSAGE_NOTE_DELETE_WARNING, MESSAGE_NO_NOTE_SELECTED } from 'constants/const';
 
 describe('Note component', () => {
   const dummyNote = mockNote();

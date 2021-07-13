@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event';
-import { MESSAGE_NO_NOTE_SELECTED } from 'constants/constants';
-import { mockNote } from 'mocks/mockData';
+import { MESSAGE_NO_NOTE_SELECTED } from 'constants/const';
+import { mockNote } from 'mocks';
 import { HistoryProps, Paths } from 'types';
-import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
+import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils';
 import { EditNote } from './EditNote';
 
 describe('EditNote component', () => {

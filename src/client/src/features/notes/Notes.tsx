@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { fetchNotes, selectNotesState } from './notesSlice';
-import { NoteCard } from 'components/noteCard';
+import { NoteCard } from './NoteCard';
 import Masonry from 'react-masonry-css';
 import Container from '@material-ui/core/Container';
 import FormControl from '@material-ui/core/FormControl';
@@ -16,7 +16,7 @@ import { selectSortBy, setSortDate } from 'features/settings';
 import { setSnackbar } from 'features/snackbar';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Message } from 'components/message';
-import { MESSAGE_GENERIC_ERROR, MESSAGE_NO_NOTES_SAVED, SNACKBAR_NOTES_LOAD_ERROR } from 'constants/constants';
+import { MESSAGE_GENERIC_ERROR, MESSAGE_NO_NOTES_SAVED, SNACKBAR_NOTES_LOAD_ERROR } from 'constants/const';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {

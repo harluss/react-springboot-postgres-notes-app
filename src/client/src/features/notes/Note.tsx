@@ -22,7 +22,7 @@ import {
   SNACKBAR_NOTE_DELETE_SUCCESS,
   SNACKBAR_NOTE_PIN_ERROR,
   SNACKBAR_NOTE_PIN_SUCCESS,
-} from 'constants/constants';
+} from 'constants/const';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {

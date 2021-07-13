@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_DELETE_SUCCESS } from 'constants/constants';
+import { SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_DELETE_SUCCESS } from 'constants/const';
 import { mockData } from 'mocks/mockData';
 import { Note, NoteInputs } from 'types';
 import { formatDateTime } from 'utils/dateFormat';
