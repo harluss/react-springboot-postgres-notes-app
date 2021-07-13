@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
-import { AddNote, EditNote, Note } from 'types';
+import { NoteAdd, NoteEdit, Note } from 'types';
 import { apiClientCancelToken, notesAPI } from 'api';
 import { ABORT_REQ_ERROR_NAME } from 'constants/const';
 
@@ -16,7 +16,7 @@ const initialState: NotesState = {
   error: '',
 };
 
-type EditNoteThunkProps = {
+type NoteEditThunkProps = {
   note: Note;
   toggleIsPinned?: boolean;
 };
@@ -35,7 +35,7 @@ export const fetchNotes = createAsyncThunk('notes/getNotes', async (_: void, { s
   return response;
 });
 
-export const addNote = createAsyncThunk('notes/addNote', async (note: AddNote) => {
+export const addNote = createAsyncThunk('notes/addNote', async (note: NoteAdd) => {
   return notesAPI.addNote(note);
 });
 
@@ -45,8 +45,8 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: st
 
 export const editNote = createAsyncThunk(
   'notes/editNote',
-  async ({ note, toggleIsPinned = false }: EditNoteThunkProps) => {
-    const noteToEdit: EditNote = {
+  async ({ note, toggleIsPinned = false }: NoteEditThunkProps) => {
+    const noteToEdit: NoteEdit = {
       title: note.title,
       details: note.details,
       isPinned: toggleIsPinned ? !note.isPinned : note.isPinned,

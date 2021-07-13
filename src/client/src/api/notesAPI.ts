@@ -1,9 +1,9 @@
 import { CancelToken, del, get, post, put } from './apiClient';
-import { AddNote, EditNote, Note, NoteInputs } from 'types';
+import { NoteAdd, NoteEdit, Note } from 'types';
 
-type EditNoteProps = {
+type NoteEditProps = {
   noteId: string;
-  note: EditNote;
+  note: NoteEdit;
 };
 
 export enum Endpoints {
@@ -16,8 +16,8 @@ export const getNotes = async (cancelToken: CancelToken) => {
   return data;
 };
 
-export const addNote = async (note: AddNote) => {
-  const { data } = await post<Note, AddNote>(Endpoints.notes, note);
+export const addNote = async (note: NoteAdd) => {
+  const { data } = await post<Note, NoteAdd>(Endpoints.notes, note);
 
   return data;
 };
@@ -28,8 +28,8 @@ export const deleteNote = async (noteId: string) => {
   return data;
 };
 
-export const editNote = async ({ noteId, note }: EditNoteProps) => {
-  const { data } = await put<Note, NoteInputs>(`${Endpoints.notes}/${noteId}`, note);
+export const editNote = async ({ noteId, note }: NoteEditProps) => {
+  const { data } = await put<Note, NoteEdit>(`${Endpoints.notes}/${noteId}`, note);
 
   return data;
 };

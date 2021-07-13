@@ -13,11 +13,13 @@ export type NoteInputs = {
   isPinned: boolean;
 };
 
-export type NoteInputsKeys = keyof NoteInputs;
+export type NoteAdd = NoteInputs;
 
-export type AddNote = NoteInputs;
+export type NoteAddInputs = keyof NoteAdd;
 
-export type EditNote = NoteInputs;
+export type NoteEdit = NoteInputs;
+
+export type NoteEditInputs = keyof NoteEdit;
 
 export enum SortBy {
   dateUp = 'Date: Ascending',

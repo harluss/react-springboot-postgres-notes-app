@@ -10,7 +10,7 @@ import { addNote, selectNotesStatus } from './notesSlice';
 import { setSnackbar } from 'features/snackbar';
 import { ProgressIndicator } from 'components/progressIndicator';
 import { FormInput } from 'components/formInput';
-import { NoteInputs, NoteInputsKeys, Paths } from 'types';
+import { NoteAdd, NoteAddInputs, Paths } from 'types';
 import { NoteSchema } from 'validation';
 import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/const';
 import { FocusEvent } from 'react';
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-const defaultValues: NoteInputs = {
+const defaultValues: NoteAdd = {
   title: '',
   details: '',
   isPinned: false,
@@ -52,9 +52,9 @@ export const AddNote = () => {
     handleSubmit,
     reset,
     setValue,
-  } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
+  } = useForm<NoteAdd>({ defaultValues, resolver: yupResolver(NoteSchema) });
 
-  const onSubmit = (data: NoteInputs) => {
+  const onSubmit = (data: NoteAdd) => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
@@ -71,7 +71,7 @@ export const AddNote = () => {
   const handleCancel = () => history.push(Paths.notes);
 
   const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target as { name: NoteInputsKeys; value: string };
+    const { name, value } = e.target as { name: NoteAddInputs; value: string };
     setValue(name, value.trim());
   };
 

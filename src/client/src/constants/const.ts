@@ -10,7 +10,7 @@ export const SNACKBAR_NOTE_PIN_SUCCESS = (isPinned: boolean) => `Note ${isPinned
 export const SNACKBAR_NOTE_PIN_ERROR = (message: string) => `Failed to update note: ${message}`;
 export const SNACKBAR_NOTES_LOAD_ERROR = (message: string) => `Failed to load notes: ${message}`;
 
-export const MESSAGE_UNSAVED_CHANGES = 'You have unsaved changes, are you sure you want to leave?';
+export const MESSAGE_UNSAVED_CHANGES = 'Any unsaved changes will be lost, are you sure you want to leave?';
 export const MESSAGE_NO_NOTE_SELECTED = 'Oops! Did you forget to select note?';
 export const MESSAGE_GENERIC_ERROR = 'Oops! Something went wrong...';
 export const MESSAGE_ROUTE_404 = 'Oops, 404! Page not found.';

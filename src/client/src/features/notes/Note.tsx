@@ -86,7 +86,7 @@ export const Note = () => {
       });
   };
 
-  const isEdited = () => noteDetails.createdAt !== noteDetails.updatedAt;
+  const isNoteUpdated = () => noteDetails.createdAt !== noteDetails.updatedAt;
 
   const handleToggleIsPinned = () => {
     dispatch(editNote({ note: noteDetails, toggleIsPinned: true }))
@@ -159,10 +159,10 @@ export const Note = () => {
             {formatDateTime(noteDetails.createdAt)}
           </Typography>
         </div>
-        {isEdited() && (
+        {isNoteUpdated() && (
           <div className={classes.date}>
             <Typography variant="subtitle1" color="textSecondary">
-              Last edited:
+              Last updated:
             </Typography>
             <Typography variant="subtitle1" color="textSecondary">
               {formatDateTime(noteDetails.updatedAt)}

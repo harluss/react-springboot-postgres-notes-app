@@ -49,9 +49,9 @@ describe('App component', () => {
     expect(screen.getByText(formatDateTime(someNote.createdAt))).toBeInTheDocument();
 
     if (someNote.updatedAt === someNote.createdAt) {
-      expect(screen.queryByText(/last edited/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/last updated/i)).not.toBeInTheDocument();
     } else {
-      expect(screen.getByText(/last edited/i)).toBeInTheDocument();
+      expect(screen.getByText(/last updated/i)).toBeInTheDocument();
     }
 
     if (someNote.isPinned) {

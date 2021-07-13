@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { FocusEvent, useEffect, useMemo, useState } from 'react';
 import { Prompt, useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Note as NoteType, NoteInputs, Paths } from 'types';
+import { Note as NoteType, NoteEdit, NoteEditInputs, Paths } from 'types';
 import { Message } from 'components/message';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
@@ -51,12 +51,6 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-const defaultValues: NoteInputs = {
-  title: '',
-  details: '',
-  isPinned: false,
-};
-
 type LocationState = {
   note: NoteType;
 };
@@ -66,23 +60,23 @@ export const EditNote = () => {
   const dispatch = useAppDispatch();
   const progress = useAppSelector(selectNotesStatus);
   const history = useHistory();
+  const { state } = useLocation<LocationState>();
   const {
     control,
-    formState: { isDirty, errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
     setValue,
-  } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
-  const { state } = useLocation<LocationState>();
+  } = useForm<NoteEdit>({
+    defaultValues: useMemo(() => state?.note, [state?.note]),
+    resolver: yupResolver(NoteSchema),
+  });
   const [noteToEdit, setNoteToEdit] = useState<NoteType>();
 
   useEffect(() => {
     if (state?.note) {
       setNoteToEdit(state.note);
-
-      setValue('title', state.note.title);
-      setValue('details', state.note.details);
-      setValue('isPinned', state.note.isPinned);
+      reset(state.note);
     }
   }, [state?.note]);
 
@@ -90,10 +84,8 @@ export const EditNote = () => {
     return <Message messageText={MESSAGE_NO_NOTE_SELECTED} type="error" />;
   }
 
-  const onSubmit = (data: NoteInputs) => {
+  const onSubmit = (data: NoteEdit) => {
     const note = { ...noteToEdit, ...data };
-
-    // TODO: check if changes made before dispatching?
 
     dispatch(editNote({ note }))
       .then(unwrapResult)
@@ -108,9 +100,14 @@ export const EditNote = () => {
       });
   };
 
+  const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target as { name: NoteEditInputs; value: string };
+    setValue(name, value.trim());
+  };
+
   const handleCancel = () => history.goBack();
 
-  const isEdited = () => noteToEdit.createdAt !== noteToEdit.updatedAt;
+  const isNoteUpdated = () => noteToEdit.createdAt !== noteToEdit.updatedAt;
 
   if (progress === 'processing') {
     return <ProgressIndicator />;
@@ -120,7 +117,16 @@ export const EditNote = () => {
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={MESSAGE_UNSAVED_CHANGES} />
-        <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
+        <FormInput
+          name="title"
+          label="Title"
+          id="title-input"
+          control={control}
+          errors={errors}
+          required
+          autofocus
+          onBlur={handleBlur}
+        />
         <div className={classes.dateContainer}>
           <div className={classes.date}>
             <Typography variant="subtitle1" color="textSecondary">
@@ -130,10 +136,10 @@ export const EditNote = () => {
               {formatDateTime(noteToEdit.createdAt)}
             </Typography>
           </div>
-          {isEdited() && (
+          {isNoteUpdated() && (
             <div className={classes.date}>
               <Typography variant="subtitle1" color="textSecondary">
-                Last edited:
+                Last updated:
               </Typography>
               <Typography variant="subtitle1" color="textSecondary">
                 {formatDateTime(noteToEdit.updatedAt)}
@@ -150,6 +156,7 @@ export const EditNote = () => {
           required
           multiline
           rows={5}
+          onBlur={handleBlur}
         />
         <FormInput
           name="isPinned"
@@ -158,12 +165,20 @@ export const EditNote = () => {
           control={control}
           errors={errors}
           type="checkbox"
+          onBlur={handleBlur}
         />
         <div className={classes.buttonsContainer}>
           <Button className={classes.button} onClick={handleCancel} variant="outlined" color="primary" disableElevation>
             Cancel
           </Button>
-          <Button className={classes.button} type="submit" variant="contained" color="primary" disableElevation>
+          <Button
+            className={classes.button}
+            type="submit"
+            variant="contained"
+            color="primary"
+            disableElevation
+            disabled={!isDirty}
+          >
             Save
           </Button>
         </div>
