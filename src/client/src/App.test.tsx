@@ -1,9 +1,8 @@
 import userEvent from '@testing-library/user-event';
-import { SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_DELETE_SUCCESS } from 'constants/const';
-import { mockData } from 'mocks/mockData';
-import { Note, NoteInputs } from 'types';
-import { formatDateTime } from 'utils/dateFormat';
-import { fireEvent, renderWithProvidersAndRouter, screen } from 'utils/testHelpers';
+import { fireEvent, formatDateTime, renderWithProvidersAndRouter, screen } from 'utils';
+import { MESSAGE_ROUTE_404, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_DELETE_SUCCESS } from 'constants/const';
+import { mockData } from 'mocks';
+import { HistoryProps, Note, NoteInputs } from 'types';
 import App from './App';
 
 describe('App component', () => {
@@ -74,6 +73,16 @@ describe('App component', () => {
     fireEvent.click(screen.getByRole('button', { name: /delete/i }));
     expect(await screen.findByText(SNACKBAR_NOTE_DELETE_SUCCESS)).toBeInTheDocument();
     expect(await screen.findAllByTestId('card-menu-icon-button')).toHaveLength(mockedNotes.length - 1);
+  });
+
+  it('shows 404 message on non-existing route', () => {
+    const dummyRoute: HistoryProps = { path: '/dummyPath', state: {} };
+    renderWithProvidersAndRouter({
+      component: <App />,
+      historyProps: dummyRoute,
+    });
+
+    expect(screen.getByText(MESSAGE_ROUTE_404)).toBeInTheDocument();
   });
 
   it.todo('handles sortBy change');
