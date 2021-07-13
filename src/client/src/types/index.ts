@@ -13,6 +13,8 @@ export type NoteInputs = {
   isPinned: boolean;
 };
 
+export type NoteInputsKeys = keyof NoteInputs;
+
 export type AddNote = NoteInputs;
 
 export type EditNote = NoteInputs;

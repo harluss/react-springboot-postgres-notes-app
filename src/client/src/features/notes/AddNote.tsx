@@ -10,9 +10,10 @@ import { addNote, selectNotesStatus } from './notesSlice';
 import { setSnackbar } from 'features/snackbar';
 import { ProgressIndicator } from 'components/progressIndicator';
 import { FormInput } from 'components/formInput';
-import { NoteInputs, Paths } from 'types';
+import { NoteInputs, NoteInputsKeys, Paths } from 'types';
 import { NoteSchema } from 'validation';
 import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/const';
+import { FocusEvent } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -50,9 +51,8 @@ export const AddNote = () => {
     formState: { isDirty, errors },
     handleSubmit,
     reset,
+    setValue,
   } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
-
-  // TODO: add white space trimming function
 
   const onSubmit = (data: NoteInputs) => {
     dispatch(addNote(data))
@@ -70,6 +70,11 @@ export const AddNote = () => {
 
   const handleCancel = () => history.push(Paths.notes);
 
+  const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target as { name: NoteInputsKeys; value: string };
+    setValue(name, value.trim());
+  };
+
   if (progress === 'processing') {
     return <ProgressIndicator />;
   }
@@ -78,7 +83,16 @@ export const AddNote = () => {
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={MESSAGE_UNSAVED_CHANGES} />
-        <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
+        <FormInput
+          name="title"
+          label="Title"
+          id="title-input"
+          control={control}
+          errors={errors}
+          required
+          autofocus
+          onBlur={handleBlur}
+        />
         <FormInput
           name="details"
           label="Details"
@@ -88,6 +102,7 @@ export const AddNote = () => {
           required
           multiline
           rows={5}
+          onBlur={handleBlur}
         />
         <FormInput
           name="isPinned"

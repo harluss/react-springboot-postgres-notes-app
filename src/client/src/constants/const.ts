@@ -16,3 +16,5 @@ export const MESSAGE_GENERIC_ERROR = 'Oops! Something went wrong...';
 export const MESSAGE_ROUTE_404 = 'Oops, 404! Page not found.';
 export const MESSAGE_NO_NOTES_SAVED = 'You have no saved notes.';
 export const MESSAGE_NOTE_DELETE_WARNING = (title: string) => `Note "${title}" will be deleted.`;
+
+export const ABORT_REQ_ERROR_NAME = 'AbortError';

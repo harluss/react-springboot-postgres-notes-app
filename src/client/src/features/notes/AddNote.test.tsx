@@ -55,4 +55,14 @@ describe('AddNote component', () => {
     fireEvent.click(screen.getByRole('button', { name: /add/i }));
     await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));
   });
+
+  it('trims values on input blur', () => {
+    const dummyNote = { title: ' some title ', details: ' some details ' };
+
+    userEvent.type(screen.getByLabelText(/title/i), dummyNote.title);
+    userEvent.type(screen.getByLabelText(/details/i), dummyNote.details);
+    userEvent.tab();
+    expect(screen.getByLabelText(/title/i)).toHaveValue(dummyNote.title.trim());
+    expect(screen.getByLabelText(/details/i)).toHaveValue(dummyNote.details.trim());
+  });
 });
