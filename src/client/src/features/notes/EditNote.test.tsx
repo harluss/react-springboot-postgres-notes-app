@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { MESSAGE_NO_NOTE_SELECTED } from 'constants/const';
+import { MemoryHistory } from 'history';
 import { mockNote } from 'mocks';
 import { HistoryProps, Paths } from 'types';
 import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils';
@@ -8,10 +9,14 @@ import { EditNote } from './EditNote';
 describe('EditNote component', () => {
   const dummyNote = mockNote();
   const historyProps: HistoryProps = { path: Paths.editNote, state: { note: dummyNote } };
+  let history: MemoryHistory;
+
+  beforeEach(() => {
+    const component = renderWithProvidersAndRouter({ component: <EditNote />, historyProps });
+    history = component.history;
+  });
 
   it('renders and populates form with note from location state', () => {
-    renderWithProvidersAndRouter({ component: <EditNote />, historyProps });
-
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/details/i)).toBeInTheDocument();
     expect(screen.getByText(/created/i)).toBeInTheDocument();
@@ -30,13 +35,18 @@ describe('EditNote component', () => {
   });
 
   it('handles submit action', async () => {
-    const { history } = renderWithProvidersAndRouter({ component: <EditNote />, historyProps });
-
     userEvent.type(screen.getByLabelText(/title/i), 'edited title');
     userEvent.type(screen.getByLabelText(/details/i), 'edited details');
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
     expect(await screen.findByTestId('progress-indicator')).toBeInTheDocument();
     await waitFor(() => expect(history.location.pathname).toBe(Paths.notes));
+  });
+
+  it('has save button disabled until changes to the note content are made', () => {
+    expect(screen.getByRole('button', { name: /save/i })).toBeDisabled;
+
+    userEvent.type(screen.getByLabelText(/title/i), 'edited title');
+    expect(screen.getByRole('button', { name: /save/i })).not.toBeDisabled();
   });
 
   it.todo('shows alert prompt on an attempt to navigate away when changes made');

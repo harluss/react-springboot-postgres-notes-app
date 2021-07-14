@@ -1,4 +1,4 @@
-import { FocusEvent, useEffect, useMemo, useState } from 'react';
+import { FocusEvent, useEffect, useMemo } from 'react';
 import { Prompt, useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -60,7 +60,7 @@ export const EditNote = () => {
   const dispatch = useAppDispatch();
   const progress = useAppSelector(selectNotesStatus);
   const history = useHistory();
-  const { state } = useLocation<LocationState>();
+  const { state: { note } = {} } = useLocation<LocationState>();
   const {
     control,
     formState: { errors, isDirty },
@@ -68,26 +68,22 @@ export const EditNote = () => {
     reset,
     setValue,
   } = useForm<NoteEdit>({
-    defaultValues: useMemo(() => state?.note, [state?.note]),
+    defaultValues: useMemo(() => note, [note]),
     resolver: yupResolver(NoteSchema),
   });
-  const [noteToEdit, setNoteToEdit] = useState<NoteType>();
 
   useEffect(() => {
-    if (state?.note) {
-      setNoteToEdit(state.note);
-      reset(state.note);
-    }
-  }, [state?.note]);
+    reset(note);
+  }, [note]);
 
-  if (!noteToEdit) {
+  if (!note) {
     return <Message messageText={MESSAGE_NO_NOTE_SELECTED} type="error" />;
   }
 
   const onSubmit = (data: NoteEdit) => {
-    const note = { ...noteToEdit, ...data };
+    const updatedNote = { ...note, ...data };
 
-    dispatch(editNote({ note }))
+    dispatch(editNote({ note: updatedNote }))
       .then(unwrapResult)
       .then(reset)
       .then(() => {
@@ -107,7 +103,7 @@ export const EditNote = () => {
 
   const handleCancel = () => history.goBack();
 
-  const isNoteUpdated = () => noteToEdit.createdAt !== noteToEdit.updatedAt;
+  const isNoteUpdated = () => note.createdAt !== note.updatedAt;
 
   if (progress === 'processing') {
     return <ProgressIndicator />;
@@ -133,7 +129,7 @@ export const EditNote = () => {
               Created:
             </Typography>
             <Typography variant="subtitle1" color="textSecondary">
-              {formatDateTime(noteToEdit.createdAt)}
+              {formatDateTime(note.createdAt)}
             </Typography>
           </div>
           {isNoteUpdated() && (
@@ -142,7 +138,7 @@ export const EditNote = () => {
                 Last updated:
               </Typography>
               <Typography variant="subtitle1" color="textSecondary">
-                {formatDateTime(noteToEdit.updatedAt)}
+                {formatDateTime(note.updatedAt)}
               </Typography>
             </div>
           )}
