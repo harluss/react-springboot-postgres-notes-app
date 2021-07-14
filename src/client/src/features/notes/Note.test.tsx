@@ -1,20 +1,17 @@
-import { mockNote } from 'mocks/mockData';
-import { HistoryProps, Paths } from 'types';
-import { formatDateTime } from 'utils/dateFormat';
-import { fireEvent, renderWithProvidersAndRouter, screen, waitFor } from 'utils/testHelpers';
+import { HistoryProps, Note as NoteType, Paths } from 'types';
+import { fireEvent, formatDateTime, renderWithProvidersAndRouter, screen, waitFor } from 'utils';
 import { Note } from './Note';
 import { MemoryHistory } from 'history';
-import { MESSAGE_NOTE_DELETE_WARNING, MESSAGE_NO_NOTE_SELECTED } from 'constants/constants';
+import { MESSAGE_NOTE_DELETE_WARNING, MESSAGE_NO_NOTE_SELECTED } from 'constants/const';
+import { getFirstMockNote } from 'mocks';
 
 describe('Note component', () => {
-  const dummyNote = mockNote();
-  dummyNote.updatedAt = dummyNote.createdAt;
-  dummyNote.isPinned = false;
-
-  const historyProps: HistoryProps = { path: Paths.viewNote, state: { note: dummyNote } };
+  let dummyNote: NoteType;
   let history: MemoryHistory;
 
   beforeEach(() => {
+    dummyNote = getFirstMockNote();
+    const historyProps: HistoryProps = { path: Paths.viewNote, state: { note: dummyNote } };
     const component = renderWithProvidersAndRouter({ component: <Note />, historyProps });
     history = component.history;
   });
@@ -48,14 +45,19 @@ describe('Note component', () => {
   });
 
   it('handles pin/unpin action', async () => {
-    expect(screen.queryByRole('button', { name: /unpin/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /pin/i })).toBeInTheDocument();
+    if (dummyNote.isPinned) {
+      expect(screen.queryByRole('button', { name: /^pin/i })).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /unpin/i })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /pin/i }));
-    expect(await screen.findByRole('button', { name: /unpin/i })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /unpin/i }));
+      expect(await screen.findByRole('button', { name: /^pin/i })).toBeInTheDocument();
+    } else {
+      expect(screen.queryByRole('button', { name: /unpin/i })).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /^pin/i })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /unpin/i }));
-    expect(await screen.findByRole('button', { name: /pin/i })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /^pin/i }));
+      expect(await screen.findByRole('button', { name: /unpin/i })).toBeInTheDocument();
+    }
   });
 
   it('handles delete action on delete confirmation', async () => {

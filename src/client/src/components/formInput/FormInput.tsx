@@ -4,6 +4,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles, Theme } from '@material-ui/core';
 import { NoteInputs } from 'types';
+import { FocusEvent } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -32,6 +33,7 @@ type FormInputProps = {
   required?: boolean;
   rows?: number;
   type?: 'checkbox';
+  onBlur?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
 export const FormInput = ({
@@ -45,6 +47,7 @@ export const FormInput = ({
   required = false,
   rows = 1,
   type,
+  onBlur,
 }: FormInputProps) => {
   const classes = useStyles();
 
@@ -79,6 +82,7 @@ export const FormInput = ({
             rowsMax={20}
             error={!!errors[name]}
             helperText={errors[name]?.message}
+            onBlur={onBlur}
           />
         );
       }}

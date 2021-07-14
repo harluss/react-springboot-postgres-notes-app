@@ -4,15 +4,16 @@ import { makeStyles, Theme } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Prompt, useHistory } from 'react-router-dom';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { addNote, selectNotesStatus } from './notesSlice';
 import { setSnackbar } from 'features/snackbar';
-import { unwrapResult } from '@reduxjs/toolkit';
 import { ProgressIndicator } from 'components/progressIndicator';
-import { NoteInputs, Paths } from 'types';
 import { FormInput } from 'components/formInput';
+import { NoteAdd, NoteAddInputs, Paths } from 'types';
 import { NoteSchema } from 'validation';
-import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/constants';
+import { MESSAGE_UNSAVED_CHANGES, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_ADD_ERROR } from 'constants/const';
+import { FocusEvent } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-const defaultValues: NoteInputs = {
+const defaultValues: NoteAdd = {
   title: '',
   details: '',
   isPinned: false,
@@ -50,11 +51,10 @@ export const AddNote = () => {
     formState: { isDirty, errors },
     handleSubmit,
     reset,
-  } = useForm<NoteInputs>({ defaultValues, resolver: yupResolver(NoteSchema) });
+    setValue,
+  } = useForm<NoteAdd>({ defaultValues, resolver: yupResolver(NoteSchema) });
 
-  // TODO: add white space trimming function
-
-  const onSubmit = (data: NoteInputs) => {
+  const onSubmit = (data: NoteAdd) => {
     dispatch(addNote(data))
       .then(unwrapResult)
       .then(reset)
@@ -70,6 +70,11 @@ export const AddNote = () => {
 
   const handleCancel = () => history.push(Paths.notes);
 
+  const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target as { name: NoteAddInputs; value: string };
+    setValue(name, value.trim());
+  };
+
   if (progress === 'processing') {
     return <ProgressIndicator />;
   }
@@ -78,7 +83,16 @@ export const AddNote = () => {
     <Container maxWidth="sm">
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Prompt when={isDirty} message={MESSAGE_UNSAVED_CHANGES} />
-        <FormInput name="title" label="Title" id="title-input" control={control} errors={errors} required autofocus />
+        <FormInput
+          name="title"
+          label="Title"
+          id="title-input"
+          control={control}
+          errors={errors}
+          required
+          autofocus
+          onBlur={handleBlur}
+        />
         <FormInput
           name="details"
           label="Details"
@@ -88,6 +102,7 @@ export const AddNote = () => {
           required
           multiline
           rows={5}
+          onBlur={handleBlur}
         />
         <FormInput
           name="isPinned"

@@ -1,7 +1,7 @@
-import { APP_TITLE } from 'constants/constants';
+import { APP_TITLE } from 'constants/const';
 import { Paths } from 'types';
-import { fireEvent, renderWithProvidersAndRouter, screen } from 'utils/testHelpers';
-import Layout from './Layout';
+import { fireEvent, renderWithProvidersAndRouter, screen } from 'utils';
+import { Layout } from './Layout';
 
 describe('Layout component', () => {
   const DummyChildComponent = () => <div>Dummy child component</div>;

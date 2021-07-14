@@ -1,8 +1,7 @@
 import { Endpoints } from 'api/notesAPI';
-import { MESSAGE_GENERIC_ERROR, MESSAGE_NO_NOTES_SAVED } from 'constants/constants';
-import { mockData } from 'mocks/mockData';
-import { rest, server } from 'mocks/mockServer';
-import { renderWithProvidersAndRouter, screen } from 'utils/testHelpers';
+import { MESSAGE_GENERIC_ERROR, MESSAGE_NO_NOTES_SAVED } from 'constants/const';
+import { mockData, rest, server } from 'mocks';
+import { renderWithProvidersAndRouter, screen } from 'utils';
 import { Notes } from './Notes';
 
 describe('Notes component', () => {

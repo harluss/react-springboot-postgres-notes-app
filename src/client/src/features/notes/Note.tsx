@@ -1,5 +1,5 @@
 import { Button, makeStyles, Theme, Typography } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -8,7 +8,7 @@ import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { Note as NoteType } from 'types';
 import { Message } from 'components/message/Message';
-import { formatDateTime } from 'utils/dateFormat';
+import { formatDateTime } from 'utils';
 import { AlertDialog } from 'components/alertDialog';
 import { useAppDispatch } from 'app/hooks';
 import { deleteNote, editNote } from './notesSlice';
@@ -22,7 +22,7 @@ import {
   SNACKBAR_NOTE_DELETE_SUCCESS,
   SNACKBAR_NOTE_PIN_ERROR,
   SNACKBAR_NOTE_PIN_SUCCESS,
-} from 'constants/constants';
+} from 'constants/const';
 
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -53,19 +53,12 @@ type LocationState = {
 
 export const Note = () => {
   const classes = useStyles();
-  const [noteDetails, setNoteDetails] = useState<NoteType>();
-  const [isOpen, setIsOpen] = useState(false);
-  const { state } = useLocation<LocationState>();
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { state: { note } = {} } = useLocation<LocationState>();
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (state?.note) {
-      setNoteDetails(state.note);
-    }
-  }, [state?.note]);
-
-  if (!noteDetails) {
+  if (!note) {
     return <Message messageText={MESSAGE_NO_NOTE_SELECTED} type="error" />;
   }
 
@@ -74,7 +67,7 @@ export const Note = () => {
   const handleDelete = () => {
     setIsOpen(false);
 
-    dispatch(deleteNote(noteDetails.id))
+    dispatch(deleteNote(note.id))
       .then(unwrapResult)
       .then(() => {
         dispatch(setSnackbar({ message: SNACKBAR_NOTE_DELETE_SUCCESS, type: 'success' }));
@@ -86,10 +79,8 @@ export const Note = () => {
       });
   };
 
-  const isEdited = () => noteDetails.createdAt !== noteDetails.updatedAt;
-
   const handleToggleIsPinned = () => {
-    dispatch(editNote({ note: noteDetails, toggleIsPinned: true }))
+    dispatch(editNote({ note, toggleIsPinned: true }))
       .then(unwrapResult)
       .then((updatedNote) => {
         dispatch(setSnackbar({ message: SNACKBAR_NOTE_PIN_SUCCESS(updatedNote.isPinned), type: 'success' }));
@@ -101,16 +92,16 @@ export const Note = () => {
       });
   };
 
-  const handleEditNote = () => {
-    history.push(Paths.editNote, { note: noteDetails });
-  };
+  const handleEditNote = () => history.push(Paths.editNote, { note });
+
+  const isNoteUpdated = () => note.createdAt !== note.updatedAt;
 
   return (
     <Container maxWidth="sm">
       <AlertDialog
         isOpen={isOpen}
         title="Delete Note?"
-        details={MESSAGE_NOTE_DELETE_WARNING(noteDetails.title)}
+        details={MESSAGE_NOTE_DELETE_WARNING(note.title)}
         cancelButtonText="Cancel"
         confirmButtonText="Delete"
         confirmAction={handleDelete}
@@ -120,12 +111,12 @@ export const Note = () => {
         <Button
           className={classes.button}
           variant="outlined"
-          color={noteDetails.isPinned ? 'primary' : 'default'}
+          color={note.isPinned ? 'primary' : 'default'}
           size="small"
-          startIcon={noteDetails.isPinned ? <StarIcon /> : <StarBorderIcon />}
+          startIcon={note.isPinned ? <StarIcon /> : <StarBorderIcon />}
           onClick={handleToggleIsPinned}
         >
-          {noteDetails.isPinned ? 'Unpin' : 'Pin'}
+          {note.isPinned ? 'Unpin' : 'Pin'}
         </Button>
         <Button
           className={classes.button}
@@ -148,7 +139,7 @@ export const Note = () => {
         </Button>
       </div>
       <Typography variant="h5" component="h1" className={classes.title}>
-        {noteDetails.title}
+        {note.title}
       </Typography>
       <div className={classes.dateContainer}>
         <div className={classes.date}>
@@ -156,21 +147,21 @@ export const Note = () => {
             Created:
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            {formatDateTime(noteDetails.createdAt)}
+            {formatDateTime(note.createdAt)}
           </Typography>
         </div>
-        {isEdited() && (
+        {isNoteUpdated() && (
           <div className={classes.date}>
             <Typography variant="subtitle1" color="textSecondary">
-              Last edited:
+              Last updated:
             </Typography>
             <Typography variant="subtitle1" color="textSecondary">
-              {formatDateTime(noteDetails.updatedAt)}
+              {formatDateTime(note.updatedAt)}
             </Typography>
           </div>
         )}
       </div>
-      <Typography variant="body1">{noteDetails.details}</Typography>
+      <Typography variant="body1">{note.details}</Typography>
     </Container>
   );
 };

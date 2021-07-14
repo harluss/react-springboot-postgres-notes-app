@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from 'utils/testHelpers';
+import { fireEvent, render, screen } from 'utils';
 import { AlertDialog } from './AlertDialog';
 
 describe('AlertDialog component', () => {

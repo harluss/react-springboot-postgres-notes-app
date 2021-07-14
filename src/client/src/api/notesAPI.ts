@@ -1,13 +1,9 @@
-import axios, { CancelToken } from 'axios';
-import { AddNote, EditNote, Note } from 'types';
+import { CancelToken, del, get, post, put } from './apiClient';
+import { NoteAdd, NoteEdit, Note } from 'types';
 
-//export const apiClient = axios.create();
-
-// axios interceptors
-
-type EditNoteProps = {
+type NoteEditProps = {
   noteId: string;
-  note: EditNote;
+  note: NoteEdit;
 };
 
 export enum Endpoints {
@@ -15,25 +11,25 @@ export enum Endpoints {
 }
 
 export const getNotes = async (cancelToken: CancelToken) => {
-  const { data } = await axios.get<Note[]>(Endpoints.notes, { cancelToken });
+  const { data } = await get<Note[]>(Endpoints.notes, cancelToken);
 
   return data;
 };
 
-export const addNote = async (note: AddNote) => {
-  const { data } = await axios.post<Note>(Endpoints.notes, note);
+export const addNote = async (note: NoteAdd) => {
+  const { data } = await post<Note, NoteAdd>(Endpoints.notes, note);
 
   return data;
 };
 
 export const deleteNote = async (noteId: string) => {
-  const { data } = await axios.delete(`${Endpoints.notes}/${noteId}`);
+  const { data } = await del(`${Endpoints.notes}/${noteId}`);
 
   return data;
 };
 
-export const editNote = async ({ noteId, note }: EditNoteProps) => {
-  const { data } = await axios.put<Note>(`${Endpoints.notes}/${noteId}`, note);
+export const editNote = async ({ noteId, note }: NoteEditProps) => {
+  const { data } = await put<Note, NoteEdit>(`${Endpoints.notes}/${noteId}`, note);
 
   return data;
 };

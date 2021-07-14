@@ -1,4 +1,4 @@
-import { screen, render } from 'utils/testHelpers';
+import { screen, render } from 'utils';
 import { Message } from './Message';
 
 describe('Message component', () => {
