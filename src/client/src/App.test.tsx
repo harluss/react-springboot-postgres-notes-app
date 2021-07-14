@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { fireEvent, formatDateTime, renderWithProvidersAndRouter, screen } from 'utils';
 import { MESSAGE_ROUTE_404, SNACKBAR_NOTE_ADD_SUCCESS, SNACKBAR_NOTE_DELETE_SUCCESS } from 'constants/const';
-import { mockData } from 'mocks';
+import { getAllMockedNotes } from 'mocks';
 import { HistoryProps, Note, NoteInputs } from 'types';
 import App from './App';
 
@@ -13,7 +13,7 @@ describe('App component', () => {
       component: <App />,
       screenSize: 'md',
     });
-    mockedNotes = mockData.note.getAll();
+    mockedNotes = getAllMockedNotes();
   });
 
   it('handles add note', async () => {
@@ -75,7 +75,7 @@ describe('App component', () => {
     expect(await screen.findAllByTestId('card-menu-icon-button')).toHaveLength(mockedNotes.length - 1);
   });
 
-  it('shows 404 message on non-existing route', () => {
+  it('shows 404 message on an attempt to navigate to non-existing route', () => {
     const dummyRoute: HistoryProps = { path: '/dummyPath', state: {} };
     renderWithProvidersAndRouter({
       component: <App />,
