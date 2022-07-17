@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.4.4'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
-  id "com.github.node-gradle.node" version "3.0.1"
+  id 'org.springframework.boot' version '2.7.1'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'java'
+  id "com.github.node-gradle.node" version "3.4.0"
 }
 
 group = 'com.harluss'
@@ -10,17 +10,17 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
 }
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 node {
-  version = '15.8.0'
+  version = '16.16.0'
   yarnVersion = '1.22.10'
   download = true
   workDir = file("${projectDir}/.gradle/nodejs")
@@ -47,37 +47,45 @@ processResources.dependsOn(copyFrontendResources)
 check.dependsOn(testFrontend)
 test.dependsOn(testFrontend)
 
+ext {
+  set('testContainersVersion', "1.17.3")
+}
+
 dependencies {
-  def lombokVersion = '1.18.20'
-  def mapstructVersion = '1.4.2.Final'
-  def springdocVersion = '1.5.2'
-  def testContainerVersion = '1.15.3'
-  def caffeineVersion = '3.0.2';
-  def bucket4jVersion = '0.4.0';
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+  def mapstructVersion = '1.5.1.Final'
+  def springdocVersion = '1.6.9'
+  def caffeineVersion = '3.1.1'
+  def bucket4jVersion = '0.6.1'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-aop'
   implementation 'org.springframework.boot:spring-boot-starter-cache'
-  implementation "org.springdoc:springdoc-openapi-ui:$springdocVersion"
+  implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
   implementation "org.liquibase:liquibase-core"
-  implementation "com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:$bucket4jVersion"
-  implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-  implementation "com.github.ben-manes.caffeine:jcache:$caffeineVersion"
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  testImplementation "org.testcontainers:postgresql:$testContainerVersion"
-  testImplementation "org.testcontainers:junit-jupiter:$testContainerVersion"
-	runtimeOnly 'org.postgresql:postgresql'
-	compileOnly "org.projectlombok:lombok:$lombokVersion"
-	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-  implementation "org.mapstruct:mapstruct:$mapstructVersion"
-  annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
-  testAnnotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+  implementation "com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:${bucket4jVersion}"
+  implementation "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
+  implementation "com.github.ben-manes.caffeine:jcache:${caffeineVersion}"
+  implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+  compileOnly 'org.projectlombok:lombok'
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  runtimeOnly 'org.postgresql:postgresql'
+  annotationProcessor 'org.projectlombok:lombok'
+  annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.testcontainers:postgresql'
+  testImplementation 'org.testcontainers:junit-jupiter'
+  testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.testcontainers:testcontainers-bom:${testContainersVersion}"
+  }
 }
 
 test {
-	useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 apply from: "$projectDir/gradle/prePush.gradle"
