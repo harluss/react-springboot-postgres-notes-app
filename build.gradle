@@ -2,7 +2,7 @@ plugins {
   id 'org.springframework.boot' version '2.7.1'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'java'
-  id "com.github.node-gradle.node" version "3.4.0"
+  id 'com.github.node-gradle.node' version '3.4.0'
 }
 
 group = 'com.harluss'
@@ -19,14 +19,53 @@ repositories {
   mavenCentral()
 }
 
+ext {
+  bucket4jVersion = '0.6.1'
+  caffeineVersion = '3.1.1'
+  mapstructVersion = '1.5.1.Final'
+  nodejsVersion = '16.16.0'
+  springdocVersion = '1.6.9'
+  testContainersVersion = '1.17.3'
+  yarnPkgVersion = '1.22.19'
+}
+
 node {
-  version = '16.16.0'
-  yarnVersion = '1.22.10'
+  version = nodejsVersion
+  yarnVersion = yarnPkgVersion
   download = true
-  workDir = file("${projectDir}/.gradle/nodejs")
-  yarnWorkDir = file("${projectDir}/.gradle/yarn")
+  workDir = file("$projectDir/.gradle/nodejs")
+  yarnWorkDir = file("$projectDir/.gradle/yarn")
   // Location of package.json file and node_modules directory
-  nodeProjectDir = file("${projectDir}/src/client")
+  nodeProjectDir = file("$projectDir/src/client")
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.springframework.boot:spring-boot-starter-aop'
+  implementation 'org.springframework.boot:spring-boot-starter-cache'
+  implementation "org.springdoc:springdoc-openapi-ui:$springdocVersion"
+  implementation 'org.liquibase:liquibase-core'
+  implementation "com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:$bucket4jVersion"
+  implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+  implementation "com.github.ben-manes.caffeine:jcache:$caffeineVersion"
+  implementation "org.mapstruct:mapstruct:$mapstructVersion"
+  compileOnly 'org.projectlombok:lombok'
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  runtimeOnly 'org.postgresql:postgresql'
+  annotationProcessor 'org.projectlombok:lombok'
+  annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.testcontainers:postgresql'
+  testImplementation 'org.testcontainers:junit-jupiter'
+  testAnnotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.testcontainers:testcontainers-bom:$testContainersVersion"
+  }
 }
 
 task cleanBuildFrontend(type: YarnTask, dependsOn: 'yarn') {
@@ -43,49 +82,17 @@ task testFrontend(type: YarnTask) {
   args = ['run', 'test']
 }
 
+task installGitHook(type: Copy) {
+  from new File(projectDir, 'git-hooks/pre-push')
+  into { new File(projectDir, '.git/hooks') }
+  fileMode 0777
+}
+
+assemble.dependsOn installGitHook
 processResources.dependsOn(copyFrontendResources)
 check.dependsOn(testFrontend)
 test.dependsOn(testFrontend)
 
-ext {
-  set('testContainersVersion', "1.17.3")
-}
-
-dependencies {
-  def mapstructVersion = '1.5.1.Final'
-  def springdocVersion = '1.6.9'
-  def caffeineVersion = '3.1.1'
-  def bucket4jVersion = '0.6.1'
-  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  implementation 'org.springframework.boot:spring-boot-starter-web'
-  implementation 'org.springframework.boot:spring-boot-starter-validation'
-  implementation 'org.springframework.boot:spring-boot-starter-aop'
-  implementation 'org.springframework.boot:spring-boot-starter-cache'
-  implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
-  implementation "org.liquibase:liquibase-core"
-  implementation "com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:${bucket4jVersion}"
-  implementation "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
-  implementation "com.github.ben-manes.caffeine:jcache:${caffeineVersion}"
-  implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-  compileOnly 'org.projectlombok:lombok'
-  developmentOnly 'org.springframework.boot:spring-boot-devtools'
-  runtimeOnly 'org.postgresql:postgresql'
-  annotationProcessor 'org.projectlombok:lombok'
-  annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  testImplementation 'org.testcontainers:postgresql'
-  testImplementation 'org.testcontainers:junit-jupiter'
-  testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-}
-
-dependencyManagement {
-  imports {
-    mavenBom "org.testcontainers:testcontainers-bom:${testContainersVersion}"
-  }
-}
-
 test {
   useJUnitPlatform()
 }
-
-apply from: "$projectDir/gradle/prePush.gradle"
