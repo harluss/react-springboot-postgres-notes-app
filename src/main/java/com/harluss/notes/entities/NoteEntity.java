@@ -1,19 +1,32 @@
 package com.harluss.notes.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "notes")
-public class NoteEntity extends DateAuditEntity implements Serializable {
+public class NoteEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,4 +40,12 @@ public class NoteEntity extends DateAuditEntity implements Serializable {
 
   @Column(name = "is_pinned", nullable = false)
   private Boolean isPinned;
+
+  @CreatedDate
+  @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
+  private Date createdAt;
+
+  @LastModifiedDate
+  @Column(name = "updated_at", nullable = false, columnDefinition = "timestamptz")
+  private Date updatedAt;
 }
